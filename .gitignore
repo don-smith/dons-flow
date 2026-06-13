@@ -4,4 +4,6 @@ node_modules/
 .env
 vendor/superpowers-source/
 vendor/rpiv-mono/
+.rpiv/
+.superpowers/
 

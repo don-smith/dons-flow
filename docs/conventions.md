@@ -21,7 +21,7 @@ AGENTS.md                # Repo-level agent guidance
 
 ## `docs/tabled.md`
 
-Single working-memory location for epiphanies, forks, and follow-up items. Add bullet entries as they surface. Process them at end-of-artifact checkpoints and during `land` step 9. The file should end each cycle empty (or near-empty).
+Single working-memory location for epiphanies, forks, and follow-up items. Add bullet entries as they surface. Process them at end-of-artifact checkpoints and during `land` step 8. The file should end each cycle empty (or near-empty).
 
 ## `docs/status.md`
 
@@ -31,7 +31,7 @@ Living document with at least these sections:
 - **What's Next** — highest-priority items moved from `docs/tabled.md`.
 - **Active Work** — current branch / milestone.
 
-Update during `land` step 9.
+Update during `land` step 8.
 
 ## `docs/memory/`
 

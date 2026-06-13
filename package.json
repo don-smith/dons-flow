@@ -1,7 +1,7 @@
 {
   "name": "@locksmithdon/dons-flow",
-  "version": "2.2.0",
-  "description": "Don's Flow v2 — a single Pi Agent workflow package combining RPIV's observable pipeline, Superpowers' discipline, and Don's landing closeout.",
+  "version": "3.0.0",
+  "description": "Don's Flow v3 — a single 5-stage pipeline combining RPIV's observable delivery chain, Superpowers' execution discipline, and Don's closeout practices.",
   "keywords": [
     "pi-package",
     "pi-extension",

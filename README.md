@@ -1,22 +1,22 @@
 # @locksmithdon/dons-flow
 
-**Don's Flow v2** is a way of composing three distinct approaches to agentic software development into one developer-owned workflow:
+**Don's Flow v3** is a single 5-stage pipeline that composes RPIV's observable delivery chain, Superpowers' execution discipline, and Don's closeout practices into one unified flow:
 
-1. **[Superpowers](https://github.com/obra/superpowers)** — the methodology you already trust. Socratic design (`brainstorming`), bite-sized plans (`writing-plans`), red/green TDD (`test-driven-development`), and subagent-driven execution (`subagent-driven-development`). It is fast, opinionated, and proven.
+1. **[Superpowers](https://github.com/obra/superpowers)** — the methodology you already trust. Socratic design (`brainstorming`), red/green TDD (`test-driven-development`), and subagent-driven execution (`subagent-driven-development`). It is fast, opinionated, and proven.
 2. **[RPIV](https://www.npmjs.com/package/@juicesharp/rpiv-pi)** — Juice Sharp's observable, artifact-chained delivery pipeline: `discover → research → design → plan → implement → validate → review → commit`. It adds deliberate checkpoints, self-reflection, and a durable paper trail.
 3. **Don's closeout discipline** — the `land` ritual, `epiphany-tabling`, as-built documentation, retros, and memory reconciliation. It closes the cycle so the next one starts clean.
 
 None of these replaces the others. Superpowers excels at the inner loop of design and execution. RPIV excels at observable, reviewable delivery. Don's discipline excels at cycle boundaries and learning capture. Together they form a workflow that is fast *and* reflective *and* humane.
 
-> **Why v2?** The first iteration of Don's Flow was Superpowers plus a custom landing ritual. v2 keeps that landing ritual and adds RPIV's pipeline as a first-class partner rather than a replacement.
+> **Why v3?** v2 was a loose federation of three systems. v3 unifies them into a single 5-stage pipeline with clear artifact handoffs — same skills, better orchestration.
 
 ## What each system contributes
 
 | System | Core gift | Typical entry points |
 |---|---|---|
-| **Superpowers** | Auto-triggering, opinionated software development methodology | `brainstorming`, `writing-plans`, `test-driven-development`, `subagent-driven-development`, `verification-before-completion` |
+| **Superpowers** | Auto-triggering, opinionated execution discipline | `brainstorming`, `test-driven-development`, `subagent-driven-development`, `dispatching-parallel-agents`, `receiving-code-review` |
 | **RPIV** | Observable, artifact-chained delivery pipeline with built-in reflection | `discover`, `research`, `blueprint`, `implement`, `validate`, `code-review` |
-| **Don's Flow** | Cycle boundaries, scope control, and learning capture | `land`, `epiphany-tabling`, `capturing-learnings`, `as-built-documentation`, `writing-retros` |
+| **Don's Flow** | Cycle boundaries, scope control, execution discipline, and learning capture | `land`, `epiphany-tabling`, `capturing-learnings`, `verification-before-completion`, `as-built-documentation`, `writing-retros` |
 
 ## Installation
 
@@ -46,39 +46,25 @@ If RPIV warns about missing sibling extensions during install, restart Pi once t
 
 This creates the repo-owned conventions listed below.
 
-## Three ways to work
+## The 5-stage pipeline
 
-Don's Flow is not a single mandatory pipeline. It is a score you can conduct in different ways depending on the work.
-
-### Mode A — Superpowers-led
-
-Best when the problem is well-shaped and you want autonomous, TDD-driven execution.
+Don's Flow is a single pipeline that adapts to work size. No modes to choose from — follow the stages, and the artifacts guide what comes next.
 
 ```
-brainstorming → writing-plans → subagent-driven-development → verification-before-completion → land
+1. Discover & Align → 2. Research & Design → 3. Implement → 4. Validate & Review → 5. Land & Learn
 ```
 
-Use RPIV only if you hit a research or validation gap that Superpowers does not cover on its own.
+| Stage | What happens | Key skills |
+|---|---|---|
+| 1. **Discover & Align** | Shape the work, capture intent | `brainstorming`, `discover`, `explore` |
+| 2. **Research & Design** | Ground in code, design the solution | `research`, `design`, `architecture-review`, `blueprint`/`plan` |
+| 3. **Implement** | Execute the plan, write the code | `implement` + TDD, subagents, `verification-before-completion` |
+| 4. **Validate & Review** | Verify the work, gate the commit | `validate`, `code-review`, `receiving-code-review`, `revise` |
+| 5. **Land & Learn** | Close the cycle, document, reflect | `land` (→ commit, as-built, retro, memory reconcile) |
 
-### Mode B — RPIV-led
+Between stages, artifacts hand off: FRD → Plan → Working tree → Validation → As-built docs.
 
-Best when the problem needs discovery, research, or a durable decision trail.
-
-```
-discover → research → blueprint → implement → validate → code-review → commit → land
-```
-
-Use Superpowers inside `implement` for TDD and subagent execution if you want its inner-loop discipline.
-
-### Mode C — The mixed default
-
-Best for substantial work where you want both reflection and autonomy.
-
-```
-discover → research → blueprint → implement (with Superpowers TDD + subagents) → validate → code-review → commit → land
-```
-
-Between every major artifact, run `capturing-learnings`. During execution, keep `epiphany-tabling` active. If you stop mid-work, use `create-handoff` / `resume-handoff`.
+`epiphany-tabling` runs across stages 2-4. `capturing-learnings` checks in after stages 1, 2, 4, and 5. `create-handoff` / `resume-handoff` bridge sessions at any stage.
 
 ## What this package adds
 
@@ -86,9 +72,9 @@ This package provides the seams between the three systems:
 
 | Skill | Purpose |
 |---|---|
-| `dons-flow` | The map. Helps you choose Mode A, B, or C for a given piece of work. |
+| `dons-flow` | The map. Guides you through the 5-stage pipeline for any piece of work. |
 | `setup-dons-flow` | Onboarding: checks prerequisites, detects Superpowers, creates repo conventions. |
-| `land` | The 10-step cycle closeout: code review → architectural review → security review → as-built docs → doc/knowledge-graph review → AGENTS.md updates → memory reconcile → retro → status review → integrate. |
+| `land` | The 9-step closeout in 3 groups: Commit & Document, Reflect & Reconcile, Update & Close. |
 | `epiphany-tabling` | Capture mid-flight realizations in `docs/tabled.md` without derailing current work. |
 | `as-built-documentation` | Replace spec/plan scaffolding with a permanent `docs/changes/` record of what shipped. |
 | `capturing-learnings` | End-of-artifact checkpoints + the "once is a moment; twice is a pattern" promotion rule. |
@@ -141,10 +127,7 @@ The default stance is to incorporate upstream improvements unless there is a cle
 
 1. `pi install npm:@locksmithdon/dons-flow`.
 2. Run `/skill:setup-dons-flow` to scaffold repo conventions.
-3. Choose a mode:
-   - Superpowers-led: start with `brainstorming`.
-   - RPIV-led: start with `/skill:discover "[feature description]"`.
-   - Mixed: start with `discover`, then use Superpowers inside `implement`.
+3. Start with `/skill:dons-flow` to see the 5-stage pipeline. Begin at stage 1 (Discover & Align) with `brainstorming` or `/skill:discover`.
 4. Close the cycle with `/skill:land`.
 5. After 2–3 projects, run `/skill:sync-upstream`.
 

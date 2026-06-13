@@ -22,7 +22,7 @@ Onboard a repo to Don's Flow. This skill checks that the package is installed an
 
 - **RPIV** skills (`discover`, `research`, `blueprint`, `implement`, `validate`, `code-review`, etc.)
 - **RPIV runtime extensions** (`rpiv-todo`, `rpiv-workflow`, etc.)
-- **Superpowers** skills (`brainstorming`, `writing-plans`, `test-driven-development`, `subagent-driven-development`, etc.)
+- **Superpowers** skills (`brainstorming`, `test-driven-development`, `subagent-driven-development`, `dispatching-parallel-agents`, `receiving-code-review`, etc.)
 - **Don's Flow** skills (`land`, `epiphany-tabling`, `capturing-learnings`, etc.)
 
 There are no separate installs for RPIV or Superpowers.
@@ -110,9 +110,9 @@ Seed `AGENTS.md` with a minimal entry:
 # AGENTS.md
 
 This project uses the `@locksmithdon/dons-flow` workflow:
-- RPIV pipeline for discovery, research, design/plan, implement, validate, review, commit.
-- Superpowers skills for brainstorming, planning, TDD, and subagent-driven development.
-- `land` skill for 10-step cycle closeout.
+- 5-stage pipeline: Discover & Align → Research & Design → Implement → Validate & Review → Land & Learn.
+- Superpowers skills for brainstorming, TDD, subagent-driven development, and parallel dispatch.
+- `land` skill for 9-step closeout in 3 groups (Commit & Document, Reflect & Reconcile, Update & Close).
 
 See `docs/runbooks/` for detailed processes and `docs/memory/` for project context.
 ```
