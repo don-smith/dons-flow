@@ -75,6 +75,14 @@ Full instructions are at [obra/superpowers](https://github.com/obra/superpowers)
 
 ### 2. Install RPIV and this package
 
+RPIV and the Pi subagent runtime are declared as peer dependencies of this package. With npm 7+, they are installed automatically when you install `@locksmithdon/dons-flow`:
+
+```bash
+pi install npm:@locksmithdon/dons-flow
+```
+
+If your Pi setup does not auto-install peer dependencies, install them explicitly:
+
 ```bash
 pi install npm:@juicesharp/rpiv-pi
 pi install npm:@tintinweb/pi-subagents

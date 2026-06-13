@@ -5,7 +5,7 @@ description: Use when starting or navigating a major piece of work to apply the 
 
 # Don's Flow
 
-**Version 2** of the developer workflow for `@locksmithdon`. It composes three independent systems into one working practice:
+**Version 2** of the developer workflow for Don Smith. It composes three independent systems into one working practice:
 
 1. **Superpowers** — Jesse Vincent's agentic methodology: Socratic design, bite-sized plans, red/green TDD, and subagent-driven execution. It is the system that got Don here.
 2. **RPIV** — Juice Sharp's observable, artifact-chained delivery pipeline. It adds deliberate checkpoints, self-reflection, and a durable paper trail.
@@ -28,12 +28,12 @@ This skill is the map. It does not replace the skills it references — it helps
 
 This skill assumes the following are available:
 
-- **Superpowers** — the upstream methodology. Installed as a harness plugin (Claude, Codex, Gemini, Cursor, Copilot, etc.), not via npm. See `setup-dons-flow` for per-harness commands.
-- **RPIV** (`@juicesharp/rpiv-pi`) — the observable delivery pipeline.
-- **Pi subagent runtime** (`@tintinweb/pi-subagents`) — runtime used by RPIV.
+- **Superpowers** — the upstream methodology. Installed as a harness plugin (Claude, Codex, Gemini, Cursor, Copilot, etc.), not via npm. See `setup-dons-flow` for per-harness commands. This is the only manual install step.
+- **RPIV** (`@juicesharp/rpiv-pi`) — the observable delivery pipeline. Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`.
+- **Pi subagent runtime** (`@tintinweb/pi-subagents`) — runtime used by RPIV. Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`.
 - **Don's Flow** (`@locksmithdon/dons-flow`) — this package, which adds closeout and discipline skills.
 
-If RPIV or the subagent runtime is missing, stop and install them before proceeding. If Superpowers is missing, this package's ported skills still provide the closeout workflow, but you will not have access to the upstream Superpowers entry points like `brainstorming` or `test-driven-development`.
+If RPIV or the subagent runtime is missing, install them explicitly. If Superpowers is missing, this package's ported skills still provide the closeout workflow, but you will not have access to the upstream Superpowers entry points like `brainstorming` or `test-driven-development`.
 
 ## Before you start
 

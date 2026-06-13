@@ -1,6 +1,6 @@
 {
   "name": "@locksmithdon/dons-flow",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Don's Flow v2 — a developer-specific Pi Agent workflow built on RPIV's observable pipeline, Superpowers' discipline, and a structured landing closeout.",
   "keywords": [
     "pi-package",
@@ -14,7 +14,7 @@
     "closeout"
   ],
   "license": "MIT",
-  "author": "locksmithdon",
+  "author": "Don Smith",
   "type": "module",
   "repository": {
     "type": "git",

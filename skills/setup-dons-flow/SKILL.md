@@ -43,8 +43,8 @@ Look for:
 
 | Package | Required? | If missing |
 |---|---|---|
-| `npm:@juicesharp/rpiv-pi` | Yes | `pi install npm:@juicesharp/rpiv-pi` |
-| `npm:@tintinweb/pi-subagents` | Yes | `pi install npm:@tintinweb/pi-subagents` |
+| `npm:@juicesharp/rpiv-pi` | Yes | Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`. If not, run `pi install npm:@juicesharp/rpiv-pi`. |
+| `npm:@tintinweb/pi-subagents` | Yes | Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`. If not, run `pi install npm:@tintinweb/pi-subagents`. |
 | `npm:@locksmithdon/dons-flow` | Yes | `pi install npm:@locksmithdon/dons-flow` |
 
 If RPIV is installed, also run `/rpiv-setup` once and restart Pi to install RPIV's sibling plugins.

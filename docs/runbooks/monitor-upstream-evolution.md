@@ -6,7 +6,7 @@ Check RPIV and Superpowers monthly to decide how `@locksmithdon/dons-flow` shoul
 
 - **Cadence:** Monthly, or after every 2–3 projects completed with this workflow.
 - **Duration:** 15–30 minutes.
-- **Owner:** @locksmithdon.
+- **Owner:** Don Smith.
 
 ## Trigger
 
