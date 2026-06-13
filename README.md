@@ -89,7 +89,7 @@ pi install npm:@tintinweb/pi-subagents
 pi install npm:@locksmithdon/dons-flow
 ```
 
-If RPIV's `/rpiv-setup` command is available, run it once and restart Pi to install RPIV's sibling plugins.
+If RPIV's `/rpiv-setup` command is available, `/skill:setup-dons-flow` runs it automatically to install RPIV's sibling plugins. Restart Pi when prompted so the new extensions load.
 
 ### 3. Onboard the repo
 

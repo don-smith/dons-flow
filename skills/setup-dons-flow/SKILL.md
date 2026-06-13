@@ -31,7 +31,7 @@ Superpowers is not an npm package and cannot be installed via `pi install` or `n
 
 ## Process
 
-### Step 1: Detect installed Pi packages
+### Step 1: Detect installed Pi packages and install RPIV siblings
 
 Run:
 
@@ -47,7 +47,25 @@ Look for:
 | `npm:@tintinweb/pi-subagents` | Yes | Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`. If not, run `pi install npm:@tintinweb/pi-subagents`. |
 | `npm:@locksmithdon/dons-flow` | Yes | `pi install npm:@locksmithdon/dons-flow` |
 
-If RPIV is installed, also run `/rpiv-setup` once and restart Pi to install RPIV's sibling plugins.
+If RPIV is installed but its sibling extensions are missing, run RPIV's setup command automatically:
+
+```bash
+/rpiv-setup
+```
+
+This installs the sibling plugins:
+
+- `@juicesharp/rpiv-ask-user-question`
+- `@juicesharp/rpiv-todo`
+- `@juicesharp/rpiv-advisor`
+- `@juicesharp/rpiv-i18n`
+- `@juicesharp/rpiv-web-tools`
+- `@juicesharp/rpiv-args`
+- `@juicesharp/rpiv-workflow`
+
+After `/rpiv-setup` completes, **restart Pi** so the new extensions are loaded. Then re-run `/skill:setup-dons-flow` to continue onboarding.
+
+If you cannot restart Pi in this session, report the remaining siblings to the user and ask them to restart before proceeding.
 
 ### Step 2: Detect Superpowers
 

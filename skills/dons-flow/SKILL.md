@@ -43,7 +43,7 @@ If this repo has not been onboarded yet, run:
 /skill:setup-dons-flow
 ```
 
-That skill checks prerequisites, detects Superpowers, and creates the repo-owned conventions (`docs/tabled.md`, `docs/status.md`, `docs/memory/`, `docs/changes/`, `docs/retros/`, `docs/runbooks/`, `AGENTS.md`).
+That skill checks prerequisites, detects Superpowers, installs RPIV's sibling extensions via `/rpiv-setup`, and creates the repo-owned conventions (`docs/tabled.md`, `docs/status.md`, `docs/memory/`, `docs/changes/`, `docs/retros/`, `docs/runbooks/`, `AGENTS.md`).
 
 ## Three modes of working
 
