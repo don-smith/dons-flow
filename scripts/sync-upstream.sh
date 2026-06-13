@@ -35,14 +35,11 @@ LAST_SYNC_FILE="$MEMORY_DIR/.upstream-last-sync.json"
 SUPERPOWERS_SKILLS=(
   brainstorming
   dispatching-parallel-agents
-  executing-plans
   receiving-code-review
-  requesting-code-review
   subagent-driven-development
   systematic-debugging
   test-driven-development
   using-superpowers
-  writing-plans
   writing-skills
 )
 
