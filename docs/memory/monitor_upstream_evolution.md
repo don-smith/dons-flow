@@ -9,14 +9,14 @@ next-review: 2026-07-13
 
 How should `@locksmithdon/dons-flow` track its upstream projects?
 
-- **RPIV** (`@juicesharp/rpiv-pi`) is published to npm and already declared as a normal peer dependency.
-- **Superpowers** (`obra/superpowers`) is a GitHub-only skills framework, not published to npm under a resolvable name. The `superpowers` name on npm is taken by an unrelated package.
+- **RPIV** (`@juicesharp/rpiv-pi`) is published to npm and declared as a normal peer dependency.
+- **Superpowers** (`obra/superpowers`) is a harness plugin, not an npm package. It is installed via Claude, Codex, Gemini, Cursor, Copilot, or other agent harnesses, not via `pi install` or `npm install`.
 
-We are not forking or publishing Superpowers yet. Instead, we declared it as an optional git peer dependency (`github:obra/superpowers`) and will monitor both projects for 2–3 months before deciding whether to:
+We are not forking or publishing Superpowers yet. Instead, we document it as a harness-plugin dependency and will monitor both projects for 2–3 months before deciding whether to:
 
-1. Keep the optional git peer dependency.
+1. Keep the harness-plugin arrangement.
 2. Fork Superpowers and publish it under `@locksmithdon/superpowers` as a normal npm peer dependency.
-3. Remove the Superpowers peer dependency entirely and rely on this package's ported closeout skills + RPIV's pipeline.
+3. Drop Superpowers integration entirely and rely on this package's ported closeout skills + RPIV's pipeline.
 4. Some hybrid we haven't thought of yet.
 
 ## Why we deferred
@@ -28,20 +28,20 @@ The integration is new. We want real usage data — at least 2–3 projects run 
 | Project | URL | What to check |
 |---|---|---|
 | RPIV | https://github.com/juicesharp/rpiv-mono | New skills that overlap with our closeout workflow; changes to `implement`, `validate`, `code-review`; new onboarding commands. |
-| Superpowers | https://github.com/obra/superpowers | New closeout/landing skills; npm publishing; changes to `brainstorming`, `writing-plans`, `verification-before-completion`; license changes. |
+| Superpowers | https://github.com/obra/superpowers | New closeout/landing skills; npm publishing; changes to `brainstorming`, `writing-plans`, `verification-before-completion`; license changes; new harness install paths. |
 
 ## Decision criteria
 
 Fork and publish Superpowers if:
 - We find ourselves needing its upstream entry points (`brainstorming`, `test-driven-development`, `subagent-driven-development`) in projects where RPIV equivalents don't fit.
 - Superpowers still isn't on npm after 3 months of monitoring.
-- The maintenance burden of a fork feels smaller than the friction of the git dependency.
+- The maintenance burden of a fork feels smaller than the friction of the harness-plugin install path.
 
-Keep the git peer dependency if:
-- The optional install path works reliably across harnesses.
-- We rarely need Superpowers-specific entry points because RPIV covers the pipeline.
+Keep the harness-plugin arrangement if:
+- The plugin install path works reliably across harnesses.
+- We value staying on the upstream release channel.
 
-Remove it if:
+Drop Superpowers integration if:
 - RPIV adds equivalent closeout/landing skills.
 - We stop using Superpowers entry points entirely.
 

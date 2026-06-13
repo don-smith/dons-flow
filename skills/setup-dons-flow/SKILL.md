@@ -5,17 +5,29 @@ description: Use when installing or onboarding @locksmithdon/dons-flow in a repo
 
 # Setup Don's Flow
 
-Onboard a repo to the integrated RPIV + Superpowers + `land` workflow. This skill checks prerequisites, detects what is already installed, creates the repo-owned conventions, and tells you what still needs to be done.
+Onboard a repo to the Don's Flow v2 triad: **Superpowers** + **RPIV** + **Don's closeout discipline**. This skill checks prerequisites, detects what is already installed, creates the repo-owned conventions, and tells you what still needs to be done.
 
 ## Announce at start
 
-> "I'm using the `setup-dons-flow` skill to onboard this repo to the integrated workflow."
+> "I'm using the `setup-dons-flow` skill to onboard this repo to Don's Flow v2."
 
 ## When to use
 
 - Right after installing `@locksmithdon/dons-flow` in a repo.
 - When you suspect prerequisites are missing.
 - When setting up a fresh repo for this workflow.
+- After switching to a new agent harness.
+
+## What Don's Flow needs
+
+| Component | What it is | How it is installed |
+|---|---|---|
+| **Superpowers** | Agentic methodology (brainstorming, TDD, subagent-driven development) | Harness plugin (Claude, Codex, Gemini, Cursor, etc.) |
+| **RPIV** | Observable delivery pipeline (`discover → ... → commit`) | `pi install npm:@juicesharp/rpiv-pi` |
+| **Pi subagent runtime** | Runtime used by RPIV | `pi install npm:@tintinweb/pi-subagents` |
+| **Don's Flow** | This package: closeout, scope control, learning capture | `pi install npm:@locksmithdon/dons-flow` |
+
+Superpowers is not an npm package and cannot be installed via `pi install` or `npm install`. It must be installed as a harness plugin.
 
 ## Process
 
@@ -39,20 +51,72 @@ If RPIV is installed, also run `/rpiv-setup` once and restart Pi to install RPIV
 
 ### Step 2: Detect Superpowers
 
-Superpowers is installed via your agent harness, not as a Pi npm package. Check one of:
+Superpowers is installed via your agent harness, not as a Pi npm package. Check the appropriate method for your harness:
 
-- **Claude Code:** `/plugin list` should show `superpowers`
-- **Codex CLI:** `/plugins` should list Superpowers
-- **Gemini CLI:** `gemini extensions list` should show it
-- **Skills directory:** `ls ~/.pi/agent/skills/` may contain Superpowers skills if they were copied manually
+**Claude Code**
+```bash
+/plugin list
+```
+Look for `superpowers`. If missing:
+```bash
+/plugin install superpowers@claude-plugins-official
+```
+Or via the Superpowers marketplace:
+```bash
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+```
 
-If Superpowers is not installed, ask the user which path they prefer:
+**Codex CLI / Codex App**
+```bash
+/plugins
+```
+Search for "Superpowers" and install it.
 
-1. **Harness plugin** (recommended for most users)
-2. **Git URL** — `pi install github:obra/superpowers` if their Pi supports git URLs
-3. **Skip for now** — the closeout workflow still works without Superpowers entry points
+**Gemini CLI**
+```bash
+gemini extensions list
+```
+If missing:
+```bash
+gemini extensions install https://github.com/obra/superpowers
+```
 
-Record the choice in `docs/memory/MEMORY.md` if this is a long-lived project.
+**Factory Droid**
+```bash
+droid plugin list
+```
+If missing:
+```bash
+droid plugin marketplace add https://github.com/obra/superpowers
+droid plugin install superpowers@superpowers
+```
+
+**OpenCode**
+```bash
+# Fetch and follow instructions from:
+# https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
+```
+
+**Cursor**
+```bash
+/add-plugin superpowers
+```
+Or search "superpowers" in the plugin marketplace.
+
+**GitHub Copilot CLI**
+```bash
+copilot plugin list
+```
+If missing:
+```bash
+copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin install superpowers@superpowers-marketplace
+```
+
+If you are unsure which harness is active, ask the user. Do not guess.
+
+If Superpowers is not installed, explain that the closeout workflow in this package still works, but the upstream Superpowers entry points (`brainstorming`, `test-driven-development`, `subagent-driven-development`) will not be available.
 
 ### Step 3: Check repo conventions
 
@@ -120,8 +184,8 @@ Seed `AGENTS.md` with a minimal entry pointing at this workflow:
 # AGENTS.md
 
 This project uses the `@locksmithdon/dons-flow` workflow:
+- Superpowers for design, planning, TDD, and subagent-driven development.
 - RPIV pipeline for discovery, research, design/plan, implement, validate, review, commit.
-- Superpowers-style scope control and verification discipline.
 - `land` skill for 10-step cycle closeout.
 
 See `docs/runbooks/` for detailed processes and `docs/memory/` for project context.
@@ -137,7 +201,7 @@ Setup status for <repo>:
 ✓ RPIV installed
 ✗ @tintinweb/pi-subagents missing — run: pi install npm:@tintinweb/pi-subagents
 ✓ Repo conventions created
-? Superpowers — not detected; install via harness plugin if desired
+✓ Superpowers detected (Claude Code plugin)
 
 Next step: /skill:dons-flow to see the workflow map.
 ```
@@ -145,7 +209,8 @@ Next step: /skill:dons-flow to see the workflow map.
 ## Anti-patterns
 
 - **Creating conventions without asking.** The repo belongs to the team; don't mutate its doc structure unilaterally.
-- **Assuming Superpowers is installed.** It is optional and harness-specific. Always detect or ask.
+- **Guessing the harness.** Always detect or ask which agent harness is in use before giving Superpowers install instructions.
+- **Treating Superpowers as optional decoration.** It is one of the three pillars of this workflow. Detect it accurately and install it if possible.
 - **Installing packages without confirmation.** Present the install commands; let the human run them.
 
 ## Integration

@@ -1,37 +1,37 @@
 ---
 name: dons-flow
-description: Use when starting or navigating a major piece of work to apply the integrated RPIV + Superpowers-style workflow — discovery, research, design/plan, implement, validate, review, commit, and land
+description: Use when starting or navigating a major piece of work to apply the integrated Superpowers + RPIV + Don's closeout workflow
 ---
 
 # Don's Flow
 
-**Version 2** of the integrated workflow for developer `@locksmithdon`: **RPIV's observable, artifact-chained delivery pipeline** plus **Superpowers' scope control, verification discipline, and cycle closeout**, with the `land` ritual that neither provides on its own.
+**Version 2** of the developer workflow for `@locksmithdon`. It composes three independent systems into one working practice:
 
-v1 was Superpowers-based with a custom landing ritual. v2 adds RPIV's pipeline while keeping the closeout, scope-control, and learning-capture practices.
+1. **Superpowers** — Jesse Vincent's agentic methodology: Socratic design, bite-sized plans, red/green TDD, and subagent-driven execution. It is the system that got Don here.
+2. **RPIV** — Juice Sharp's observable, artifact-chained delivery pipeline. It adds deliberate checkpoints, self-reflection, and a durable paper trail.
+3. **Don's closeout discipline** — the `land` ritual, `epiphany-tabling`, as-built documentation, retros, and memory reconciliation. It closes the cycle so the next one starts clean.
 
-This skill is the map. It does not replace the skills it references — it tells you which skill to invoke when, and which conventions must stay true across all of them.
-
-Superpowers is the upstream methodology at [obra/superpowers](https://github.com/obra/superpowers). It is not published to npm under a resolvable name, so this package declares it as an optional git peer dependency (`github:obra/superpowers`). Install it via your agent harness's plugin system, via the git URL, or by forking and publishing it under your own scope.
+This skill is the map. It does not replace the skills it references — it helps you choose which path to take for a given piece of work, and reminds you which conventions must stay true across all of them.
 
 ## Announce at start
 
-> "I'm using the `dons-flow` skill to run the integrated RPIV + Superpowers workflow."
+> "I'm using the `dons-flow` skill to run the Superpowers + RPIV + closeout triad."
 
 ## When to use this skill
 
-- At the **start** of a new piece of work, to pick the right entry point.
+- At the **start** of a new piece of work, to choose Superpowers-led, RPIV-led, or mixed mode.
 - When you are **mid-work** and unsure whether to keep going, hand off, revise, or close out.
 - At the **end** of a validated implementation, to begin the `land` closeout ritual.
 - When onboarding a fresh repo to this workflow.
 
 ## Required installed packages
 
-This skill assumes the following Pi packages are installed:
+This skill assumes the following are available:
 
-- `@juicesharp/rpiv-pi` — the RPIV pipeline skills
-- `@tintinweb/pi-subagents` — subagent runtime used by RPIV
-- `@locksmithdon/dons-flow` — this package, which adds closeout and discipline skills
-- `superpowers` — the upstream Superpowers methodology (optional, via harness plugin or `github:obra/superpowers`)
+- **Superpowers** — the upstream methodology. Installed as a harness plugin (Claude, Codex, Gemini, Cursor, Copilot, etc.), not via npm. See `setup-dons-flow` for per-harness commands.
+- **RPIV** (`@juicesharp/rpiv-pi`) — the observable delivery pipeline.
+- **Pi subagent runtime** (`@tintinweb/pi-subagents`) — runtime used by RPIV.
+- **Don's Flow** (`@locksmithdon/dons-flow`) — this package, which adds closeout and discipline skills.
 
 If RPIV or the subagent runtime is missing, stop and install them before proceeding. If Superpowers is missing, this package's ported skills still provide the closeout workflow, but you will not have access to the upstream Superpowers entry points like `brainstorming` or `test-driven-development`.
 
@@ -45,13 +45,47 @@ If this repo has not been onboarded yet, run:
 
 That skill checks prerequisites, detects Superpowers, and creates the repo-owned conventions (`docs/tabled.md`, `docs/status.md`, `docs/memory/`, `docs/changes/`, `docs/retros/`, `docs/runbooks/`, `AGENTS.md`).
 
-## Integrated workflow
+## Three modes of working
+
+Don's Flow is not a single mandatory pipeline. Choose the mode that fits the work.
+
+### Mode A — Superpowers-led
+
+Best when the problem is well-shaped and you want autonomous, TDD-driven execution.
+
+```
+brainstorming → writing-plans → subagent-driven-development → verification-before-completion → land
+```
+
+Use RPIV only if you hit a research or validation gap that Superpowers does not cover on its own.
+
+### Mode B — RPIV-led
+
+Best when the problem needs discovery, research, or a durable decision trail.
+
+```
+discover → research → blueprint → implement → validate → code-review → commit → land
+```
+
+Use Superpowers inside `implement` for TDD and subagent execution if you want its inner-loop discipline.
+
+### Mode C — Mixed default
+
+Best for substantial work where you want both reflection and autonomy.
+
+```
+discover → research → blueprint → implement (with Superpowers TDD + subagents) → validate → code-review → commit → land
+```
+
+Between every major artifact, run `capturing-learnings`. During execution, keep `epiphany-tabling` active. If you stop mid-work, use `create-handoff` / `resume-handoff`.
+
+## The RPIV path in detail
+
+When you choose Mode B or C, the pipeline below is the default. Each arrow is a skill invocation. Each skill produces or updates an artifact.
 
 ```
 Discover → Research → Design/Blueprint → Plan → Implement → Validate → Review → Commit → Land
 ```
-
-Each arrow is a skill invocation. Each skill produces or updates an artifact. Nothing is unilateral: every boundary is a conversation or a checkpoint.
 
 ### 1. Discover — capture intent
 
@@ -121,6 +155,7 @@ Each arrow is a skill invocation. Each skill produces or updates an artifact. No
 - Apply `verification-before-completion` discipline: no success claim without fresh verification evidence.
 - If a session ends mid-implementation, run `/skill:create-handoff`.
 - If code reality diverges from the plan, surface it via implement's mismatch flow or run `/skill:revise <plan-path>` first.
+- In mixed mode, invoke Superpowers `test-driven-development` and `subagent-driven-development` inside this phase for the inner loop.
 
 ### 6. Validate — verify against the plan
 
@@ -171,7 +206,7 @@ Each arrow is a skill invocation. Each skill produces or updates an artifact. No
 9. Status review + resolve `docs/tabled.md`
 10. Integrate (`finishing-a-development-branch`)
 
-**Integration note:** `land` is the cycle boundary RPIV does not provide. It is the most important addition this package makes.
+**Integration note:** `land` is the cycle boundary neither Superpowers nor RPIV provides. It is the most important addition this package makes.
 
 ## Monitoring the relationship
 
@@ -180,7 +215,7 @@ We intentionally deferred deciding how to track Superpowers long-term. Review mo
 - `docs/memory/monitor_upstream_evolution.md` — decision context and last review date
 - `docs/runbooks/monitor-upstream-evolution.md` — the check-in process
 
-After 2–3 projects, decide whether to keep the git peer dependency, fork Superpowers, or drop it.
+After 2–3 projects, decide whether to keep the harness-plugin arrangement, fork Superpowers, or drop the peer dependency.
 
 ## Cross-cutting practices
 
@@ -228,6 +263,7 @@ Your codebase should contain these documents and folders. They are owned by the 
 
 - **Skipping `land`.** `validate` is not the finish line. Close the cycle.
 - **Carrying `docs/tabled.md` across cycles.** Resolve every entry during `land` step 9.
+- **Treating one system as the only system.** Superpowers, RPIV, and Don's closeout each have a zone of excellence. Choose deliberately.
 - **Editing source files during discover/research/design/plan.** Those skills produce artifacts; `implement` edits code.
 - **Recomposing RPIV slice boundaries.** `design`/`blueprint` owns decomposition; `plan` inherits slices 1:1.
 - **Letting verification become a rubber stamp.** Evidence first, claims second.
@@ -237,12 +273,17 @@ Your codebase should contain these documents and folders. They are owned by the 
 | I want to... | Invoke |
 |---|---|
 | Onboard a repo | `/skill:setup-dons-flow` |
-| Capture intent | `/skill:discover "..."` |
+| Choose a workflow mode | `/skill:dons-flow` |
+| Ideate / refine a design | `brainstorming` |
+| Capture intent (RPIV) | `/skill:discover "..."` |
 | Understand the codebase | `/skill:research <artifact-or-topic>` |
 | Compare options | `/skill:explore "..."` |
 | Design + plan separately | `/skill:design <research>` → `/skill:plan <design>` |
 | Design + plan together | `/skill:blueprint <research>` |
-| Execute the plan | `/skill:implement <plan> [Phase N]` |
+| Write a Superpowers plan | `writing-plans` |
+| Execute the plan (RPIV) | `/skill:implement <plan> [Phase N]` |
+| Execute with subagents (Superpowers) | `subagent-driven-development` |
+| Run TDD | `test-driven-development` |
 | Verify implementation | `/skill:validate <plan>` |
 | Review changes | `/skill:code-review [scope]` |
 | Commit changes | `/skill:commit` |
@@ -254,6 +295,7 @@ Your codebase should contain these documents and folders. They are owned by the 
 
 ## See also
 
+- Superpowers: [obra/superpowers](https://github.com/obra/superpowers)
 - RPIV README: `@juicesharp/rpiv-pi`
 - `setup-dons-flow` — onboarding skill
 - `land` — the 10-step closeout

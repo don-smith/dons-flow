@@ -1,69 +1,139 @@
 # @locksmithdon/dons-flow
 
-**Don's Flow v2** — a developer-specific Pi Agent workflow package that combines:
+**Don's Flow v2** is a way of composing three distinct approaches to agentic software development into one developer-owned workflow:
 
-- **[RPIV](https://www.npmjs.com/package/@juicesharp/rpiv-pi)** — the observable, artifact-chained delivery pipeline (`discover → research → design → plan → implement → validate → review → commit`).
-- **[Superpowers](https://github.com/obra/superpowers)** — scope control, verification-before-claims, and TDD/subagent execution patterns.
-- **A structured cycle closeout (`land`)** — the 10-step ritual that turns a verified branch into a clean, navigable, documented codebase ready for the next cycle.
+1. **[Superpowers](https://github.com/obra/superpowers)** — the methodology you already trust. Socratic design (`brainstorming`), bite-sized plans (`writing-plans`), red/green TDD (`test-driven-development`), and subagent-driven execution (`subagent-driven-development`). It is fast, opinionated, and proven.
+2. **[RPIV](https://www.npmjs.com/package/@juicesharp/rpiv-pi)** — Juice Sharp's observable, artifact-chained delivery pipeline: `discover → research → design → plan → implement → validate → review → commit`. It adds deliberate checkpoints, self-reflection, and a durable paper trail.
+3. **Don's closeout discipline** — the `land` ritual, `epiphany-tabling`, as-built documentation, retros, and memory reconciliation. It closes the cycle so the next one starts clean.
 
-This package is opinionated. It assumes a particular doc layout and a particular philosophy about what belongs in the codebase vs. what belongs in the developer's tooling.
+None of these replaces the others. Superpowers excels at the inner loop of design and execution. RPIV excels at observable, reviewable delivery. Don's discipline excels at cycle boundaries and learning capture. Together they form a workflow that is fast *and* reflective *and* humane.
 
-> **Why v2?** The first iteration of Don's Flow was a Superpowers-based workflow with a custom landing ritual. This version integrates RPIV's observable delivery pipeline while keeping the closeout, scope-control, and learning-capture practices that made v1 work.
+> **Why v2?** The first iteration of Don's Flow was Superpowers plus a custom landing ritual. v2 keeps that landing ritual and adds RPIV's pipeline as a first-class partner rather than a replacement.
 
-## Install
+## What each system contributes
 
+| System | Core gift | Typical entry points |
+|---|---|---|
+| **Superpowers** | Auto-triggering, opinionated software development methodology | `brainstorming`, `writing-plans`, `test-driven-development`, `subagent-driven-development`, `verification-before-completion` |
+| **RPIV** | Observable, artifact-chained delivery pipeline with built-in reflection | `discover`, `research`, `blueprint`, `implement`, `validate`, `code-review` |
+| **Don's Flow** | Cycle boundaries, scope control, and learning capture | `land`, `epiphany-tabling`, `capturing-learnings`, `as-built-documentation`, `writing-retros` |
+
+## Installation
+
+Install in each repo where you want the workflow, or install once in your global Pi configuration if you want it everywhere.
+
+### 1. Install Superpowers
+
+Superpowers is a harness plugin, not an npm package. Install it for the agent you are using:
+
+**Claude Code**
 ```bash
-pi install npm:@locksmithdon/dons-flow
+/plugin install superpowers@claude-plugins-official
+```
+Or register the Superpowers marketplace first:
+```bash
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
 ```
 
-This package peer-depends on RPIV, the Pi subagent runtime, and Superpowers:
+**Codex CLI / Codex App**
+```bash
+/plugins
+# search "Superpowers" and select Install Plugin
+```
+
+**Gemini CLI**
+```bash
+gemini extensions install https://github.com/obra/superpowers
+```
+
+**Factory Droid**
+```bash
+droid plugin marketplace add https://github.com/obra/superpowers
+droid plugin install superpowers@superpowers
+```
+
+**OpenCode**
+```bash
+# Fetch and follow instructions from:
+# https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
+```
+
+**Cursor**
+```bash
+/add-plugin superpowers
+# or search "superpowers" in the plugin marketplace
+```
+
+**GitHub Copilot CLI**
+```bash
+copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin install superpowers@superpowers-marketplace
+```
+
+Full instructions are at [obra/superpowers](https://github.com/obra/superpowers).
+
+### 2. Install RPIV and this package
 
 ```bash
 pi install npm:@juicesharp/rpiv-pi
 pi install npm:@tintinweb/pi-subagents
+pi install npm:@locksmithdon/dons-flow
 ```
 
-Superpowers is not published to npm under a name we can resolve cleanly, so it is declared as an **optional git peer dependency** (`github:obra/superpowers`). You have three ways to satisfy it:
+If RPIV's `/rpiv-setup` command is available, run it once and restart Pi to install RPIV's sibling plugins.
 
-1. **Install via your agent harness's plugin system** (most common):
-   - Claude Code: `/plugin install superpowers@superpowers-marketplace`
-   - Codex CLI: `/plugins` → search "Superpowers"
-   - Gemini CLI: `gemini extensions install https://github.com/obra/superpowers`
-   - See [obra/superpowers](https://github.com/obra/superpowers) for other harnesses.
+### 3. Onboard the repo
 
-2. **Install from GitHub directly** (if your Pi/npm setup supports git URLs):
-   ```bash
-   pi install github:obra/superpowers
-   # or
-   npm install github:obra/superpowers
-   ```
+```bash
+/skill:setup-dons-flow
+```
 
-3. **Fork and publish under your own scope** (cleanest long-term):
-   Fork `obra/superpowers`, publish it as `@locksmithdon/superpowers`, then update this package's `peerDependencies` to point at your scoped package. This is the closest analog to how we track RPIV.
+This checks prerequisites, detects Superpowers, and creates the repo-owned conventions listed below.
 
-If RPIV's `/rpiv-setup` command is available, it can install the RPIV sibling plugins in one go.
+## Three ways to work
 
-## Relationship to Superpowers
+Don's Flow is not a single mandatory pipeline. It is a score you can conduct in different ways depending on the work.
 
-This package does not replace Superpowers. It treats Superpowers as the upstream methodology for:
+### Mode A — Superpowers-led
 
-- `brainstorming` — Socratic design refinement before code.
-- `writing-plans` — bite-sized, code-complete implementation plans.
-- `subagent-driven-development` / `executing-plans` — task execution with review.
-- `test-driven-development` — red/green/refactor discipline.
-- `verification-before-completion` — evidence-before-claims.
+Best when the problem is well-shaped and you want autonomous, TDD-driven execution.
 
-Where RPIV provides an equivalent or stronger mechanism, this package routes through RPIV (e.g., `discover`/`research`/`blueprint` for design and planning, `implement`/`validate` for execution). Where Superpowers has no RPIV equivalent, this package ports or keeps the Superpowers skill (e.g., `land`, `epiphany-tabling`, `capturing-learnings`).
+```
+brainstorming → writing-plans → subagent-driven-development → verification-before-completion → land
+```
 
-## What this package adds to RPIV
+Use RPIV only if you hit a research or validation gap that Superpowers does not cover on its own.
 
-RPIV gives you a strong delivery pipeline. This package adds the seams around it:
+### Mode B — RPIV-led
+
+Best when the problem needs discovery, research, or a durable decision trail.
+
+```
+discover → research → blueprint → implement → validate → code-review → commit → land
+```
+
+Use Superpowers inside `implement` for TDD and subagent execution if you want its inner-loop discipline.
+
+### Mode C — The mixed default
+
+Best for substantial work where you want both reflection and autonomy.
+
+```
+discover → research → blueprint → implement (with Superpowers TDD + subagents) → validate → code-review → commit → land
+```
+
+Between every major artifact, run `capturing-learnings`. During execution, keep `epiphany-tabling` active. If you stop mid-work, use `create-handoff` / `resume-handoff`.
+
+## What this package adds
+
+This package provides the seams between the three systems:
 
 | Skill | Purpose |
 |---|---|
-| `dons-flow` | The map. Tells you which skill to invoke when, and how the workflow fits together. |
+| `dons-flow` | The map. Helps you choose Mode A, B, or C for a given piece of work. |
 | `setup-dons-flow` | Onboarding: checks prerequisites, detects Superpowers, creates repo conventions. |
-| `land` | The 10-step cycle closeout: code review → arch review → security review → as-built docs → doc/knowledge-graph review → AGENTS.md updates → memory reconcile → retro → status review → integrate. |
+| `land` | The 10-step cycle closeout: code review → architectural review → security review → as-built docs → doc/knowledge-graph review → AGENTS.md updates → memory reconcile → retro → status review → integrate. |
 | `epiphany-tabling` | Capture mid-flight realizations in `docs/tabled.md` without derailing current work. |
 | `as-built-documentation` | Replace spec/plan scaffolding with a permanent `docs/changes/` record of what shipped. |
 | `capturing-learnings` | End-of-artifact checkpoints + the "once is a moment; twice is a pattern" promotion rule. |
@@ -72,24 +142,9 @@ RPIV gives you a strong delivery pipeline. This package adds the seams around it
 | `finishing-a-development-branch` | Merge / PR / cleanup decisions at cycle end. |
 | `using-git-worktrees` | Isolated workspaces for parallel workstreams. |
 
-## The integrated workflow
-
-```
-/skill:discover "..."
-/skill:research .rpiv/artifacts/discover/<latest>.md
-/skill:blueprint .rpiv/artifacts/research/<latest>.md   # or design → plan
-/skill:implement .rpiv/artifacts/plans/<latest>.md
-/skill:validate .rpiv/artifacts/plans/<latest>.md
-/skill:code-review
-/skill:commit
-/skill:land
-```
-
-Between every major artifact, run `capturing-learnings`. During execution, keep `epiphany-tabling` active. If you stop mid-work, use `create-handoff` / `resume-handoff`.
-
 ## Repo conventions
 
-This workflow expects the following project-owned files and folders in the codebase:
+These documents live in the codebase because they are shared context for the whole team. The skills that produce and maintain them live in this package.
 
 | Path | Purpose |
 |---|---|
@@ -100,8 +155,6 @@ This workflow expects the following project-owned files and folders in the codeb
 | `docs/retros/` | Frozen retrospective documents |
 | `docs/runbooks/` | Multi-skill processes |
 | `AGENTS.md` | Repo-level agent guidance |
-
-These documents live in the codebase because they are shared context for the whole team. The skills that produce and maintain them live in this package.
 
 ## Philosophy: what lives where
 
@@ -120,7 +173,7 @@ This separation lets the same workflow travel with you across repos while keepin
 
 ## Monitoring upstream evolution
 
-The dependency relationship with Superpowers is intentionally deferred. We review monthly whether to keep the git peer dependency, fork Superpowers, or drop it.
+The dependency relationship with Superpowers is intentionally deferred. Superpowers is installed via your harness, so we do not need to resolve it as an npm dependency. We review monthly whether to keep this arrangement, fork Superpowers, or drop the peer dependency entirely.
 
 - Memory: `docs/memory/monitor_upstream_evolution.md`
 - Runbook: `docs/runbooks/monitor-upstream-evolution.md`
@@ -129,11 +182,15 @@ Set a monthly calendar reminder for the 13th, or run the runbook after every 2�
 
 ## Typical first use
 
-1. Install this package and its peer dependencies in a repo.
-2. Run `/skill:setup-dons-flow` to check prerequisites and scaffold repo conventions.
-3. Start a feature with `/skill:discover "[feature description]"`.
-4. When implementation is validated and reviewed, run `/skill:land` to close the cycle.
-5. After 2–3 projects, run `docs/runbooks/monitor-upstream-evolution.md` and decide whether to fork Superpowers.
+1. Install Superpowers for your harness.
+2. Install `npm:@juicesharp/rpiv-pi`, `npm:@tintinweb/pi-subagents`, and `npm:@locksmithdon/dons-flow`.
+3. Run `/skill:setup-dons-flow` to scaffold repo conventions.
+4. Choose a mode:
+   - Superpowers-led: start with `brainstorming`.
+   - RPIV-led: start with `/skill:discover "[feature description]"`.
+   - Mixed: start with `discover`, then use Superpowers inside `implement`.
+5. Close the cycle with `/skill:land`.
+6. After 2–3 projects, run the upstream monitoring runbook.
 
 ## License
 

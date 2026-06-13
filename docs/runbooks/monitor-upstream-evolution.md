@@ -1,6 +1,6 @@
 # Runbook: Monitor Upstream Evolution
 
-Check RPIV and Superpowers monthly to decide how `@locksmithdon/dons-flow` should track them.
+Check RPIV and Superpowers monthly to decide how `@locksmithdon/dons-flow` should track them. Superpowers is a harness plugin; RPIV is an npm package.
 
 ## Schedule
 
@@ -31,7 +31,7 @@ Record findings in `docs/memory/monitor_upstream_evolution.md` under a dated hea
 Visit https://github.com/obra/superpowers and look at:
 
 - **Releases / RELEASE-NOTES.md** — new versions.
-- **Skills** — has Superpowers added a `land`, `closeout`, or `as-built` skill? Has it published to npm?
+- **Skills** — has Superpowers added a `land`, `closeout`, or `as-built` skill? Has it published to npm or added new harness install paths?
 - **Brainstorming / writing-plans / subagent-driven-development** — have these changed in ways that make them more or less attractive than RPIV equivalents?
 - **License** — still MIT and forkable?
 
@@ -42,7 +42,7 @@ Record findings in `docs/memory/monitor_upstream_evolution.md` under the same da
 Review recent projects that used this workflow:
 
 - Did we use Superpowers-specific entry points (`brainstorming`, `writing-plans`, `subagent-driven-development`) or RPIV entry points (`discover`, `blueprint`, `implement`)?
-- Did the optional git peer dependency cause install friction?
+- Did the harness-plugin install path for Superpowers cause friction?
 - Did RPIV's pipeline cover everything we needed?
 - Did our `land` skill feel like the right cycle boundary?
 

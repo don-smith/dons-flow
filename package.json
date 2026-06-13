@@ -1,6 +1,6 @@
 {
   "name": "@locksmithdon/dons-flow",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Don's Flow v2 — a developer-specific Pi Agent workflow built on RPIV's observable pipeline, Superpowers' discipline, and a structured landing closeout.",
   "keywords": [
     "pi-package",
@@ -41,13 +41,7 @@
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
     "@tintinweb/pi-subagents": "*",
-    "@juicesharp/rpiv-pi": "*",
-    "superpowers": "github:obra/superpowers"
-  },
-  "peerDependenciesMeta": {
-    "superpowers": {
-      "optional": true
-    }
+    "@juicesharp/rpiv-pi": "*"
   },
   "scripts": {
     "lint": "echo 'No lint configured yet'",
