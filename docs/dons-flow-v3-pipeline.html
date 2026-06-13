@@ -1,15 +1,48 @@
-<h2>Don's Flow v3 — Final Pipeline</h2>
-<p class="subtitle">One clear path. No alternatives that muddy the water. Three skills removed, zero added.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Don's Flow v3 — 5-Stage Pipeline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100vh; }
 
-<div class="section" style="margin-bottom: 0;">
-  <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-    <div style="background: #7f1d1d; border-radius: 6px; padding: 8px 12px; font-size: 12px;">
-      <strong>Removed:</strong> <code>writing-plans</code> · <code>executing-plans</code> · <code>requesting-code-review</code> · security-review (Land step 3)
-    </div>
-  </div>
-</div>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-<div style="background: #0f172a; border-radius: 12px; padding: 20px; font-size: 13px; line-height: 1.7;">
+    h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.25rem; color: #f1f5f9; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .subtitle { color: #94a3b8; margin-bottom: 2rem; font-size: 0.95rem; }
+    .section { margin-bottom: 2rem; }
+    .label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; padding: 2px 8px; border-radius: 4px; }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    th { text-align: left; padding: 6px 10px; color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
+    td { padding: 6px 10px; font-size: 0.85rem; border-top: 1px solid #1e293b; }
+  </style>
+</head>
+<body>
+
+<h2>Don's Flow v3 — 5-Stage Pipeline</h2>
+<p class="subtitle">One clear path. Each stage produces an artifact consumed by the next. Cross-cutting practices run alongside.</p>
+
+<div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; font-size: 13px; line-height: 1.7;">
 
   <!-- Stage 1 -->
   <div style="border-left: 3px solid #818cf8; padding-left: 12px; margin-bottom: 0;">
@@ -133,8 +166,7 @@
     </div>
 
     <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">
-      <strong>Artifacts:</strong> <code>docs/changes/</code> · <code>docs/retros/</code> · <code>docs/memory/</code> · <code>docs/status.md</code> · git commits<br>
-      <strong>Removed:</strong> security-review (covered by stage 4 code-review)
+      <strong>Artifacts:</strong> <code>docs/changes/</code> · <code>docs/retros/</code> · <code>docs/memory/</code> · <code>docs/status.md</code> · git commits
     </div>
   </div>
 
@@ -157,3 +189,6 @@
     </div>
   </div>
 </div>
+
+</body>
+</html>
