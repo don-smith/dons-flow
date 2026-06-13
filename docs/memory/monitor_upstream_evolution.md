@@ -9,14 +9,14 @@ next-review: 2026-07-13
 
 How should `@locksmithdon/dons-flow` track its upstream projects?
 
-- **RPIV** (`@juicesharp/rpiv-pi`) is published to npm and declared as a normal peer dependency.
-- **Superpowers** (`obra/superpowers`) is a harness plugin, not an npm package. It is installed via Claude, Codex, Gemini, Cursor, Copilot, or other agent harnesses, not via `pi install` or `npm install`.
+- **RPIV** (`@juicesharp/rpiv-pi`) is published to npm and declared as a normal dependency. New versions are adopted by bumping `package.json`.
+- **Superpowers** (`obra/superpowers`) is not published to npm under a usable name. We vendor selected Superpowers skills directly into this package at `vendor/superpowers/skills/` and update them with `scripts/sync-upstream.sh`.
 
-We are not forking or publishing Superpowers yet. Instead, we document it as a harness-plugin dependency and track both upstream repos in `vendor/`. The default stance is to incorporate upstream improvements into Don's Flow unless there is a clear reason not to. We will review both projects for 2–3 months before deciding whether to:
+The default stance is to incorporate upstream improvements into Don's Flow unless there is a clear reason not to. We will review both projects for 2–3 months before deciding whether to:
 
-1. Keep the harness-plugin arrangement.
-2. Fork Superpowers and publish it under `@locksmithdon/superpowers` as a normal npm peer dependency.
-3. Drop Superpowers integration entirely and rely on this package's ported closeout skills + RPIV's pipeline.
+1. Keep vendoring Superpowers skills.
+2. Fork Superpowers and publish it under `@locksmithdon/superpowers` as a normal npm dependency.
+3. Drop Superpowers integration entirely and rely on RPIV + Don's closeout skills.
 4. Some hybrid we haven't thought of yet.
 
 ## Why we deferred

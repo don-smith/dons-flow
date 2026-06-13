@@ -1,4 +1,4 @@
-# Repo Conventions for RPIV + Superpowers Landing
+# Repo Conventions for Don's Flow
 
 This workflow expects a small set of project-owned documents in every repo that uses it. These are **not** part of the `@locksmithdon/dons-flow` package; they live in the codebase because they are shared by the whole team.
 

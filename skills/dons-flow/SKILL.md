@@ -26,14 +26,13 @@ This skill is the map. It does not replace the skills it references — it helps
 
 ## Required installed packages
 
-This skill assumes the following are available:
+This skill assumes the following are installed with the package:
 
-- **Superpowers** — the upstream methodology. Installed as a harness plugin (Claude, Codex, Gemini, Cursor, Copilot, etc.), not via npm. See `setup-dons-flow` for per-harness commands. Required for the full workflow.
-- **RPIV** (`@juicesharp/rpiv-pi`) — the observable delivery pipeline. Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`.
-- **Pi subagent runtime** (`@tintinweb/pi-subagents`) — runtime used by RPIV. Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`.
-- **Don's Flow** (`@locksmithdon/dons-flow`) — this package, which adds closeout and discipline skills.
+- **Superpowers** skills — vendored into the package at `vendor/superpowers/skills/`.
+- **RPIV** skills and runtime extensions — installed as npm dependencies.
+- **Don's Flow** skills — this package's own skills in `skills/`.
 
-If RPIV or the subagent runtime is missing, install them explicitly. If Superpowers is missing, install it before proceeding; the upstream Superpowers entry points (`brainstorming`, `test-driven-development`, `subagent-driven-development`) are part of the triad.
+There are no separate installs. If `@locksmithdon/dons-flow` is missing, run `pi install npm:@locksmithdon/dons-flow`.
 
 ## Before you start
 
@@ -43,7 +42,7 @@ If this repo has not been onboarded yet, run:
 /skill:setup-dons-flow
 ```
 
-That skill checks prerequisites, detects Superpowers, installs RPIV's sibling extensions via `/rpiv-setup`, and creates the repo-owned conventions (`docs/tabled.md`, `docs/status.md`, `docs/memory/`, `docs/changes/`, `docs/retros/`, `docs/runbooks/`, `AGENTS.md`).
+That skill checks that the package is installed and creates the repo-owned conventions (`docs/tabled.md`, `docs/status.md`, `docs/memory/`, `docs/changes/`, `docs/retros/`, `docs/runbooks/`, `AGENTS.md`).
 
 ## Three modes of working
 
@@ -215,7 +214,7 @@ We intentionally deferred deciding how to track Superpowers long-term. Review mo
 - `docs/memory/monitor_upstream_evolution.md` — decision context and last review date
 - `docs/runbooks/monitor-upstream-evolution.md` — the check-in process
 
-After 2–3 projects, decide whether to keep the harness-plugin arrangement, fork Superpowers, or drop the peer dependency.
+After 2–3 projects, decide whether to keep vendoring Superpowers skills, fork Superpowers, or drop the Superpowers integration.
 
 ## Cross-cutting practices
 

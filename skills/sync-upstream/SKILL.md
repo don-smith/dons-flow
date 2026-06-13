@@ -7,10 +7,12 @@ description: Run the upstream sync script to clone/pull Superpowers and RPIV, di
 
 Keep Don's Flow current with its two upstream partners: **Superpowers** and **RPIV**. This skill runs a script that:
 
-1. Clones or pulls `obra/superpowers` and `juicesharp/rpiv-mono` into `vendor/`.
-2. Compares the current HEAD of each repo against the last-synced hash.
-3. Emits a dated report in `docs/memory/upstream-sync-YYYY-MM-DD.md`.
-4. Updates `docs/memory/.upstream-last-sync.json` so the next run only shows new changes.
+1. Clones or pulls `obra/superpowers` into `vendor/superpowers-source/`.
+2. Copies selected Superpowers skills into `vendor/superpowers/skills/` (the vendored copy that ships with the package).
+3. Clones or pulls `juicesharp/rpiv-mono` to review RPIV changes.
+4. Compares the current HEAD of each repo against the last-synced hash.
+5. Emits a dated report in `docs/memory/upstream-sync-YYYY-MM-DD.md`.
+6. Updates `docs/memory/.upstream-last-sync.json` so the next run only shows new changes.
 
 ## Announce at start
 
@@ -65,10 +67,10 @@ Edit the report in place with your decisions and impact notes.
 
 Typical changes to make:
 
-- **Superpowers skills changed** — update the relevant skill file in `skills/` or note a behavior change in `docs/runbooks/`.
-- **RPIV skills changed** — update peer dependency version if needed, or adjust workflow instructions.
-- **Install instructions changed** — update `README.md`, `skills/setup-dons-flow/SKILL.md`, and `skills/dons-flow/SKILL.md`.
-- **New upstream skills added** — decide whether to wrap, replace, or ignore them.
+- **Superpowers skills changed** — the sync script already copies the selected skills into `vendor/superpowers/skills/`. Review the diff and commit the updated vendored skills.
+- **Superpowers adds a new skill** — decide whether to add it to the vendored list in `scripts/sync-upstream.sh`.
+- **RPIV version changed** — bump the RPIV dependency versions in `package.json`.
+- **Workflow instructions changed** — update `README.md`, `skills/setup-dons-flow/SKILL.md`, and `skills/dons-flow/SKILL.md`.
 
 ### Step 5: Release
 

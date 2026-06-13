@@ -1,7 +1,7 @@
 {
   "name": "@locksmithdon/dons-flow",
-  "version": "2.1.4",
-  "description": "Don's Flow v2 — a developer-specific Pi Agent workflow built on RPIV's observable pipeline, Superpowers' discipline, and a structured landing closeout.",
+  "version": "2.2.0",
+  "description": "Don's Flow v2 — a single Pi Agent workflow package combining RPIV's observable pipeline, Superpowers' discipline, and Don's landing closeout.",
   "keywords": [
     "pi-package",
     "pi-extension",
@@ -29,6 +29,7 @@
   },
   "files": [
     "skills/",
+    "vendor/superpowers/",
     "docs/",
     "scripts/",
     "README.md",
@@ -36,13 +37,27 @@
   ],
   "pi": {
     "skills": [
-      "./skills"
+      "./skills",
+      "./vendor/superpowers/skills"
     ]
   },
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "dependencies": {
+    "@juicesharp/rpiv-pi": "*",
     "@tintinweb/pi-subagents": "*",
-    "@juicesharp/rpiv-pi": "*"
+    "@juicesharp/rpiv-ask-user-question": "*",
+    "@juicesharp/rpiv-todo": "*",
+    "@juicesharp/rpiv-advisor": "*",
+    "@juicesharp/rpiv-i18n": "*",
+    "@juicesharp/rpiv-web-tools": "*",
+    "@juicesharp/rpiv-args": "*",
+    "@juicesharp/rpiv-workflow": "*",
+    "yaml": "*",
+    "typebox": "*",
+    "jiti": "*",
+    "@standard-schema/spec": "*"
   },
   "scripts": {
     "lint": "echo 'No lint configured yet'",

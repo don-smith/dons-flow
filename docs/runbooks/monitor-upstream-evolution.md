@@ -1,6 +1,6 @@
 # Runbook: Monitor Upstream Evolution
 
-Check Superpowers and RPIV monthly to keep Don's Flow current with its upstream partners. Superpowers is a harness plugin; RPIV is an npm package. Both are tracked as git repositories in `vendor/`.
+Check Superpowers and RPIV monthly to keep Don's Flow current with its upstream partners. Superpowers skills are vendored into the package; RPIV is an npm dependency. Both upstream repos are tracked in `vendor/`.
 
 ## Schedule
 
@@ -26,10 +26,10 @@ From the root of the Don's Flow repo:
 
 This clones or pulls:
 
-- `https://github.com/obra/superpowers` → `vendor/superpowers`
+- `https://github.com/obra/superpowers` → `vendor/superpowers-source`
 - `https://github.com/juicesharp/rpiv-mono` → `vendor/rpiv-mono`
 
-It then compares each repo's current HEAD against the last-synced hash stored in `docs/memory/.upstream-last-sync.json` and writes a dated report to `docs/memory/upstream-sync-YYYY-MM-DD.md`.
+It then copies selected Superpowers skills into `vendor/superpowers/skills/`, compares each repo's current HEAD against the last-synced hash stored in `docs/memory/.upstream-last-sync.json`, and writes a dated report to `docs/memory/upstream-sync-YYYY-MM-DD.md`.
 
 If `jq` is missing, install it first:
 
@@ -69,10 +69,10 @@ Edit the report in place with your decisions and any impact notes.
 
 Common actions:
 
-- **Superpowers skill changed** — update the mirrored or wrapped skill in `skills/`.
-- **RPIV skill changed** — update the peer dependency range in `package.json` or adjust workflow instructions.
-- **Install instructions changed** — update `README.md`, `skills/setup-dons-flow/SKILL.md`, and `skills/dons-flow/SKILL.md`.
-- **New upstream skill added** — decide whether to wrap it, replace an existing Don's Flow skill with it, or ignore it.
+- **Superpowers skill changed** — the sync script already copied the selected skills into `vendor/superpowers/skills/`. Review and commit those changes.
+- **Superpowers adds a new skill** — add it to the `SUPERPOWERS_SKILLS` list in `scripts/sync-upstream.sh` if you want to vendor it.
+- **RPIV version changed** — bump the RPIV dependency versions in `package.json`.
+- **Workflow instructions changed** — update `README.md`, `skills/setup-dons-flow/SKILL.md`, and `skills/dons-flow/SKILL.md`.
 
 ### 5. Update long-term memory
 

@@ -22,82 +22,29 @@ None of these replaces the others. Superpowers excels at the inner loop of desig
 
 Install in each repo where you want the workflow, or install once in your global Pi configuration if you want it everywhere.
 
-### 1. Install Superpowers (required)
+### Install
 
-Superpowers is a harness plugin, not an npm package. Install it for the agent you are using before installing Don's Flow:
-
-**Claude Code**
-```bash
-/plugin install superpowers@claude-plugins-official
-```
-Or register the Superpowers marketplace first:
-```bash
-/plugin marketplace add obra/superpowers-marketplace
-/plugin install superpowers@superpowers-marketplace
-```
-
-**Codex CLI / Codex App**
-```bash
-/plugins
-# search "Superpowers" and select Install Plugin
-```
-
-**Gemini CLI**
-```bash
-gemini extensions install https://github.com/obra/superpowers
-```
-
-**Factory Droid**
-```bash
-droid plugin marketplace add https://github.com/obra/superpowers
-droid plugin install superpowers@superpowers
-```
-
-**OpenCode**
-```bash
-# Fetch and follow instructions from:
-# https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
-```
-
-**Cursor**
-```bash
-/add-plugin superpowers
-# or search "superpowers" in the plugin marketplace
-```
-
-**GitHub Copilot CLI**
-```bash
-copilot plugin marketplace add obra/superpowers-marketplace
-copilot plugin install superpowers@superpowers-marketplace
-```
-
-Full instructions are at [obra/superpowers](https://github.com/obra/superpowers).
-
-### 2. Install RPIV and this package
-
-RPIV and the Pi subagent runtime are declared as peer dependencies of this package. With npm 7+, they are installed automatically when you install `@locksmithdon/dons-flow`:
+One command installs the entire workflow:
 
 ```bash
 pi install npm:@locksmithdon/dons-flow
 ```
 
-If your Pi setup does not auto-install peer dependencies, install them explicitly:
+This single package includes:
 
-```bash
-pi install npm:@juicesharp/rpiv-pi
-pi install npm:@tintinweb/pi-subagents
-pi install npm:@locksmithdon/dons-flow
-```
+- **RPIV** skills and runtime extensions as npm dependencies.
+- **Superpowers** skills vendored directly into the package at `vendor/superpowers/skills/` (MIT licensed; see `vendor/superpowers/LICENSE`).
+- **Don's Flow** skills for closeout, scope control, and learning capture.
 
-If RPIV's `/rpiv-setup` command is available, `/skill:setup-dons-flow` runs it automatically to install RPIV's sibling plugins. Restart Pi when prompted so the new extensions load.
+If RPIV warns about missing sibling extensions during install, restart Pi once the install completes; the dependencies are already declared.
 
-### 3. Onboard the repo
+### Onboard the repo
 
 ```bash
 /skill:setup-dons-flow
 ```
 
-This checks prerequisites, detects Superpowers, and creates the repo-owned conventions listed below.
+This creates the repo-owned conventions listed below.
 
 ## Three ways to work
 
@@ -192,15 +139,14 @@ The default stance is to incorporate upstream improvements unless there is a cle
 
 ## Typical first use
 
-1. Install Superpowers for your harness.
-2. Install `npm:@juicesharp/rpiv-pi`, `npm:@tintinweb/pi-subagents`, and `npm:@locksmithdon/dons-flow`.
-3. Run `/skill:setup-dons-flow` to scaffold repo conventions.
-4. Choose a mode:
+1. `pi install npm:@locksmithdon/dons-flow`.
+2. Run `/skill:setup-dons-flow` to scaffold repo conventions.
+3. Choose a mode:
    - Superpowers-led: start with `brainstorming`.
    - RPIV-led: start with `/skill:discover "[feature description]"`.
    - Mixed: start with `discover`, then use Superpowers inside `implement`.
-5. Close the cycle with `/skill:land`.
-6. After 2–3 projects, run the upstream monitoring runbook.
+4. Close the cycle with `/skill:land`.
+5. After 2–3 projects, run `/skill:sync-upstream`.
 
 ## License
 
