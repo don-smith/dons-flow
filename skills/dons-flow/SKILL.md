@@ -28,12 +28,12 @@ This skill is the map. It does not replace the skills it references — it helps
 
 This skill assumes the following are available:
 
-- **Superpowers** — the upstream methodology. Installed as a harness plugin (Claude, Codex, Gemini, Cursor, Copilot, etc.), not via npm. See `setup-dons-flow` for per-harness commands. This is the only manual install step.
+- **Superpowers** — the upstream methodology. Installed as a harness plugin (Claude, Codex, Gemini, Cursor, Copilot, etc.), not via npm. See `setup-dons-flow` for per-harness commands. Required for the full workflow.
 - **RPIV** (`@juicesharp/rpiv-pi`) — the observable delivery pipeline. Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`.
 - **Pi subagent runtime** (`@tintinweb/pi-subagents`) — runtime used by RPIV. Peer dependency; auto-installed with npm 7+ when you install `@locksmithdon/dons-flow`.
 - **Don's Flow** (`@locksmithdon/dons-flow`) — this package, which adds closeout and discipline skills.
 
-If RPIV or the subagent runtime is missing, install them explicitly. If Superpowers is missing, this package's ported skills still provide the closeout workflow, but you will not have access to the upstream Superpowers entry points like `brainstorming` or `test-driven-development`.
+If RPIV or the subagent runtime is missing, install them explicitly. If Superpowers is missing, install it before proceeding; the upstream Superpowers entry points (`brainstorming`, `test-driven-development`, `subagent-driven-development`) are part of the triad.
 
 ## Before you start
 

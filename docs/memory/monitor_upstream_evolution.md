@@ -12,7 +12,7 @@ How should `@locksmithdon/dons-flow` track its upstream projects?
 - **RPIV** (`@juicesharp/rpiv-pi`) is published to npm and declared as a normal peer dependency.
 - **Superpowers** (`obra/superpowers`) is a harness plugin, not an npm package. It is installed via Claude, Codex, Gemini, Cursor, Copilot, or other agent harnesses, not via `pi install` or `npm install`.
 
-We are not forking or publishing Superpowers yet. Instead, we document it as a harness-plugin dependency and will monitor both projects for 2–3 months before deciding whether to:
+We are not forking or publishing Superpowers yet. Instead, we document it as a harness-plugin dependency and track both upstream repos in `vendor/`. The default stance is to incorporate upstream improvements into Don's Flow unless there is a clear reason not to. We will review both projects for 2–3 months before deciding whether to:
 
 1. Keep the harness-plugin arrangement.
 2. Fork Superpowers and publish it under `@locksmithdon/superpowers` as a normal npm peer dependency.
@@ -48,5 +48,7 @@ Drop Superpowers integration if:
 ## Related
 
 - Runbook: `docs/runbooks/monitor-upstream-evolution.md`
+- Skill: `sync-upstream`
+- Script: `scripts/sync-upstream.sh`
 - Skill: `setup-dons-flow`
 - Package: `package.json` § `peerDependencies`

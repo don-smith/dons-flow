@@ -22,9 +22,9 @@ None of these replaces the others. Superpowers excels at the inner loop of desig
 
 Install in each repo where you want the workflow, or install once in your global Pi configuration if you want it everywhere.
 
-### 1. Install Superpowers
+### 1. Install Superpowers (required)
 
-Superpowers is a harness plugin, not an npm package. Install it for the agent you are using:
+Superpowers is a harness plugin, not an npm package. Install it for the agent you are using before installing Don's Flow:
 
 **Claude Code**
 ```bash
@@ -181,12 +181,14 @@ This separation lets the same workflow travel with you across repos while keepin
 
 ## Monitoring upstream evolution
 
-The dependency relationship with Superpowers is intentionally deferred. Superpowers is installed via your harness, so we do not need to resolve it as an npm dependency. We review monthly whether to keep this arrangement, fork Superpowers, or drop the peer dependency entirely.
+Superpowers, RPIV, and Don's Flow will evolve independently. The `sync-upstream` skill clones the Superpowers and RPIV repositories, diffs them against the last-synced hashes, and produces a decision report so you can choose what to incorporate into Don's Flow.
 
-- Memory: `docs/memory/monitor_upstream_evolution.md`
+- Skill: `/skill:sync-upstream`
+- Script: `scripts/sync-upstream.sh`
 - Runbook: `docs/runbooks/monitor-upstream-evolution.md`
+- Memory: `docs/memory/monitor_upstream_evolution.md`
 
-Set a monthly calendar reminder for the 13th, or run the runbook after every 2–3 completed projects.
+The default stance is to incorporate upstream improvements unless there is a clear reason not to. Run the sync monthly or after every 2–3 projects.
 
 ## Typical first use
 

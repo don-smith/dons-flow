@@ -1,82 +1,111 @@
 # Runbook: Monitor Upstream Evolution
 
-Check RPIV and Superpowers monthly to decide how `@locksmithdon/dons-flow` should track them. Superpowers is a harness plugin; RPIV is an npm package.
+Check Superpowers and RPIV monthly to keep Don's Flow current with its upstream partners. Superpowers is a harness plugin; RPIV is an npm package. Both are tracked as git repositories in `vendor/`.
 
 ## Schedule
 
 - **Cadence:** Monthly, or after every 2–3 projects completed with this workflow.
-- **Duration:** 15–30 minutes.
+- **Duration:** 30–60 minutes.
 - **Owner:** Don Smith.
 
 ## Trigger
 
 - Calendar reminder on the 13th of each month.
-- After any project closeout where the dependency relationship felt awkward.
+- After any project closeout where upstream behavior felt different.
+- Before publishing a new version of `@locksmithdon/dons-flow`.
 
 ## Steps
 
-### 1. Check RPIV
+### 1. Run the upstream sync script
 
-Visit https://github.com/juicesharp/rpiv-mono and look at:
+From the root of the Don's Flow repo:
 
-- **Releases / CHANGELOG** — new versions of `@juicesharp/rpiv-pi`.
-- **Skills** — has RPIV added a `land`, `closeout`, `retro`, or `as-built` skill? If so, evaluate whether our port is still needed.
-- **Implement / validate / code-review** — have these skills changed in ways that affect our closeout sequence?
-- **Onboarding** — has RPIV added smoother setup commands we should mirror?
+```bash
+./scripts/sync-upstream.sh
+```
 
-Record findings in `docs/memory/monitor_upstream_evolution.md` under a dated heading.
+This clones or pulls:
 
-### 2. Check Superpowers
+- `https://github.com/obra/superpowers` → `vendor/superpowers`
+- `https://github.com/juicesharp/rpiv-mono` → `vendor/rpiv-mono`
 
-Visit https://github.com/obra/superpowers and look at:
+It then compares each repo's current HEAD against the last-synced hash stored in `docs/memory/.upstream-last-sync.json` and writes a dated report to `docs/memory/upstream-sync-YYYY-MM-DD.md`.
 
-- **Releases / RELEASE-NOTES.md** — new versions.
-- **Skills** — has Superpowers added a `land`, `closeout`, or `as-built` skill? Has it published to npm or added new harness install paths?
-- **Brainstorming / writing-plans / subagent-driven-development** — have these changed in ways that make them more or less attractive than RPIV equivalents?
-- **License** — still MIT and forkable?
+If `jq` is missing, install it first:
 
-Record findings in `docs/memory/monitor_upstream_evolution.md` under the same dated heading.
+```bash
+brew install jq        # macOS
+apt-get install jq     # Debian/Ubuntu
+```
 
-### 3. Check our own usage
+### 2. Review the generated report
 
-Review recent projects that used this workflow:
+Open the latest report:
 
-- Did we use Superpowers-specific entry points (`brainstorming`, `writing-plans`, `subagent-driven-development`) or RPIV entry points (`discover`, `blueprint`, `implement`)?
-- Did the harness-plugin install path for Superpowers cause friction?
-- Did RPIV's pipeline cover everything we needed?
-- Did our `land` skill feel like the right cycle boundary?
+```bash
+ls docs/memory/upstream-sync-*.md | tail -1
+```
 
-Sources:
-- Recent `docs/retros/` files.
-- Recent `docs/changes/` files.
-- `docs/tabled.md` history.
+For each upstream project, the report shows:
 
-### 4. Decide or defer
+- Last-synced and current commit hashes.
+- Commits since the last sync.
+- Files changed and diff stats.
+- Empty **Decisions** sections.
 
-Ask:
+### 3. Decide what to incorporate
 
-1. Is Superpowers on npm yet?
-2. Does RPIV now provide closeout/landing?
-3. Are we actively hurt by the current dependency setup?
-4. Would a fork save more friction than it costs?
+Default stance: **incorporate upstream improvements** unless there is a clear reason not to.
 
-If the answer to any of 1–3 is **yes**, consider updating `package.json` and the workflow.
+For each change, label it:
 
-If the answer is **no**, bump `next-review` by one month and keep monitoring.
+- **Incorporate** — pull it into Don's Flow now.
+- **Defer** — relevant, but wait for the next cycle or a triggering project.
+- **Skip** — not relevant to Don's Flow.
 
-### 5. Capture the decision
+Edit the report in place with your decisions and any impact notes.
 
-If you make a change:
-- Update `docs/memory/monitor_upstream_evolution.md`.
-- Write a brief note in `docs/changes/` if the package behavior changed.
-- Update `README.md` and `skills/dons-flow/SKILL.md` if install instructions changed.
+### 4. Apply incorporated changes
 
-If you defer:
-- Update `last-reviewed` and `next-review` in `docs/memory/monitor_upstream_evolution.md`.
-- Add one paragraph summarizing the month's observations.
+Common actions:
+
+- **Superpowers skill changed** — update the mirrored or wrapped skill in `skills/`.
+- **RPIV skill changed** — update the peer dependency range in `package.json` or adjust workflow instructions.
+- **Install instructions changed** — update `README.md`, `skills/setup-dons-flow/SKILL.md`, and `skills/dons-flow/SKILL.md`.
+- **New upstream skill added** — decide whether to wrap it, replace an existing Don's Flow skill with it, or ignore it.
+
+### 5. Update long-term memory
+
+Open `docs/memory/monitor_upstream_evolution.md` and:
+
+- Update `last-reviewed` and `next-review` dates.
+- Add a paragraph summarizing this month's sync and any deferred decisions.
+- Update decision criteria if your thinking has changed.
+
+### 6. Release Don's Flow
+
+If you applied changes:
+
+1. Bump the version in `package.json`.
+2. Write a brief `docs/changes/` entry if the package behavior changed.
+3. Commit and push.
+4. Publish to npm.
+
+If you deferred everything:
+
+1. Still commit the new sync report so the next run has a baseline.
+2. Update `last-reviewed` and `next-review`.
 
 ## Outputs
 
+- Updated `docs/memory/upstream-sync-YYYY-MM-DD.md`.
 - Updated `docs/memory/monitor_upstream_evolution.md`.
-- Optional `docs/changes/` entry if the package changed.
-- Optional update to install docs.
+- Updated `docs/memory/.upstream-last-sync.json`.
+- Optional `docs/changes/` entry.
+- Optional new version of `@locksmithdon/dons-flow` on npm.
+
+## Anti-patterns
+
+- **Syncing without deciding.** The script surfaces changes; a human must decide what to do.
+- **Updating `.last-sync.json` without applying changes.** This hides skipped changes from future diffs.
+- **Incorporating blindly.** Upstream changes may conflict with Don's Flow conventions. Review first.
