@@ -1,0 +1,56 @@
+{
+  "name": "@locksmithdon/dons-flow",
+  "version": "2.0.0",
+  "description": "Don's Flow v2 — a developer-specific Pi Agent workflow built on RPIV's observable pipeline, Superpowers' discipline, and a structured landing closeout.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "dons-flow",
+    "rpiv",
+    "superpowers",
+    "skills",
+    "workflow",
+    "landing",
+    "closeout"
+  ],
+  "license": "MIT",
+  "author": "locksmithdon",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/don-smith/dons-flow.git"
+  },
+  "homepage": "https://github.com/don-smith/dons-flow#readme",
+  "bugs": {
+    "url": "https://github.com/don-smith/dons-flow/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "skills/",
+    "docs/",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@tintinweb/pi-subagents": "*",
+    "@juicesharp/rpiv-pi": "*",
+    "superpowers": "github:obra/superpowers"
+  },
+  "peerDependenciesMeta": {
+    "superpowers": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "lint": "echo 'No lint configured yet'",
+    "test": "echo 'No tests configured yet'"
+  }
+}
