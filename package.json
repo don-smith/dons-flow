@@ -28,6 +28,19 @@
   "pi": {
     "skills": [
       "./skills"
+    ],
+    "extensions": [
+      "./extensions/core",
+      "./packages/args/index.ts",
+      "./packages/ask-user-question/index.ts",
+      "./packages/btw/index.ts",
+      "./packages/advisor/index.ts",
+      "./packages/i18n/index.ts",
+      "./packages/telemetry/extension.ts",
+      "./packages/todo/index.ts",
+      "./packages/voice/index.ts",
+      "./packages/web-tools/index.ts",
+      "./packages/workflow/extension.ts"
     ]
   },
   "peerDependencies": {
