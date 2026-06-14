@@ -34,14 +34,19 @@
     "@earendil-works/pi-coding-agent": "*"
   },
   "dependencies": {
+    "@earendil-works/pi-ai": "^0.79.3",
+    "@earendil-works/pi-tui": "^0.79.3",
+    "@standard-schema/spec": "*",
     "@tintinweb/pi-subagents": "*",
-    "yaml": "*",
-    "typebox": "*",
     "jiti": "*",
-    "@standard-schema/spec": "*"
+    "typebox": "*",
+    "yaml": "*"
   },
   "scripts": {
     "lint": "echo 'No lint configured yet'",
     "test": "echo 'No tests configured yet'"
+  },
+  "devDependencies": {
+    "vitest": "*"
   }
 }
