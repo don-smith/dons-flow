@@ -9,7 +9,7 @@ next-review: 2026-07-13
 
 myflow is intentionally decoupled from upstream velocity. The default stance is **observe, don't integrate.**
 
-- **RPIV** (`@juicesharp/rpiv-pi`) — npm dependency. Watch for breaking changes or new skills that might be useful. Version bumps are deliberate, not automatic.
+- **RPIV** (`@myflow/pi`) — npm dependency. Watch for breaking changes or new skills that might be useful. Version bumps are deliberate, not automatic.
 - **Superpowers** (`obra/superpowers`) — vendored in `vendor/superpowers/skills/`. Tracked via `scripts/sync-upstream.sh`. Changes are noted but not automatically pulled in.
 
 ## Why decoupled
