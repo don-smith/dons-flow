@@ -27,7 +27,7 @@ import { typeboxSchema } from "./typebox-adapter.js";
 // Fixtures
 // ---------------------------------------------------------------------------
 
-const PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Transcript-scan outcome (@myflow/pi convention, inlined). Emits every matched path as an artifact. */
 const makeOutcome = (name: string): OutputSpec<unknown, "artifact-md", Record<string, unknown>> => ({
@@ -103,7 +103,7 @@ describe("iterate executor", () => {
 	};
 
 	const readState = (): Array<Record<string, unknown>> => {
-		const dir = join(tmpDir, ".rpiv", "workflows", "runs");
+		const dir = join(tmpDir, ".myflow", "workflows", "runs");
 		const files = readdirSync(dir);
 		expect(files).toHaveLength(1);
 		const lines = readFileSync(join(dir, files[0]!), "utf-8").trim().split("\n");
@@ -294,7 +294,7 @@ describe("iterate executor", () => {
 		const stages = readState();
 		const failed = stages.find((s) => s.status === "failed");
 		expect(failed?.stage).toBe("blueprint");
-		expect(existsSync(join(tmpDir, ".rpiv", "artifacts", "plans"))).toBe(false);
+		expect(existsSync(join(tmpDir, ".myflow", "artifacts", "plans"))).toBe(false);
 	});
 });
 

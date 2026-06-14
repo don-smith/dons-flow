@@ -60,7 +60,7 @@ const phaseHeadingsFanout: FanoutFn = ({ artifact, cwd }) => {
 // built by `wf()` below.
 // ---------------------------------------------------------------------------
 
-const RPIV_ARTIFACT_PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const RPIV_ARTIFACT_PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Minimal YAML-frontmatter parser for tests: `key: value` lines between `---` fences, scalar values only. */
 const parseFmTestOnly = (content: string): Record<string, unknown> => {
@@ -192,7 +192,7 @@ describe("runWorkflow", () => {
 
 	/** Read the single JSONL state file produced for a run, as parsed objects. */
 	const readState = (cwd: string): { header: Record<string, unknown>; stages: Array<Record<string, unknown>> } => {
-		const dir = join(cwd, ".rpiv", "workflows", "runs");
+		const dir = join(cwd, ".myflow", "workflows", "runs");
 		const files = readdirSync(dir);
 		expect(files).toHaveLength(1);
 		const lines = readFileSync(join(dir, files[0]!), "utf-8").trim().split("\n");
@@ -226,7 +226,7 @@ describe("runWorkflow", () => {
 		expect(result.stagesCompleted).toBe(0);
 		expect(result.error).toMatch(/start stage "ghost" is not declared/);
 		expect(chain.ctx.newSession).not.toHaveBeenCalled();
-		expect(existsSync(join(tmpDir, ".rpiv", "workflows", "runs"))).toBe(false);
+		expect(existsSync(join(tmpDir, ".myflow", "workflows", "runs"))).toBe(false);
 	});
 
 	it("rejects an invalid --name before writing any JSONL (defense-in-depth for programmatic callers)", async () => {
@@ -240,7 +240,7 @@ describe("runWorkflow", () => {
 		expect(result.success).toBe(false);
 		expect(result.error).toMatch(/invalid name/);
 		expect(chain.ctx.newSession).not.toHaveBeenCalled();
-		expect(existsSync(join(tmpDir, ".rpiv", "workflows", "runs"))).toBe(false);
+		expect(existsSync(join(tmpDir, ".myflow", "workflows", "runs"))).toBe(false);
 	});
 
 	it("rejects a name already claimed in the index, without starting a session", async () => {
@@ -417,7 +417,7 @@ describe("runWorkflow", () => {
 		// Pre-write a plan artifact at the path step 1 will emit. The runner
 		// reads it from disk during the implement-step multi-phase check.
 		const planRelPath = ".myflow/artifacts/plans/p.md";
-		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
+		mkdirSync(join(tmpDir, ".myflow", "artifacts", "plans"), { recursive: true });
 		writeFileSync(
 			join(tmpDir, planRelPath),
 			"# Plan\n\n## Phase 1: alpha\nbody\n## Phase 2: beta\nbody\n## Phase 3: gamma\nbody\n",
@@ -473,7 +473,7 @@ describe("runWorkflow", () => {
 		// row should prefer `id` per-unit so post-hoc tooling joins on a
 		// stable key when one was supplied.
 		const planRelPath = ".myflow/artifacts/plans/p.md";
-		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
+		mkdirSync(join(tmpDir, ".myflow", "artifacts", "plans"), { recursive: true });
 		writeFileSync(join(tmpDir, planRelPath), "# Plan\n\n## Phase 1: alpha\n## Phase 2: beta\n");
 
 		const mixedIdFanout: FanoutFn = () => [
@@ -531,8 +531,8 @@ describe("runWorkflow", () => {
 			edges: { research: "implement-after-revise", "implement-after-revise": "stop" },
 		});
 
-		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
-		writeFileSync(join(tmpDir, ".rpiv", "artifacts", "plans", "p.md"), "# Plan\n");
+		mkdirSync(join(tmpDir, ".myflow", "artifacts", "plans"), { recursive: true });
+		writeFileSync(join(tmpDir, ".myflow", "artifacts", "plans", "p.md"), "# Plan\n");
 
 		const result = await runWorkflow(chain.ctx, { workflow, input: "x" });
 		expect(result.success).toBe(true);
@@ -616,7 +616,7 @@ describe("runWorkflow", () => {
 		// The partial-artifacts recap must include the research artifact.
 		const partial = chain.notifications.find((n) => /Artifacts produced before failure/i.test(n.msg));
 		expect(partial).toBeDefined();
-		expect(partial?.msg).toMatch(/research:.*\.rpiv\/artifacts\/research\/r\.md/);
+		expect(partial?.msg).toMatch(/research:.*\.myflow\/artifacts\/research\/r\.md/);
 	});
 
 	it("halts the chain when the agent ends with stopReason: error (records failed)", async () => {
@@ -692,7 +692,7 @@ describe("runWorkflow", () => {
 		// asserting the negative here so a future refactor doesn't unify the
 		// two paths and accidentally break phase progression.
 		const planRelPath = ".myflow/artifacts/plans/p.md";
-		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
+		mkdirSync(join(tmpDir, ".myflow", "artifacts", "plans"), { recursive: true });
 		writeFileSync(join(tmpDir, planRelPath), "# Plan\n\n## Phase 1: a\nx\n## Phase 2: b\ny\n");
 
 		const chain = createMockSessionChain({
@@ -1133,7 +1133,7 @@ describe("runWorkflow", () => {
 
 			// Preflight short-circuits before writeHeader / any recordStage call —
 			// no JSONL workflow file is produced at all.
-			expect(existsSync(join(tmpDir, ".rpiv", "workflows", "runs"))).toBe(false);
+			expect(existsSync(join(tmpDir, ".myflow", "workflows", "runs"))).toBe(false);
 		});
 
 		// -------------------------------------------------------------------
@@ -1832,7 +1832,7 @@ describe("runWorkflow", () => {
 
 			await runWorkflow(chain.ctx, { workflow, input: "x" });
 
-			const dir = join(tmpDir, ".rpiv", "workflows", "runs");
+			const dir = join(tmpDir, ".myflow", "workflows", "runs");
 			const files = readdirSync(dir);
 			const content = readFileSync(join(dir, files[0]!), "utf-8").trim();
 			const lines = content.split("\n");
@@ -1878,7 +1878,7 @@ describe("runWorkflow", () => {
 
 			await runWorkflow(chain.ctx, { workflow, input: "x" });
 
-			const dir = join(tmpDir, ".rpiv", "workflows", "runs");
+			const dir = join(tmpDir, ".myflow", "workflows", "runs");
 			const files = readdirSync(dir);
 			const content = readFileSync(join(dir, files[0]!), "utf-8").trim();
 			const lines = content.split("\n");
@@ -1956,7 +1956,7 @@ describe("runWorkflow", () => {
 			expect(result.droppedRoutingRows).toBeUndefined();
 
 			// Find the runId from the JSONL file
-			const dir = join(tmpDir, ".rpiv", "workflows", "runs");
+			const dir = join(tmpDir, ".myflow", "workflows", "runs");
 			const files = readdirSync(dir);
 			const runId = files[0]!.replace(".jsonl", "");
 
@@ -2919,7 +2919,7 @@ describe("runWorkflow", () => {
 			expect(result.error).toContain("present");
 			// Nothing ran: no session opened, no run file written.
 			expect(chain.ctx.newSession).not.toHaveBeenCalled();
-			expect(existsSync(join(tmpDir, ".rpiv", "workflows", "runs"))).toBe(false);
+			expect(existsSync(join(tmpDir, ".myflow", "workflows", "runs"))).toBe(false);
 		});
 
 		it("forwards options (trigger) through to runWorkflow", async () => {

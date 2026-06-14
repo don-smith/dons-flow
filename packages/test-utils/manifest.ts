@@ -14,8 +14,8 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const SKIP_DIRS = new Set(["node_modules", "docs"]);
-const SKIP_FILES = new Set(["test-fixtures.ts"]);
+const SKIP_DIRS = new Set(["node_modules", "docs", "test"]);
+const SKIP_FILES = new Set(["test-fixtures.ts", "vitest.config.ts", "vitest.setup.ts"]);
 
 export interface ShipManifestResult {
 	/** Entries declared in `package.json` `files`. */
@@ -33,7 +33,8 @@ export interface ShipManifestResult {
  * pass `import.meta.url` directly — the helper resolves it to the test file's
  * parent directory).
  *
- * Skips: dotfiles/dotdirs, `node_modules`, `docs`, `*.test.ts`, `test-fixtures.ts`.
+ * Skips: dotfiles/dotdirs, `node_modules`, `docs`, `test/`, `*.test.ts`,
+ * `test-fixtures.ts`, and vitest infra (`vitest.config.ts`, `vitest.setup.ts`).
  * Does NOT check: asset directories (e.g. `locales/*.json`), `exports` map,
  * `main`/`module` fields, or extraneous entries in `files`.
  */

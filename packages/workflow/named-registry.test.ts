@@ -25,7 +25,7 @@ import { validateWorkflow } from "./validate-workflow.js";
 // Local fixtures
 // ---------------------------------------------------------------------------
 
-const PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Outcome that scans the assistant transcript for `.myflow/artifacts/<bucket>/<file>.md` paths. */
 const makeOutcome = (name?: string): OutputSpec<unknown, "artifact-md", Record<string, unknown>> => ({

@@ -38,7 +38,7 @@ export function generateRunId(
 // ---------------------------------------------------------------------------
 
 export function runsDir(cwd: string): string {
-	return join(cwd, ".rpiv", "workflows", "runs");
+	return join(cwd, ".myflow", "workflows", "runs");
 }
 
 export function namesFilePath(cwd: string): string {

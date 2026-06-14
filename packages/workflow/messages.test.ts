@@ -81,9 +81,9 @@ describe.skipIf(process.platform === "win32")("LEGACY_OVERLAY_NOTICE — embedde
 		execSync(shell, { cwd: workDir, stdio: "ignore" });
 
 		// Post-migration layout: new tree present, legacy tree gone.
-		expect(existsSync(join(workDir, ".rpiv", "workflows", "config.ts"))).toBe(true);
-		expect(existsSync(join(workDir, ".rpiv", "workflows", "packs", "foo.ts"))).toBe(true);
-		expect(existsSync(join(workDir, ".rpiv", "workflows", "packs", "bar.ts"))).toBe(true);
+		expect(existsSync(join(workDir, ".myflow", "workflows", "config.ts"))).toBe(true);
+		expect(existsSync(join(workDir, ".myflow", "workflows", "packs", "foo.ts"))).toBe(true);
+		expect(existsSync(join(workDir, ".myflow", "workflows", "packs", "bar.ts"))).toBe(true);
 		expect(existsSync(legacyRoot)).toBe(false);
 
 		// Re-run loader: the migrated tree must load cleanly with no legacy
@@ -109,7 +109,7 @@ describe.skipIf(process.platform === "win32")("LEGACY_OVERLAY_NOTICE — embedde
 
 		// Config moved, packs dir created (empty), legacy dir gone — so the
 		// `existsSync(.workflow)` gate flips false and the warning stops.
-		expect(existsSync(join(workDir, ".rpiv", "workflows", "config.ts"))).toBe(true);
+		expect(existsSync(join(workDir, ".myflow", "workflows", "config.ts"))).toBe(true);
 		expect(existsSync(legacyRoot)).toBe(false);
 	});
 });
@@ -128,7 +128,7 @@ describe.skipIf(process.platform === "win32")("LEGACY_RUNS_NOTICE — embedded m
 	it("embedded shell relocates orphaned top-level run JSONLs into runs/", () => {
 		// Run files written before the `runs/` relocation sit directly under
 		// `.myflow/workflows/`. The migration shell must sweep them one level down.
-		const workflowsDir = join(workDir, ".rpiv", "workflows");
+		const workflowsDir = join(workDir, ".myflow", "workflows");
 		mkdirSync(workflowsDir, { recursive: true });
 		writeFileSync(join(workflowsDir, "2026-05-01_10-00-00-abcd.jsonl"), "{}\n", "utf-8");
 		writeFileSync(join(workflowsDir, "2026-05-02_11-00-00-ef01.jsonl"), "{}\n", "utf-8");

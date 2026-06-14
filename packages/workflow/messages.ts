@@ -280,7 +280,7 @@ export const LEGACY_OVERLAY_NOTICE = (cwd: string): string =>
  * a load WARNING (advisory, non-blocking) — the files are orphaned, not deleted.
  */
 export const LEGACY_RUNS_NOTICE = (cwd: string): string =>
-	`workflow: detected legacy run files directly under \`${join(cwd, ".rpiv", "workflows")}\` — ` +
+	`workflow: detected legacy run files directly under \`${join(cwd, ".myflow", "workflows")}\` — ` +
 	"run state now lives in `.myflow/workflows/runs/` and these top-level `*.jsonl` files are no longer " +
 	"read by `/wf`. Move them: `mkdir -p .myflow/workflows/runs && mv .myflow/workflows/*.jsonl .myflow/workflows/runs/`.";
 

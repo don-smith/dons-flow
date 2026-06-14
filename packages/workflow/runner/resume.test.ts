@@ -712,7 +712,7 @@ describe("reconstructState", () => {
 // resumeWorkflow — end-to-end resume tests
 // ---------------------------------------------------------------------------
 
-const RPIV_ARTIFACT_PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const RPIV_ARTIFACT_PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Minimal outcome that scans assistant text for .myflow/artifacts paths. */
 const artifactOutcome: import("../output.js").OutputSpec<unknown, "artifact-md", Record<string, unknown>> = {

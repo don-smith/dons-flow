@@ -20,7 +20,7 @@ import { fs as fsHandle, handleToString } from "./handle.js";
 import type { OutputSpec } from "./output.js";
 import { runWorkflow } from "./runner/index.js";
 
-const PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Transcript-scan outcome (no disk read) — publishes under `name`. */
 const makeOutcome = (name: string): OutputSpec<unknown, "artifact-md", Record<string, unknown>> => ({

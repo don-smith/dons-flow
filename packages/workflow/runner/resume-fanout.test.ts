@@ -185,7 +185,7 @@ describe("fanout-resume", () => {
 // generation; the fold no longer concatenates the prior pass into the prefix.
 // ---------------------------------------------------------------------------
 
-const PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Transcript-scan outcome (@myflow/pi convention, inlined). Emits matched paths as artifacts. */
 const transcriptOutcome = (name: string): OutputSpec<unknown, "artifact-md", Record<string, unknown>> => ({

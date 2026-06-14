@@ -287,7 +287,7 @@ function pushLegacyNotices(cwd: string, userPaths: OverlayPaths, acc: LoadAccumu
  */
 function hasOrphanedRunFiles(cwd: string): boolean {
 	try {
-		return readdirSync(join(cwd, ".rpiv", "workflows")).some((f) => f.endsWith(".jsonl"));
+		return readdirSync(join(cwd, ".myflow", "workflows")).some((f) => f.endsWith(".jsonl"));
 	} catch {
 		return false;
 	}

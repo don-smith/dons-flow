@@ -10,7 +10,7 @@
 
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { acts, defineWorkflow, produces as producesRaw, type StageDef, type Workflow } from "./api.js";
 import { __resetBuiltIns, registerBuiltIns } from "./built-ins.js";
@@ -648,8 +648,8 @@ export default {
 
 describe("loadWorkflows — unified .myflow/workflows/ layout", () => {
 	it("resolves project overlay paths under .myflow/workflows/{config.ts, packs}", () => {
-		expect(PROJECT_PATHS.configFile).toBe(join(TEST_TMP, ".rpiv", "workflows", "config.ts"));
-		expect(PROJECT_PATHS.packsDir).toBe(join(TEST_TMP, ".rpiv", "workflows", "packs"));
+		expect(PROJECT_PATHS.configFile).toBe(join(TEST_TMP, ".myflow", "workflows", "config.ts"));
+		expect(PROJECT_PATHS.packsDir).toBe(join(TEST_TMP, ".myflow", "workflows", "packs"));
 	});
 
 	it("loads a config.ts + pack from the new .myflow/workflows/ location", async () => {
@@ -696,7 +696,7 @@ export default defineWorkflow({ name: "legacy-wf", start: "x", stages: { x: prod
 
 		// A mandatory advisory warning points at the new location.
 		const notice = loaded.issues.find(
-			(i) => i.kind === "load" && i.severity === "warning" && /\.rpiv\/workflows\/config\.ts/.test(i.message),
+			(i) => i.kind === "load" && i.severity === "warning" && /\.myflow\/workflows\/config\.ts/.test(i.message),
 		);
 		expect(notice).toBeDefined();
 		expect(notice?.message).toMatch(/\.workflow/);
@@ -710,7 +710,7 @@ export default defineWorkflow({ name: "legacy-wf", start: "x", stages: { x: prod
 	it("warns when orphaned run JSONLs sit directly under .myflow/workflows/", async () => {
 		// Run files written before the `runs/` relocation. `listRuns` reads only
 		// `runs/`, so these are invisible — surface a one-time advisory.
-		const workflowsDir = join(TEST_TMP, ".rpiv", "workflows");
+		const workflowsDir = join(TEST_TMP, ".myflow", "workflows");
 		mkdirSync(workflowsDir, { recursive: true });
 		writeFileSync(join(workflowsDir, "2026-05-01_10-00-00-abcd.jsonl"), "{}\n", "utf-8");
 
@@ -725,7 +725,7 @@ export default defineWorkflow({ name: "legacy-wf", start: "x", stages: { x: prod
 
 	it("does NOT warn about orphaned runs when JSONLs already live in runs/", async () => {
 		// Files correctly under `runs/` must not trip the top-level probe.
-		const runsSubdir = join(TEST_TMP, ".rpiv", "workflows", "runs");
+		const runsSubdir = join(TEST_TMP, ".myflow", "workflows", "runs");
 		mkdirSync(runsSubdir, { recursive: true });
 		writeFileSync(join(runsSubdir, "2026-05-01_10-00-00-abcd.jsonl"), "{}\n", "utf-8");
 

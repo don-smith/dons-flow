@@ -43,7 +43,7 @@ const writeArtifact = (rel: string, body: string) => {
 	writeFileSync(join(tmpDir, rel), body);
 };
 
-const PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
+const PATTERN = /\.myflow\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
 /** Transcript-scan outcome (@myflow/pi convention, inlined). Emits matched paths as artifacts. */
 const makeOutcome = (name: string): OutputSpec<unknown, "artifact-md", Record<string, unknown>> => ({

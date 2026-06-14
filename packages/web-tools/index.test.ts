@@ -468,7 +468,7 @@ describe("web_fetch.execute — happy path", () => {
 			?.execute?.("tc", { url: "https://x.com" }, undefined as never, undefined as never, createMockCtx());
 		const init = stub.calls[0].init;
 		const headers = init?.headers as Record<string, string>;
-		expect(headers["User-Agent"]).toMatch(/@myflow/pi/);
+		expect(headers["User-Agent"]).toMatch(/@myflow\/pi/);
 		expect(headers.Accept).toContain("text/html");
 		expect(init?.redirect).toBe("follow");
 	});

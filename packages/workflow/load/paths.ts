@@ -23,7 +23,7 @@ export interface OverlayPaths {
 
 /** Project overlay paths under `<cwd>/.myflow/workflows/`. */
 export function projectOverlayPaths(cwd: string): OverlayPaths {
-	const root = join(cwd, ".rpiv", "workflows");
+	const root = join(cwd, ".myflow", "workflows");
 	return { configFile: join(root, "config.ts"), packsDir: join(root, "packs") };
 }
 
