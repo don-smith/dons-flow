@@ -1,6 +1,6 @@
-# Repo Conventions for Don's Flow
+# Repo Conventions for myflow
 
-This workflow expects a small set of project-owned documents in every repo that uses it. These are **not** part of the `@locksmithdon/dons-flow` package; they live in the codebase because they are shared by the whole team.
+This workflow expects a small set of project-owned documents in every repo that uses it. These are **not** part of the myflow repo; they live in the codebase because they are shared by the whole team.
 
 ## Required files and folders
 
@@ -47,7 +47,7 @@ Frozen retrospective documents. Once committed, a retro is not edited inline; fu
 
 ## `docs/runbooks/`
 
-Broader processes that compose multiple skills. For example, this workflow itself could be summarized as a runbook (`docs/runbooks/dons-flow.md`) if a project wants a local copy.
+Broader processes that compose multiple skills. For example, this workflow itself could be summarized as a runbook (`docs/runbooks/myflow.md`) if a project wants a local copy.
 
 ## `AGENTS.md`
 

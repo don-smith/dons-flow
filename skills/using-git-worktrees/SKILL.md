@@ -209,12 +209,12 @@ Ready to implement auth feature
 ## Integration
 
 **Called by:**
-- **dons-flow** — recommended before `/skill:implement` when working on a feature branch
+- **myflow** — recommended before `/skill:implement` when working on a feature branch
 - **any skill needing an isolated workspace**
 
 **Also pairs with:**
-- RPIV `/skill:implement` — use a worktree for long-running or multi-phase implementation
-- RPIV `/skill:blueprint` or `/skill:plan` — set up the worktree after the plan is ready
+- `/skill:implement` — use a worktree for long-running or multi-phase implementation
+- `/skill:blueprint` or `/skill:plan` — set up the worktree after the plan is ready
 
 **Pairs with:**
 - **finishing-a-development-branch** - REQUIRED for cleanup after work complete

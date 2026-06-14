@@ -1,13 +1,11 @@
 {
-  "name": "@locksmithdon/dons-flow",
+  "name": "myflow",
   "version": "3.0.0",
-  "description": "Don's Flow v3 — a single 5-stage pipeline combining RPIV's observable delivery chain, Superpowers' execution discipline, and Don's closeout practices.",
+  "description": "myflow — a single 5-stage pipeline for AI-assisted software development, from discovery through landing.",
   "keywords": [
     "pi-package",
     "pi-extension",
-    "dons-flow",
-    "rpiv",
-    "superpowers",
+    "myflow",
     "skills",
     "workflow",
     "landing",
@@ -18,27 +16,15 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/don-smith/dons-flow.git"
+    "url": "git+https://github.com/don-smith/myflow.git"
   },
-  "homepage": "https://github.com/don-smith/dons-flow#readme",
+  "homepage": "https://github.com/don-smith/myflow#readme",
   "bugs": {
-    "url": "https://github.com/don-smith/dons-flow/issues"
+    "url": "https://github.com/don-smith/myflow/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "skills/",
-    "vendor/superpowers/",
-    "docs/",
-    "scripts/",
-    "README.md",
-    "LICENSE"
-  ],
   "pi": {
     "skills": [
-      "./skills",
-      "./vendor/superpowers/skills"
+      "./skills"
     ]
   },
   "peerDependencies": {

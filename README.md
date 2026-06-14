@@ -1,54 +1,33 @@
-# @locksmithdon/dons-flow
+# myflow
 
-**Don's Flow v3** is a single 5-stage pipeline that composes RPIV's observable delivery chain, Superpowers' execution discipline, and Don's closeout practices into one unified flow:
+**myflow** is a single 5-stage pipeline for AI-assisted software development — from discovery through landing. Every stage produces a clear handoff artifact, so you always know what's next. No modes, no choices between systems, no ambiguity.
 
-1. **[Superpowers](https://github.com/obra/superpowers)** — the methodology you already trust. Socratic design (`brainstorming`), red/green TDD (`test-driven-development`), and subagent-driven execution (`subagent-driven-development`). It is fast, opinionated, and proven.
-2. **[RPIV](https://www.npmjs.com/package/@juicesharp/rpiv-pi)** — Juice Sharp's observable, artifact-chained delivery pipeline: `discover → research → design → plan → implement → validate → review → commit`. It adds deliberate checkpoints, self-reflection, and a durable paper trail.
-3. **Don's closeout discipline** — the `land` ritual, `epiphany-tabling`, as-built documentation, retros, and memory reconciliation. It closes the cycle so the next one starts clean.
-
-None of these replaces the others. Superpowers excels at the inner loop of design and execution. RPIV excels at observable, reviewable delivery. Don's discipline excels at cycle boundaries and learning capture. Together they form a workflow that is fast *and* reflective *and* humane.
-
-> **Why v3?** v2 was a loose federation of three systems. v3 unifies them into a single 5-stage pipeline with clear artifact handoffs — same skills, better orchestration.
-
-## What each system contributes
-
-| System | Core gift | Typical entry points |
-|---|---|---|
-| **Superpowers** | Auto-triggering, opinionated execution discipline | `brainstorming`, `test-driven-development`, `subagent-driven-development`, `dispatching-parallel-agents`, `receiving-code-review` |
-| **RPIV** | Observable, artifact-chained delivery pipeline with built-in reflection | `discover`, `research`, `blueprint`, `implement`, `validate`, `code-review` |
-| **Don's Flow** | Cycle boundaries, scope control, execution discipline, and learning capture | `land`, `epiphany-tabling`, `capturing-learnings`, `verification-before-completion`, `as-built-documentation`, `writing-retros` |
+myflow draws skills from **[Superpowers](https://github.com/obra/superpowers)** (brainstorming, TDD, subagents) and **[RPIV](https://www.npmjs.com/package/@juicesharp/rpiv-pi)** (discover, blueprint, implement, validate, review), plus its own closeout and cross-cutting practices. But from the developer's perspective, there is one workflow with one name.
 
 ## Installation
 
-Install in each repo where you want the workflow, or install once in your global Pi configuration if you want it everywhere.
-
-### Install
-
-One command installs the entire workflow:
+Clone the repo and point Pi at the local directory:
 
 ```bash
-pi install npm:@locksmithdon/dons-flow
+git clone https://github.com/don-smith/myflow.git
+pi install ./myflow
 ```
 
-This single package includes:
+Restart Pi and the workflow is active — all skills are discovered from `skills/` and `vendor/superpowers/skills/`.
 
-- **RPIV** skills and runtime extensions as npm dependencies.
-- **Superpowers** skills vendored directly into the package at `vendor/superpowers/skills/` (MIT licensed; see `vendor/superpowers/LICENSE`).
-- **Don's Flow** skills for closeout, scope control, and learning capture.
+To update, `git pull` in the cloned repo and restart Pi. No npm reinstall needed.
 
-If RPIV warns about missing sibling extensions during install, restart Pi once the install completes; the dependencies are already declared.
-
-### Onboard the repo
+### Onboard a project repo
 
 ```bash
-/skill:setup-dons-flow
+/skill:setup-myflow
 ```
 
 This creates the repo-owned conventions listed below.
 
 ## The 5-stage pipeline
 
-Don's Flow is a single pipeline that adapts to work size. No modes to choose from — follow the stages, and the artifacts guide what comes next.
+myflow is a single pipeline that adapts to work size. No modes to choose from — follow the stages, and the artifacts guide what comes next.
 
 ```
 1. Discover & Align → 2. Research & Design → 3. Implement → 4. Validate & Review → 5. Land & Learn
@@ -66,14 +45,14 @@ Between stages, artifacts hand off: FRD → Plan → Working tree → Validation
 
 `epiphany-tabling` runs across stages 2-4. `capturing-learnings` checks in after stages 1, 2, 4, and 5. `create-handoff` / `resume-handoff` bridge sessions at any stage.
 
-## What this package adds
+## What this workflow provides
 
-This package provides the seams between the three systems:
+myflow provides the full workflow:
 
 | Skill | Purpose |
 |---|---|
-| `dons-flow` | The map. Guides you through the 5-stage pipeline for any piece of work. |
-| `setup-dons-flow` | Onboarding: checks prerequisites, detects Superpowers, creates repo conventions. |
+| `myflow` | The map. Guides you through the 5-stage pipeline for any piece of work. |
+| `setup-myflow` | Onboarding: creates repo conventions for the myflow workflow. |
 | `land` | The 9-step closeout in 3 groups: Commit & Document, Reflect & Reconcile, Update & Close. |
 | `epiphany-tabling` | Capture mid-flight realizations in `docs/tabled.md` without derailing current work. |
 | `as-built-documentation` | Replace spec/plan scaffolding with a permanent `docs/changes/` record of what shipped. |
@@ -105,29 +84,29 @@ These documents live in the codebase because they are shared context for the who
 - Retros (`docs/retros/`).
 - Status, memory, and runbooks.
 
-**In this package (developer-owned):**
+**In this repo (developer-owned):**
 - The skills and workflow conventions.
-- The closeout ritual.
+- The closeout ritual (`land`).
 - The promotion rules for turning observations into durable artifacts.
 
-This separation lets the same workflow travel with you across repos while keeping each repo's shared knowledge in the repo.
+Clone this repo anywhere you want the workflow. It travels with you across codebases while keeping each project's shared knowledge in the project.
 
-## Monitoring upstream evolution
+## Tracking upstream changes
 
-Superpowers, RPIV, and Don's Flow will evolve independently. The `sync-upstream` skill clones the Superpowers and RPIV repositories, diffs them against the last-synced hashes, and produces a decision report so you can choose what to incorporate into Don's Flow.
+Superpowers and RPIV evolve independently. The `sync-upstream` skill surfaces what changed so you're aware — but myflow does not automatically incorporate upstream changes. The default stance is **observe, don't integrate.**
 
 - Skill: `/skill:sync-upstream`
 - Script: `scripts/sync-upstream.sh`
 - Runbook: `docs/runbooks/monitor-upstream-evolution.md`
 - Memory: `docs/memory/monitor_upstream_evolution.md`
 
-The default stance is to incorporate upstream improvements unless there is a clear reason not to. Run the sync monthly or after every 2–3 projects.
+Run the sync monthly or after every 2–3 projects to stay informed.
 
 ## Typical first use
 
-1. `pi install npm:@locksmithdon/dons-flow`.
-2. Run `/skill:setup-dons-flow` to scaffold repo conventions.
-3. Start with `/skill:dons-flow` to see the 5-stage pipeline. Begin at stage 1 (Discover & Align) with `brainstorming` or `/skill:discover`.
+1. Clone the repo: `git clone https://github.com/don-smith/myflow.git && pi install ./myflow`.
+2. Run `/skill:setup-myflow` to scaffold repo conventions.
+3. Start with `/skill:myflow` to see the 5-stage pipeline. Begin at stage 1 (Discover & Align) with `brainstorming` or `/skill:discover`.
 4. Close the cycle with `/skill:land`.
 5. After 2–3 projects, run `/skill:sync-upstream`.
 

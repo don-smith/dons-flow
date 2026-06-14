@@ -24,10 +24,10 @@ Vendored skills: brainstorming,dispatching-parallel-agents,executing-plans,recei
 
 ### Decisions
 
-- **Incorporate:** _list Superpowers changes to pull into Don's Flow (already copied if in vendored list)_
+- **Incorporate:** _list Superpowers changes to pull into myflow (already copied if in vendored list)_
 - **Add new skill to vendor list:** _new upstream skills worth including_
 - **Defer / Skip:** _changes that do not fit or are not yet needed_
-- **Notes:** _impact assessment, breaking changes, conflicts with Don's Flow skills_
+- **Notes:** _impact assessment, breaking changes, conflicts with myflow skills_
 
 ## RPIV (88f52084c408fdb50e9e57d31a80c8227f08de15 → 88f52084c408fdb50e9e57d31a80c8227f08de15)
 
@@ -48,8 +48,8 @@ RPIV ships as an npm dependency. Review changes for version bumps or workflow im
 ### Decisions
 
 - **Bump dependency version:** _new RPIV version to pin in package.json_
-- **Workflow impact:** _changes that affect how Don's Flow uses RPIV skills_
-- **Defer / Skip:** _changes that do not affect Don's Flow_
+- **Workflow impact:** _changes that affect how myflow uses RPIV skills_
+- **Defer / Skip:** _changes that do not affect myflow_
 
 ## Next steps
 

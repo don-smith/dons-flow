@@ -9,7 +9,7 @@ description: Use at the end of a major piece of work after validation and review
 
 Bring the current piece of work to a clean close. Commit the code, document what shipped, reflect on the cycle, capture lessons, reconcile memory, and prepare for the next piece of work.
 
-Land is **stage 5 of the 5-stage Don's Flow pipeline** (after Validate & Review). It no longer contains code review or architectural review — those live in stages 2 and 4. This skill focuses on closeout: commit, document, reflect, update, and close.
+Land is **stage 5 of the 5-stage myflow pipeline** (after Validate & Review). It no longer contains code review or architectural review — those live in stages 2 and 4. This skill focuses on closeout: commit, document, reflect, update, and close.
 
 ## When to Use
 
@@ -98,7 +98,7 @@ If on **`main`**, stage all close-out changes in appropriately grouped commits a
 
 ## Pipeline Context
 
-Land is stage 5 of the 5-stage Don's Flow pipeline:
+Land is stage 5 of the 5-stage myflow pipeline:
 
 1. **Discover & Align** — shape the work (`brainstorming`, `discover`, `explore`)
 2. **Research & Design** — decide the approach (`research`, `design`, `architecture-review`, `blueprint`/`plan`)
@@ -110,15 +110,15 @@ Every stage produces an artifact consumed by the next. `epiphany-tabling` runs a
 
 ## Related practices
 
-- `dons-flow` — the 5-stage pipeline map; invokes land at stage 5
+- `myflow` — the 5-stage pipeline map; invokes land at stage 5
 - `as-built-documentation` — handles step 2 synthesis and cleanup
 - `finishing-a-development-branch` — handles step 9 merge/PR decisions
 - `capturing-learnings` — step 4 promotion rule and checkpoint
 - `writing-retros` — step 3 retro format
 - `epiphany-tabling` — the in-flight practice that feeds tabled items resolved in step 8
-- `commit` — RPIV structured commits (step 1)
+- `commit` — structured commits (step 1)
 
 ## See also
 
-- Pipeline visual: `docs/dons-flow-v3-pipeline.html`
-- Pipeline spec: `docs/superpowers/specs/2026-06-14-dons-flow-v3-pipeline-design.md`
+- Pipeline visual: `docs/myflow-v3-pipeline.html`
+- Pipeline spec: `docs/superpowers/specs/2026-06-14-myflow-v3-pipeline-design.md`

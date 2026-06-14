@@ -3,7 +3,7 @@ set -euo pipefail
 
 # sync-upstream.sh
 #
-# Update Don's Flow's vendored Superpowers skills and track upstream changes.
+# Update myflow's vendored Superpowers skills and track upstream changes.
 # RPIV is installed as a normal npm dependency, so this script only monitors
 # its repo for changes that might affect dependency versions or workflow.
 #
@@ -12,7 +12,7 @@ set -euo pipefail
 #
 # Outputs:
 #   vendor/superpowers-source/  git mirror of obra/superpowers
-#   vendor/superpowers/skills/  selected Superpowers skills vendored into Don's Flow
+#   vendor/superpowers/skills/  selected Superpowers skills vendored into myflow
 #   vendor/superpowers/LICENSE  Superpowers MIT license
 #   docs/memory/upstream-sync-YYYY-MM-DD.md  decision report
 #   docs/memory/.upstream-last-sync.json     last-synced commit hashes
@@ -28,9 +28,9 @@ TODAY="$(date +%Y-%m-%d)"
 REPORT_FILE="$MEMORY_DIR/upstream-sync-$TODAY.md"
 LAST_SYNC_FILE="$MEMORY_DIR/.upstream-last-sync.json"
 
-# Skills from Superpowers that Don's Flow vendors directly.
+# Skills from Superpowers that myflow vendors directly.
 # Conflicting skills (finishing-a-development-branch, using-git-worktrees,
-# verification-before-completion) are intentionally excluded because Don's Flow
+# verification-before-completion) are intentionally excluded because myflow
 # provides its own integrated versions.
 SUPERPOWERS_SKILLS=(
   brainstorming
@@ -126,10 +126,10 @@ fi)
 
 ### Decisions
 
-- **Incorporate:** _list Superpowers changes to pull into Don's Flow (already copied if in vendored list)_
+- **Notable:** _list interesting Superpowers changes (already copied if in vendored list)_
 - **Add new skill to vendor list:** _new upstream skills worth including_
-- **Defer / Skip:** _changes that do not fit or are not yet needed_
-- **Notes:** _impact assessment, breaking changes, conflicts with Don's Flow skills_
+- **Defer / Note:** _changes that do not fit or are not yet needed_
+- **Notes:** _observations, breaking changes, anything worth remembering_
 
 ## RPIV ($RPIV_LAST → $RPIV_CURRENT)
 
@@ -158,8 +158,8 @@ fi)
 ### Decisions
 
 - **Bump dependency version:** _new RPIV version to pin in package.json_
-- **Workflow impact:** _changes that affect how Don's Flow uses RPIV skills_
-- **Defer / Skip:** _changes that do not affect Don's Flow_
+- **Workflow impact:** _changes that affect how myflow uses RPIV skills_
+- **Defer / Skip:** _changes that do not affect myflow_
 
 ## Next steps
 

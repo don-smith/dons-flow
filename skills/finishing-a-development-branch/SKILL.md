@@ -194,7 +194,7 @@ git worktree remove <worktree-path>
 
 **Called by:**
 - **land** (Step 10) — cycle closeout after verification and review
-- **dons-flow** — after `/skill:implement` and `/skill:validate` complete
+- **myflow** — after `/skill:implement` and `/skill:validate` complete
 
 **Pairs with:**
 - **using-git-worktrees** - Cleans up worktree created by that skill

@@ -1,6 +1,6 @@
 # Runbook: Monitor Upstream Evolution
 
-Check Superpowers and RPIV monthly to keep Don's Flow current with its upstream partners. Superpowers skills are vendored into the package; RPIV is an npm dependency. Both upstream repos are tracked in `vendor/`.
+Check Superpowers and RPIV monthly to stay aware of upstream changes. Superpowers skills are vendored in `vendor/superpowers/skills/`; RPIV is an npm dependency. Both upstream repos are tracked in `vendor/`. The default stance is **observe, don't integrate.**
 
 ## Schedule
 
@@ -12,13 +12,13 @@ Check Superpowers and RPIV monthly to keep Don's Flow current with its upstream 
 
 - Calendar reminder on the 13th of each month.
 - After any project closeout where upstream behavior felt different.
-- Before publishing a new version of `@locksmithdon/dons-flow`.
+- Before a major myflow update.
 
 ## Steps
 
 ### 1. Run the upstream sync script
 
-From the root of the Don's Flow repo:
+From the root of the myflow repo:
 
 ```bash
 ./scripts/sync-upstream.sh
@@ -53,59 +53,41 @@ For each upstream project, the report shows:
 - Files changed and diff stats.
 - Empty **Decisions** sections.
 
-### 3. Decide what to incorporate
+### 3. Review what changed
 
-Default stance: **incorporate upstream improvements** unless there is a clear reason not to.
+Default stance: **observe, don't integrate.** myflow is intentionally decoupled from upstream velocity.
 
-For each change, label it:
+For each change, note:
 
-- **Incorporate** — pull it into Don's Flow now.
-- **Defer** — relevant, but wait for the next cycle or a triggering project.
-- **Skip** — not relevant to Don's Flow.
+- **Notable** — interesting new skill, breaking change, or workflow shift worth remembering.
+- **No action** — nothing myflow needs to do.
 
-Edit the report in place with your decisions and any impact notes.
+If something is compelling enough to incorporate, make a deliberate decision and document it. But that should be the exception.
 
-### 4. Apply incorporated changes
+Edit the report in place with your observations.
 
-Common actions:
-
-- **Superpowers skill changed** — the sync script already copied the selected skills into `vendor/superpowers/skills/`. Review and commit those changes.
-- **Superpowers adds a new skill** — add it to the `SUPERPOWERS_SKILLS` list in `scripts/sync-upstream.sh` if you want to vendor it.
-- **RPIV version changed** — bump the RPIV dependency versions in `package.json`.
-- **Workflow instructions changed** — update `README.md`, `skills/setup-dons-flow/SKILL.md`, and `skills/dons-flow/SKILL.md`.
-
-### 5. Update long-term memory
+### 4. Update long-term memory
 
 Open `docs/memory/monitor_upstream_evolution.md` and:
 
 - Update `last-reviewed` and `next-review` dates.
-- Add a paragraph summarizing this month's sync and any deferred decisions.
-- Update decision criteria if your thinking has changed.
+- Add a paragraph summarizing this month's sync and any notable observations.
 
-### 6. Release Don's Flow
+### 5. Commit
 
-If you applied changes:
+1. Commit the new sync report and updated memory.
+2. Push.
 
-1. Bump the version in `package.json`.
-2. Write a brief `docs/changes/` entry if the package behavior changed.
-3. Commit and push.
-4. Publish to npm.
-
-If you deferred everything:
-
-1. Still commit the new sync report so the next run has a baseline.
-2. Update `last-reviewed` and `next-review`.
+No version bumps, no publishing, no applying changes — just awareness.
 
 ## Outputs
 
 - Updated `docs/memory/upstream-sync-YYYY-MM-DD.md`.
 - Updated `docs/memory/monitor_upstream_evolution.md`.
 - Updated `docs/memory/.upstream-last-sync.json`.
-- Optional `docs/changes/` entry.
-- Optional new version of `@locksmithdon/dons-flow` on npm.
 
 ## Anti-patterns
 
-- **Syncing without deciding.** The script surfaces changes; a human must decide what to do.
-- **Updating `.last-sync.json` without applying changes.** This hides skipped changes from future diffs.
-- **Incorporating blindly.** Upstream changes may conflict with Don's Flow conventions. Review first.
+- **Syncing without reviewing.** The script surfaces changes; at minimum skim the report.
+- **Incorporating by default.** The default is observe. Integrate only with a deliberate, documented decision.
+- **Letting upstream velocity drive myflow.** myflow has its own rhythm. Upstream changes are interesting data, not action items.
