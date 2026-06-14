@@ -81,7 +81,7 @@ describe("prompt dispatch", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/summary/s.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/summary/s.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -92,7 +92,7 @@ describe("prompt dispatch", () => {
 				start: "produce",
 				stages: {
 					produce: produces({
-						prompt: "Write a summary to .rpiv/artifacts/summary/s.md",
+						prompt: "Write a summary to .myflow/artifacts/summary/s.md",
 						outcome: makeOutcome("summary"),
 					}),
 					consume: acts({ reads: ["summary"] }),
@@ -104,19 +104,19 @@ describe("prompt dispatch", () => {
 
 		expect(result.success).toBe(true);
 		expect(chain.sentMessages).toEqual([
-			"Write a summary to .rpiv/artifacts/summary/s.md",
+			"Write a summary to .myflow/artifacts/summary/s.md",
 			// consume read state.named["summary"] — proving the prompt produces stage published.
-			"/skill:consume --summary .rpiv/artifacts/summary/s.md",
+			"/skill:consume --summary .myflow/artifacts/summary/s.md",
 		]);
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/summary/s.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/summary/s.md");
 	});
 
 	it("dynamic PromptFn receives ScriptContext (ctx.input = upstream Output)", async () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/x/seed.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/x/refined.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/x/seed.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/x/refined.md")] },
 			],
 		});
 
@@ -138,7 +138,7 @@ describe("prompt dispatch", () => {
 
 		expect(result.success).toBe(true);
 		// seed's skill dispatch, then the dynamic prompt woven with seed's artifact path.
-		expect(chain.sentMessages).toEqual(["/skill:seed x", "Refine .rpiv/artifacts/x/seed.md for clarity."]);
+		expect(chain.sentMessages).toEqual(["/skill:seed x", "Refine .myflow/artifacts/x/seed.md for clarity."]);
 	});
 
 	it("skips the skill-registry preflight (a prompt stage names no skill to register)", async () => {
@@ -191,7 +191,7 @@ describe("prompt builders (produces.prompt / acts.prompt)", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/summary/s.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/summary/s.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -202,7 +202,7 @@ describe("prompt builders (produces.prompt / acts.prompt)", () => {
 				start: "produce",
 				stages: {
 					produce: produces.prompt({
-						prompt: "Write to .rpiv/artifacts/summary/s.md",
+						prompt: "Write to .myflow/artifacts/summary/s.md",
 						outcome: makeOutcome("summary"),
 					}),
 					consume: acts({ reads: ["summary"] }),
@@ -214,8 +214,8 @@ describe("prompt builders (produces.prompt / acts.prompt)", () => {
 
 		expect(result.success).toBe(true);
 		expect(chain.sentMessages).toEqual([
-			"Write to .rpiv/artifacts/summary/s.md",
-			"/skill:consume --summary .rpiv/artifacts/summary/s.md",
+			"Write to .myflow/artifacts/summary/s.md",
+			"/skill:consume --summary .myflow/artifacts/summary/s.md",
 		]);
 	});
 
@@ -268,7 +268,7 @@ describe("prompt dispatch — continue follow-up turn", () => {
 	};
 
 	it("a side-effect continue prompt stage reuses the prior session and sends raw text", async () => {
-		const chain = continueChain("wrote .rpiv/artifacts/research/r.md", (text, branch) => {
+		const chain = continueChain("wrote .myflow/artifacts/research/r.md", (text, branch) => {
 			if (text === "Summarise the research above in three bullets.")
 				branch.push(mockAssistantMessage("- a\n- b\n- c"));
 		});
@@ -299,8 +299,8 @@ describe("prompt dispatch — continue follow-up turn", () => {
 	});
 
 	it("a produces continue prompt stage collects from the NEW turn (branch-offset slicing)", async () => {
-		const chain = continueChain("wrote .rpiv/artifacts/research/r.md", (text, branch) => {
-			if (text.startsWith("Refine")) branch.push(mockAssistantMessage("wrote .rpiv/artifacts/summary/s.md"));
+		const chain = continueChain("wrote .myflow/artifacts/research/r.md", (text, branch) => {
+			if (text.startsWith("Refine")) branch.push(mockAssistantMessage("wrote .myflow/artifacts/summary/s.md"));
 		});
 
 		const result = await runWorkflow(chain.ctx, {
@@ -325,7 +325,7 @@ describe("prompt dispatch — continue follow-up turn", () => {
 		expect(result.stagesCompleted).toBe(2);
 		// The collector scanned from branchOffset — it saw the refine turn's
 		// artifact (s.md), NOT lead's r.md, proving the slice is correct.
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/summary/s.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/summary/s.md");
 		expect(chain.sentMessages).toEqual(["/skill:lead x", "Refine the research into a summary."]);
 	});
 });

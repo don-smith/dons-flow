@@ -127,7 +127,7 @@ describe.skipIf(process.platform === "win32")("LEGACY_RUNS_NOTICE — embedded m
 
 	it("embedded shell relocates orphaned top-level run JSONLs into runs/", () => {
 		// Run files written before the `runs/` relocation sit directly under
-		// `.rpiv/workflows/`. The migration shell must sweep them one level down.
+		// `.myflow/workflows/`. The migration shell must sweep them one level down.
 		const workflowsDir = join(workDir, ".rpiv", "workflows");
 		mkdirSync(workflowsDir, { recursive: true });
 		writeFileSync(join(workflowsDir, "2026-05-01_10-00-00-abcd.jsonl"), "{}\n", "utf-8");

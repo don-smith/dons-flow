@@ -43,11 +43,11 @@ The loader merges workflows from three layers (each later layer overrides earlie
 built-in (programmatic — registered by sibling packages like rpiv-pi)
   ← user packs        (~/.config/rpiv-workflow/packs/*.ts, alpha-sorted)
   ← user config       (~/.config/rpiv-workflow/config.ts)
-  ← project packs     (<cwd>/.rpiv/workflows/packs/*.ts, alpha-sorted)
-  ← project config    (<cwd>/.rpiv/workflows/config.ts)
+  ← project packs     (<cwd>/.myflow/workflows/packs/*.ts, alpha-sorted)
+  ← project config    (<cwd>/.myflow/workflows/config.ts)
 ```
 
-Run state for each `/wf` invocation lands under `<cwd>/.rpiv/workflows/runs/<run-id>.jsonl` — the third subfolder of the same domain dir.
+Run state for each `/wf` invocation lands under `<cwd>/.myflow/workflows/runs/<run-id>.jsonl` — the third subfolder of the same domain dir.
 
 Two file roles per layer:
 
@@ -153,7 +153,7 @@ const merge = produces.script({
         .filter((a) => a.handle.kind === "fs")
         .map((a) => readFile(join(ctx.cwd, (a.handle as { path: string }).path), "utf-8")),
     );
-    const planPath = `.rpiv/artifacts/plans/${Date.now()}.md`;
+    const planPath = `.myflow/artifacts/plans/${Date.now()}.md`;
     await writeFile(join(ctx.cwd, planPath), bodies.join("\n\n---\n\n"));
     return {
       kind: "plan",
@@ -390,7 +390,7 @@ interface OutputSpec<Snapshot, Kind, Data> {
 
 `collector.collect(ctx)` returns the artifacts the stage emitted. `parser.parse(ctx)` (optional) turns them into the typed `output.data` downstream stages narrow on. With no parser, `output.data` is the artifact list itself (`kind = "artifacts"`). When `name` is set, every stage wired with this outcome publishes onto `state.named[name]` — the convergence mechanism behind [`reads:`](#multi-input-stages--reads-and-the-named-publish-registry); when omitted, stages publish under their record key.
 
-There is no framework default for `produces` — load-time validation rejects a stage without an outcome. The `.rpiv/artifacts/<bucket>/<file>.md` layout is an rpiv convention, not a framework truth; pair with [`@juicesharp/rpiv-pi`](../rpiv-pi) for `rpivArtifactMdOutcome`, or wire your own.
+There is no framework default for `produces` — load-time validation rejects a stage without an outcome. The `.myflow/artifacts/<bucket>/<file>.md` layout is an rpiv convention, not a framework truth; pair with [`@juicesharp/rpiv-pi`](../rpiv-pi) for `rpivArtifactMdOutcome`, or wire your own.
 
 ### Authoring a collector
 
@@ -423,7 +423,7 @@ const codegenCollector = defineCollector<GitHeadSnapshot | undefined>({
 
 ### Bundled collector catalog
 
-The framework ships only host-agnostic primitives — no Pi tool-name defaults, no `.rpiv/artifacts/` defaults, no domain helpers. Wrap them or compose with `unionCollectors` to build your own conventions. Grouped by discovery model:
+The framework ships only host-agnostic primitives — no Pi tool-name defaults, no `.myflow/artifacts/` defaults, no domain helpers. Wrap them or compose with `unionCollectors` to build your own conventions. Grouped by discovery model:
 
 **Scan the agent's text**
 

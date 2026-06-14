@@ -108,7 +108,7 @@ const planRow = (phase: number, num: number, status: "completed" | "failed"): Wo
 	status,
 	ts: `t${num}`,
 	...(status === "completed"
-		? { output: artifactOutput("blueprint", num, `.rpiv/artifacts/plans/p${phase}.md`) }
+		? { output: artifactOutput("blueprint", num, `.myflow/artifacts/plans/p${phase}.md`) }
 		: { errMsg: "boom" }),
 });
 
@@ -118,11 +118,11 @@ const reviewRow: WorkflowStage = {
 	skill: "review",
 	status: "completed",
 	ts: "t1",
-	output: artifactOutput("review", 1, ".rpiv/artifacts/reviews/rev.md"),
+	output: artifactOutput("review", 1, ".myflow/artifacts/reviews/rev.md"),
 };
 
 function writeRun(stages: WorkflowStage[]): void {
-	writeArtifact(".rpiv/artifacts/reviews/rev.md", REVIEW_3_PHASES);
+	writeArtifact(".myflow/artifacts/reviews/rev.md", REVIEW_3_PHASES);
 	writeHeader(tmpDir, header);
 	for (const s of stages) appendStage(tmpDir, header.runId, s);
 }
@@ -133,8 +133,8 @@ describe("iterate-resume", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p2.md")] }, // phase-2 re-run
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p3.md")] }, // phase-3
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p2.md")] }, // phase-2 re-run
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p3.md")] }, // phase-3
 				{ branch: [mockAssistantMessage("consumed")] }, // consume
 			],
 		});
@@ -155,8 +155,8 @@ describe("iterate-resume", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p2.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p3.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p3.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -218,7 +218,7 @@ describe("iterate-resume", () => {
 			skill: "blueprint",
 			status: "completed",
 			ts: "t1",
-			output: artifactOutput("blueprint", 1, ".rpiv/artifacts/plans/p0.md"),
+			output: artifactOutput("blueprint", 1, ".myflow/artifacts/plans/p0.md"),
 		});
 		appendStage(tmpDir, header.runId, {
 			stageNumber: 2,
@@ -231,7 +231,7 @@ describe("iterate-resume", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p1.md")] }, // phase (1) re-run
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p1.md")] }, // phase (1) re-run
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -337,8 +337,8 @@ describe("iterate-resume — corrective back-edge", () => {
 	});
 
 	it("resumes the trailing generation only; state.named.plans keeps both generations", async () => {
-		writeLoopArtifact(".rpiv/artifacts/architecture_reviews/rev.md", REVIEW_2_PHASES);
-		writeLoopArtifact(".rpiv/artifacts/reviews/cr2.md", "---\nblockers_count: 0\n---\n");
+		writeLoopArtifact(".myflow/artifacts/architecture_reviews/rev.md", REVIEW_2_PHASES);
+		writeLoopArtifact(".myflow/artifacts/reviews/cr2.md", "---\nblockers_count: 0\n---\n");
 
 		// Recorded trail: gen 1 (2 plans) → code-review (blockers=1, looped) → gen 2 phase-1 done, phase-2 died.
 		writeHeader(loopDir, loopHeader);
@@ -349,7 +349,7 @@ describe("iterate-resume — corrective back-edge", () => {
 				skill: "review",
 				status: "completed",
 				ts: "t1",
-				output: loopOutput("review", 1, ".rpiv/artifacts/architecture_reviews/rev.md"),
+				output: loopOutput("review", 1, ".myflow/artifacts/architecture_reviews/rev.md"),
 			},
 			{
 				stageNumber: 2,
@@ -357,7 +357,7 @@ describe("iterate-resume — corrective back-edge", () => {
 				skill: "blueprint",
 				status: "completed",
 				ts: "t2",
-				output: loopOutput("blueprint", 2, ".rpiv/artifacts/plans/g1p1.md"),
+				output: loopOutput("blueprint", 2, ".myflow/artifacts/plans/g1p1.md"),
 			},
 			{
 				stageNumber: 3,
@@ -365,7 +365,7 @@ describe("iterate-resume — corrective back-edge", () => {
 				skill: "blueprint",
 				status: "completed",
 				ts: "t3",
-				output: loopOutput("blueprint", 3, ".rpiv/artifacts/plans/g1p2.md"),
+				output: loopOutput("blueprint", 3, ".myflow/artifacts/plans/g1p2.md"),
 			},
 			{
 				stageNumber: 4,
@@ -373,7 +373,7 @@ describe("iterate-resume — corrective back-edge", () => {
 				skill: "code-review",
 				status: "completed",
 				ts: "t4",
-				output: loopOutput("code-review", 4, ".rpiv/artifacts/reviews/cr1.md"),
+				output: loopOutput("code-review", 4, ".myflow/artifacts/reviews/cr1.md"),
 			},
 			{
 				stageNumber: 5,
@@ -381,7 +381,7 @@ describe("iterate-resume — corrective back-edge", () => {
 				skill: "blueprint",
 				status: "completed",
 				ts: "t5",
-				output: loopOutput("blueprint", 5, ".rpiv/artifacts/plans/g2p1.md"),
+				output: loopOutput("blueprint", 5, ".myflow/artifacts/plans/g2p1.md"),
 			},
 			{
 				stageNumber: 6,
@@ -397,8 +397,8 @@ describe("iterate-resume — corrective back-edge", () => {
 		const chain = createMockSessionChain({
 			cwd: loopDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/g2p2.md")] }, // gen-2 phase-2 re-run
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/cr2.md")] }, // code-review → blockers=0
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/g2p2.md")] }, // gen-2 phase-2 re-run
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/cr2.md")] }, // code-review → blockers=0
 				// consume fanout: one unit per accumulated plan (4 total).
 				{ branch: [mockAssistantMessage("impl 1")] },
 				{ branch: [mockAssistantMessage("impl 2")] },
@@ -432,13 +432,13 @@ describe("iterate-resume — corrective back-edge", () => {
 		expect(result.success).toBe(true);
 		// Only the trailing generation's remaining unit (phase-2) re-ran — phase-1 of gen 2 did NOT.
 		const blueprintMsgs = chain.sentMessages.filter((m) => m.startsWith("/skill:blueprint"));
-		expect(blueprintMsgs).toEqual(["/skill:blueprint .rpiv/artifacts/architecture_reviews/rev.md Phase 2"]);
+		expect(blueprintMsgs).toEqual(["/skill:blueprint .myflow/artifacts/architecture_reviews/rev.md Phase 2"]);
 		// The consume fanout saw ALL FOUR plans — state.named["plans"] carried both generations.
 		expect(chain.sentMessages.slice(-4)).toEqual([
-			"/skill:consume .rpiv/artifacts/plans/g1p1.md",
-			"/skill:consume .rpiv/artifacts/plans/g1p2.md",
-			"/skill:consume .rpiv/artifacts/plans/g2p1.md",
-			"/skill:consume .rpiv/artifacts/plans/g2p2.md",
+			"/skill:consume .myflow/artifacts/plans/g1p1.md",
+			"/skill:consume .myflow/artifacts/plans/g1p2.md",
+			"/skill:consume .myflow/artifacts/plans/g2p1.md",
+			"/skill:consume .myflow/artifacts/plans/g2p2.md",
 		]);
 	});
 });

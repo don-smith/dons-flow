@@ -1,6 +1,6 @@
 ---
 name: pr-triage
-description: "Triage a GitHub pull request before committing review effort — fetch the PR thread (description, review comments, linked issues, CI status), assess the diff against whatever architecture/standards the target repo actually carries, and emit a triage disposition (Review · Request changes · Hold · Decline) with security tier and convention drift. Use when the user wants a PR sized up, asks 'should I review/merge this PR', or wants a recommended next step on an incoming PR. Produces triage documents in .rpiv/artifacts/triage/. Read-only — never checks out or mutates the working tree. Stack-agnostic: works in any language or framework, with or without architecture docs."
+description: "Triage a GitHub pull request before committing review effort — fetch the PR thread (description, review comments, linked issues, CI status), assess the diff against whatever architecture/standards the target repo actually carries, and emit a triage disposition (Review · Request changes · Hold · Decline) with security tier and convention drift. Use when the user wants a PR sized up, asks 'should I review/merge this PR', or wants a recommended next step on an incoming PR. Produces triage documents in .myflow/artifacts/triage/. Read-only — never checks out or mutates the working tree. Stack-agnostic: works in any language or framework, with or without architecture docs."
 argument-hint: "[PR number | PR URL | empty = current branch]"
 shell-timeout: 15
 contract:
@@ -113,7 +113,7 @@ exist into a `StandardsMap`:
 
 1. **Explicit architecture/convention docs** — any of: `ARCHITECTURE.md`,
    `CONTRIBUTING.md`, `docs/adr/**`, `AGENTS.md`, `CLAUDE.md`,
-   `.rpiv/guidance/**/architecture.md`, or a repo-local conventions doc.
+   `.myflow/guidance/**/architecture.md`, or a repo-local conventions doc.
 2. **Machine-enforced rules** — any linter/formatter/analyzer config present in the
    tree (`.editorconfig`, ESLint/Biome/Prettier, Ruff/Flake8/Black, Checkstyle/Spotless,
    golangci-lint, clippy/rustfmt, .NET analyzers, … — whatever the repo has).
@@ -282,7 +282,7 @@ The other dispositions are plain actions (back to the author, comment, close), n
    - `## Convention Drift` — `### Structural` as full blocks; `### Minor` collapsed to ONE
      line per nit (never full blocks for `local` rows).
 3. **Write once** with the Write tool (no Edit) to
-   `.rpiv/artifacts/triage/<slug>_pr-<number>-<title-kebab>.md`, where `<slug>` is the
+   `.myflow/artifacts/triage/<slug>_pr-<number>-<title-kebab>.md`, where `<slug>` is the
    **second** tab-separated field on line 1 of the Metadata block (the pre-built
    `<YYYY-MM-DD_HH-MM-SS>` slug) and `<title-kebab>` is the PR title kebab-cased.
    Read `templates/triage.md`, fill every `{placeholder}` from Steps 1–4, apply the
@@ -302,7 +302,7 @@ The other dispositions are plain actions (back to the author, comment, close), n
 
 ```
 Triage written to:
-`.rpiv/artifacts/triage/{filename}.md`
+`.myflow/artifacts/triage/{filename}.md`
 
 PR:          #{number} — {title}  ({head_label} → {base_ref})
 Bottom line: {the one-sentence crux/fit judgment}
@@ -353,7 +353,7 @@ Next step:      {the action: open a review / back to the author / comment the sc
 - **Standards are discovered, not assumed**: the skill never hard-codes a doc path or a
   stack. It resolves the strongest available standard per module — explicit docs →
   linter rules → peer code — and degrades to peer-code inference, which exists in every
-  repo. `.rpiv/guidance/` is just one possible `doc` source among many, never a
+  repo. `.myflow/guidance/` is just one possible `doc` source among many, never a
   dependency.
 - **Language/framework-agnostic**: convention and security findings name the *concept*
   the diff violates in the module's own terms. No assumption of TS/Node, a build tool,

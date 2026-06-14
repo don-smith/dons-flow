@@ -1,6 +1,6 @@
 ---
 name: annotate-guidance
-description: Generate architecture.md guidance files under .rpiv/guidance/ that document a project's architecture and patterns for AI assistants, written to a shadow tree alongside the source. Use when the user wants to onboard Claude, Cursor, or an AI agent to a codebase via the guidance system, document architecture, or asks to "annotate guidance". Prefer this over annotate-inline when the project uses the .rpiv/guidance/ shadow tree instead of inline CLAUDE.md files.
+description: Generate architecture.md guidance files under .myflow/guidance/ that document a project's architecture and patterns for AI assistants, written to a shadow tree alongside the source. Use when the user wants to onboard Claude, Cursor, or an AI agent to a codebase via the guidance system, document architecture, or asks to "annotate guidance". Prefer this over annotate-inline when the project uses the .myflow/guidance/ shadow tree instead of inline CLAUDE.md files.
 argument-hint: [target-directory]
 allowed-tools: Agent, Read, Write, Glob, Grep
 contract:
@@ -15,7 +15,7 @@ contract:
 
 # Annotate Guidance
 
-You are tasked with generating architecture guidance files for a brownfield project. You will map the project structure, auto-detect its architecture, analyze each architectural layer, and batch-write compact architecture.md files under `.rpiv/guidance/` mirroring the project's directory structure.
+You are tasked with generating architecture guidance files for a brownfield project. You will map the project structure, auto-detect its architecture, analyze each architectural layer, and batch-write compact architecture.md files under `.myflow/guidance/` mirroring the project's directory structure.
 
 ## Input
 
@@ -65,7 +65,7 @@ You are tasked with generating architecture guidance files for a brownfield proj
 
      Architecture detected: {pattern name}
 
-     Files will be written to `.rpiv/guidance/` mirroring the project structure.
+     Files will be written to `.myflow/guidance/` mirroring the project structure.
 
      ### Folders that need architectural guidance:
      - `/` (root) — Project overview (compact)
@@ -170,7 +170,7 @@ You are tasked with generating architecture guidance files for a brownfield proj
    - Draft architecture.md content in this order — **subfolder files first, root last**:
      - Subfolder: Use the **Subfolder Architecture Template** (detailed, max 100 lines)
      - Root folder (LAST): Use the **Root Architecture Template** (compact overview). Draft root only after all subfolder files are finalized — this ensures the deduplication rule can be applied and cross-layer checklists can accurately reference subfolder content
-   - **Output directory convention:** All architecture.md files are written under `.rpiv/guidance/` at the project root, mirroring the project's directory structure. For a target folder at `src/core/`, the output path is `.rpiv/guidance/src/core/architecture.md`. For the root target, the output path is `.rpiv/guidance/architecture.md`. Create intermediate directories as needed.
+   - **Output directory convention:** All architecture.md files are written under `.myflow/guidance/` at the project root, mirroring the project's directory structure. For a target folder at `src/core/`, the output path is `.myflow/guidance/src/core/architecture.md`. For the root target, the output path is `.myflow/guidance/architecture.md`. Create intermediate directories as needed.
    - Enforce the 100-line limit on subfolder files — code examples are essential but keep them concise
    - If the pattern-finder identified repeatable "add new entity" workflows, include them as `<important if="you are adding a new {entity} to this layer">` conditional sections
    - If testing patterns were detected, include them as `<important if="you are writing or modifying tests for this layer">` conditional sections
@@ -180,7 +180,7 @@ You are tasked with generating architecture guidance files for a brownfield proj
    - Do NOT include patterns easily discoverable from existing code — LLMs are in-context learners and will follow patterns after a few file reads. Only document conventions that are surprising, non-obvious, or span multiple layers
    - If a pattern section would contain only prose or comments with no code example, either expand it with a real idiomatic example or omit it and reference the source file (e.g., "see `BaseModalComponent` for the modal pattern")
    - Before writing, verify: no root conditional block duplicates content from a subfolder architecture.md. If a layer has its own subfolder file, remove its summary from root
-   - For cross-layer vertical-slice checklists in root, each step should reference the relevant subfolder architecture.md (e.g., "see `.rpiv/guidance/src/data/architecture.md`") rather than inlining the full procedure
+   - For cross-layer vertical-slice checklists in root, each step should reference the relevant subfolder architecture.md (e.g., "see `.myflow/guidance/src/data/architecture.md`") rather than inlining the full procedure
    - If an existing root architecture.md or CLAUDE.md was found:
      - Review its content
      - Redistribute any detailed layer-specific content to the appropriate subfolder architecture.md files
@@ -195,7 +195,7 @@ You are tasked with generating architecture guidance files for a brownfield proj
 
    **Pattern sections** — every pattern H2 must contain a fenced code block with an idiomatic example. If a section is prose-only or comment-only, either expand it with a real code example or replace the section with a one-line file reference (e.g., "see `TradeDeskMapping.cs` for the mapping pattern").
 
-   **Root deduplication** — for each root conditional block, verify it is NOT summarizing a layer that has its own subfolder architecture.md. If it is, remove the block. For cross-layer vertical-slice checklists, verify each step references the relevant subfolder file (e.g., "see `.rpiv/guidance/X/architecture.md`") rather than inlining the procedure.
+   **Root deduplication** — for each root conditional block, verify it is NOT summarizing a layer that has its own subfolder architecture.md. If it is, remove the block. For cross-layer vertical-slice checklists, verify each step references the relevant subfolder file (e.g., "see `.myflow/guidance/X/architecture.md`") rather than inlining the procedure.
 
    **Frontend/UI conditional coverage** — for each frontend/UI layer, list every repeatable workflow the pattern-finder reported (components, services, pages/routes, directives, pipes, hooks, stores — whatever was detected). Then compare that list against the drafted `<important if>` conditional sections. Any workflow on the list without a matching conditional is a gap — draft and add the missing section before proceeding.
 
@@ -209,7 +209,7 @@ You are tasked with generating architecture guidance files for a brownfield proj
    ```
 
 9. **Pass 3 — Write all architecture.md files:**
-   - Write each file to `.rpiv/guidance/{relative_path}/architecture.md`. For the root file, write to `.rpiv/guidance/architecture.md`. Create any intermediate directories that do not exist.
+   - Write each file to `.myflow/guidance/{relative_path}/architecture.md`. For the root file, write to `.myflow/guidance/architecture.md`. Create any intermediate directories that do not exist.
    - Write ALL files at once using the Write tool
    - Do NOT ask for confirmation before each file — batch mode
    - After writing, present a summary:
@@ -218,9 +218,9 @@ You are tasked with generating architecture guidance files for a brownfield proj
 
      | File | Lines | Description |
      |------|-------|-------------|
-     | .rpiv/guidance/architecture.md | 45 | Root project overview |
-     | .rpiv/guidance/src/core/architecture.md | 78 | Core domain layer |
-     | .rpiv/guidance/src/services/architecture.md | 65 | Service layer |
+     | .myflow/guidance/architecture.md | 45 | Root project overview |
+     | .myflow/guidance/src/core/architecture.md | 78 | Core domain layer |
+     | .myflow/guidance/src/services/architecture.md | 65 | Service layer |
      | {etc.} | | |
 
      Total: {N} files created/updated
@@ -306,7 +306,7 @@ See the following for well-formed subfolder architecture.md examples:
   - NEVER draft architecture.md content before completing the developer checkpoint
 - **.gitignore compliance**: Skip directories excluded by .gitignore (node_modules, dist, build, .git, vendor, etc.)
 - **Batch output mode**: Write all architecture.md files at once in Pass 3, do not ask for per-file confirmation
-- **Existing file handling**: If an architecture.md already exists at any target location in `.rpiv/guidance/`, replace it entirely using the Write tool
+- **Existing file handling**: If an architecture.md already exists at any target location in `.myflow/guidance/`, replace it entirely using the Write tool
 - **Line budget**: Subfolder architecture.md files must not exceed 100 lines — code examples in Key Patterns are mandatory, keep them idiomatic and concise
 - **No frontmatter**: architecture.md files are pure markdown, no YAML frontmatter
 - Keep the main agent focused on synthesis, not deep file reading — delegate analysis to sub-agents

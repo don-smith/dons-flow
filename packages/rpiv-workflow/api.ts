@@ -45,7 +45,7 @@ export type StageSchema<Input = unknown, Output = Input> = StandardSchemaV1<Inpu
 // ===========================================================================
 
 /**
- * - `"produces"` — protocol skills that write `.rpiv/artifacts/<bucket>/<file>.md`.
+ * - `"produces"` — protocol skills that write `.myflow/artifacts/<bucket>/<file>.md`.
  *   The runner halts the chain if the path doesn't appear in the transcript.
  * - `"side-effect"` — action skills (commit, implement) where the side effect IS
  *   the work; the chain inherits the prior `currentPrimaryArtifact(state)`.
@@ -558,7 +558,7 @@ function terminalScript<TIn = unknown>(opts: ActsScriptOptions<TIn>): StageDef<T
 
 /**
  * Artifact-producing stage: invokes a Pi skill that writes
- * `.rpiv/artifacts/<bucket>/<file>.md`. Defaults to fresh-session. The
+ * `.myflow/artifacts/<bucket>/<file>.md`. Defaults to fresh-session. The
  * skill body defaults to the surrounding `stages` record key — override
  * via `{ skill: "<other>" }` only when the stage id and the Pi skill
  * differ (e.g. a stage keyed `design-after-review` aliasing the

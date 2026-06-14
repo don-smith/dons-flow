@@ -3,11 +3,11 @@
  *
  *   user    — config `~/.config/rpiv-workflow/config.ts`
  *             packs  `~/.config/rpiv-workflow/packs/*.ts`
- *   project — config `<cwd>/.rpiv/workflows/config.ts`
- *             packs  `<cwd>/.rpiv/workflows/packs/*.ts`
+ *   project — config `<cwd>/.myflow/workflows/config.ts`
+ *             packs  `<cwd>/.myflow/workflows/packs/*.ts`
  *
- * Project config lives under the unified `.rpiv/<domain>/` tree alongside
- * run state (`.rpiv/workflows/runs/`), so the package no longer carries the
+ * Project config lives under the unified `.myflow/<domain>/` tree alongside
+ * run state (`.myflow/workflows/runs/`), so the package no longer carries the
  * legacy `.rpiv-workflow/` outlier directory.
  */
 
@@ -21,7 +21,7 @@ export interface OverlayPaths {
 	packsDir: string;
 }
 
-/** Project overlay paths under `<cwd>/.rpiv/workflows/`. */
+/** Project overlay paths under `<cwd>/.myflow/workflows/`. */
 export function projectOverlayPaths(cwd: string): OverlayPaths {
 	const root = join(cwd, ".rpiv", "workflows");
 	return { configFile: join(root, "config.ts"), packsDir: join(root, "packs") };

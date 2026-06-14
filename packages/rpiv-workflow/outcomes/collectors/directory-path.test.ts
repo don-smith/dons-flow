@@ -46,12 +46,12 @@ describe("directoryPathCollector", () => {
 	});
 
 	it("escapes regex metacharacters in dir (e.g. dots in subfolder names)", async () => {
-		const collector = directoryPathCollector({ dir: ".rpiv/artifacts/research.v2", ext: "md" });
-		const ctx = ctxOf([asst("Result: .rpiv/artifacts/research.v2/topic.md")]);
+		const collector = directoryPathCollector({ dir: ".myflow/artifacts/research.v2", ext: "md" });
+		const ctx = ctxOf([asst("Result: .myflow/artifacts/research.v2/topic.md")]);
 		const result = await collector.collect(ctx);
 		expect(result.kind === "ok" && result.artifacts[0]?.handle).toEqual({
 			kind: "fs",
-			path: ".rpiv/artifacts/research.v2/topic.md",
+			path: ".myflow/artifacts/research.v2/topic.md",
 		});
 	});
 

@@ -24,7 +24,7 @@ import { hasAssistantMessage, lastAssistantStopReason } from "./transcript.js";
 import { typeboxSchema } from "./typebox-adapter.js";
 
 // Note: transcript-path scanning moved to rpiv-pi (`rpivArtifactCollector`)
-// since the `.rpiv/artifacts/<bucket>/<file>.md` layout is an rpiv
+// since the `.myflow/artifacts/<bucket>/<file>.md` layout is an rpiv
 // convention, not a framework concern. Tests for that collector live
 // alongside it in `packages/rpiv-pi/extensions/rpiv-core/`.
 
@@ -54,7 +54,7 @@ const phaseHeadingsFanout: FanoutFn = ({ artifact, cwd }) => {
 };
 
 // ---------------------------------------------------------------------------
-// Test outcome: scan assistant text for `.rpiv/artifacts/<bucket>/<file>.md`
+// Test outcome: scan assistant text for `.myflow/artifacts/<bucket>/<file>.md`
 // paths (the rpiv-pi convention, inlined so this test file doesn't reach for
 // an rpiv-pi import). Used as the default outcome on produces nodes
 // built by `wf()` below.
@@ -102,7 +102,7 @@ const transcriptArtifactMdOutcome: OutputSpec<unknown, "artifact-md", Record<str
 			if (!lastMatch) {
 				return {
 					kind: "fatal",
-					message: `${ctx.skill} finished without producing a .rpiv/artifacts/<bucket>/<file>.md path`,
+					message: `${ctx.skill} finished without producing a .myflow/artifacts/<bucket>/<file>.md path`,
 				};
 			}
 			return { kind: "ok", artifacts: [{ handle: fsHandle(lastMatch), role: "primary" }] };
@@ -258,10 +258,10 @@ describe("runWorkflow", () => {
 	});
 
 	it("claims the name in the index and stamps it on the header on a successful run", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 		});
 
 		const result = await runWorkflow(chain.ctx, {
@@ -278,10 +278,10 @@ describe("runWorkflow", () => {
 	});
 
 	it("completes a single-step workflow on success and records header + completed step", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 		});
 
 		const result = await runWorkflow(chain.ctx, {
@@ -293,7 +293,7 @@ describe("runWorkflow", () => {
 			runId: expect.stringMatching(/^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}-[0-9a-f]{4}$/),
 			success: true,
 			stagesCompleted: 1,
-			lastArtifact: ".rpiv/artifacts/research/r.md",
+			lastArtifact: ".myflow/artifacts/research/r.md",
 			error: undefined,
 		});
 		expect(chain.ctx.newSession).toHaveBeenCalledTimes(1);
@@ -309,7 +309,7 @@ describe("runWorkflow", () => {
 			status: "completed",
 		});
 		expect((stages[0]?.output as { artifacts: Array<{ handle: { path: string } }> }).artifacts[0]?.handle.path).toBe(
-			".rpiv/artifacts/research/r.md",
+			".myflow/artifacts/research/r.md",
 		);
 	});
 
@@ -318,13 +318,13 @@ describe("runWorkflow", () => {
 		// on the freshCtx handed to the previous withSession callback. If the
 		// runner ever regressed to capturing the outer ctx, this assertion
 		// would fire (outer.newSession.calls would be 2).
-		writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-		writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("step 1 → .rpiv/artifacts/research/r.md")] },
-				{ branch: [mockAssistantMessage("step 2 → .rpiv/artifacts/designs/d.md")] },
+				{ branch: [mockAssistantMessage("step 1 → .myflow/artifacts/research/r.md")] },
+				{ branch: [mockAssistantMessage("step 2 → .myflow/artifacts/designs/d.md")] },
 			],
 		});
 
@@ -335,17 +335,17 @@ describe("runWorkflow", () => {
 
 		expect(result.success).toBe(true);
 		expect(result.stagesCompleted).toBe(2);
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/designs/d.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/designs/d.md");
 		expect(chain.ctx.newSession).toHaveBeenCalledTimes(1);
 		// Step 2's prompt uses the artifact produced by step 1 — not the
 		// original user input. This is the artifact-handoff invariant.
-		expect(chain.sentMessages).toEqual(["/skill:research x", "/skill:design .rpiv/artifacts/research/r.md"]);
+		expect(chain.sentMessages).toEqual(["/skill:research x", "/skill:design .myflow/artifacts/research/r.md"]);
 		expect(chain.remaining()).toBe(0);
 
 		const { stages } = readState(tmpDir);
 		expect(stages.map((s) => s.status)).toEqual(["completed", "completed"]);
 		expect((stages[1]?.output as { artifacts: Array<{ handle: { path: string } }> }).artifacts[0]?.handle.path).toBe(
-			".rpiv/artifacts/designs/d.md",
+			".myflow/artifacts/designs/d.md",
 		);
 
 		// The persistent status line updates exactly once per stage (in order),
@@ -416,7 +416,7 @@ describe("runWorkflow", () => {
 	it("expands an implement step into N phases when its plan artifact has ## Phase headings", async () => {
 		// Pre-write a plan artifact at the path step 1 will emit. The runner
 		// reads it from disk during the implement-step multi-phase check.
-		const planRelPath = ".rpiv/artifacts/plans/p.md";
+		const planRelPath = ".myflow/artifacts/plans/p.md";
 		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
 		writeFileSync(
 			join(tmpDir, planRelPath),
@@ -472,7 +472,7 @@ describe("runWorkflow", () => {
 		// Mixed-id FanoutFn: phase 1 has an id, phase 2 does not. The audit
 		// row should prefer `id` per-unit so post-hoc tooling joins on a
 		// stable key when one was supplied.
-		const planRelPath = ".rpiv/artifacts/plans/p.md";
+		const planRelPath = ".myflow/artifacts/plans/p.md";
 		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
 		writeFileSync(join(tmpDir, planRelPath), "# Plan\n\n## Phase 1: alpha\n## Phase 2: beta\n");
 
@@ -516,7 +516,7 @@ describe("runWorkflow", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("Plan ready: .rpiv/artifacts/plans/p.md")] },
+				{ branch: [mockAssistantMessage("Plan ready: .myflow/artifacts/plans/p.md")] },
 				{ branch: [mockAssistantMessage("implement done")] },
 			],
 		});
@@ -590,7 +590,7 @@ describe("runWorkflow", () => {
 	});
 
 	it("abort mid-chain surfaces partial artifacts produced by earlier stages", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 		// User ESCs at stage 2 of a 3-stage chain. Stage 1 already wrote an
 		// artifact — the user should see it listed instead of having to grep
 		// the JSONL. This mirrors the error-path symmetry: an error at stage 2
@@ -598,7 +598,7 @@ describe("runWorkflow", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
+				{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
 				{ branch: [mockAssistantMessage("partial interrupted by user", "aborted")] },
 				{ branch: [mockAssistantMessage("never reached")] },
 			],
@@ -649,7 +649,7 @@ describe("runWorkflow", () => {
 
 	it("halts the chain when a stage finishes cleanly but writes no artifact (plain-text question guard)", async () => {
 		// Failure mode this guards: agent stops with stopReason "stop" but no
-		// `.rpiv/artifacts/...` path in the transcript (e.g. it asked a plain-
+		// `.myflow/artifacts/...` path in the transcript (e.g. it asked a plain-
 		// text clarifying question instead of using ask_user_question). Without
 		// the requireArtifact guard the runner would record completed, advance
 		// to stage 2, and silently re-send the *previous* (or original) input.
@@ -657,7 +657,7 @@ describe("runWorkflow", () => {
 			cwd: tmpDir,
 			steps: [
 				{ branch: [mockAssistantMessage("What framework should I use?")] },
-				{ branch: [mockAssistantMessage("never reached .rpiv/artifacts/designs/d.md")] },
+				{ branch: [mockAssistantMessage("never reached .myflow/artifacts/designs/d.md")] },
 			],
 		});
 
@@ -691,7 +691,7 @@ describe("runWorkflow", () => {
 		// iterate over `## Phase N:` headings, not over per-phase outputs —
 		// asserting the negative here so a future refactor doesn't unify the
 		// two paths and accidentally break phase progression.
-		const planRelPath = ".rpiv/artifacts/plans/p.md";
+		const planRelPath = ".myflow/artifacts/plans/p.md";
 		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
 		writeFileSync(join(tmpDir, planRelPath), "# Plan\n\n## Phase 1: a\nx\n## Phase 2: b\ny\n");
 
@@ -718,7 +718,7 @@ describe("runWorkflow", () => {
 	describe("per-node kind dispatch", () => {
 		it("side-effect nodes complete cleanly without producing an artifact (e.g. commit at end of preset)", async () => {
 			// `commit` defaults to kind "side-effect" via the dagWith factory.
-			// The branch contains no .rpiv/artifacts/... path; the runner must
+			// The branch contains no .myflow/artifacts/... path; the runner must
 			// still treat the stage as completed and finish the workflow.
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
@@ -736,17 +736,17 @@ describe("runWorkflow", () => {
 		});
 
 		it("side-effect node mid-chain inherits the prior stage's artifact for downstream stages", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			// research (produces) → commit (side-effect, no artifact) → design (produces).
 			// Design must see research's artifact path as its input — commit
 			// doesn't reset currentArtifactPath(state) when it produces nothing.
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
 					{ branch: [mockAssistantMessage("Committed.")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -757,12 +757,12 @@ describe("runWorkflow", () => {
 
 			expect(result.success).toBe(true);
 			expect(result.stagesCompleted).toBe(3);
-			expect(result.lastArtifact).toBe(".rpiv/artifacts/designs/d.md");
+			expect(result.lastArtifact).toBe(".myflow/artifacts/designs/d.md");
 			// Design received research's artifact as input — commit didn't blank it.
 			expect(chain.sentMessages).toEqual([
 				"/skill:research x",
-				"/skill:commit .rpiv/artifacts/research/r.md",
-				"/skill:design .rpiv/artifacts/research/r.md",
+				"/skill:commit .myflow/artifacts/research/r.md",
+				"/skill:design .myflow/artifacts/research/r.md",
 			]);
 		});
 
@@ -849,7 +849,7 @@ describe("runWorkflow", () => {
 
 	describe("sessionPolicy: continue", () => {
 		it("completes a single continue stage via pi.sendUserMessage", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [],
@@ -862,7 +862,7 @@ describe("runWorkflow", () => {
 			const branch = chain.ctx.sessionManager.getBranch() as unknown[];
 			(chain.pi!.sendUserMessage as ReturnType<typeof vi.fn>).mockImplementation((content: unknown) => {
 				chain.sentMessages.push(typeof content === "string" ? content : JSON.stringify(content));
-				branch.push(mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md"));
+				branch.push(mockAssistantMessage("Wrote .myflow/artifacts/research/r.md"));
 			});
 
 			const result = await runWorkflow(chain.ctx, {
@@ -873,7 +873,7 @@ describe("runWorkflow", () => {
 
 			expect(result.success).toBe(true);
 			expect(result.stagesCompleted).toBe(1);
-			expect(result.lastArtifact).toBe(".rpiv/artifacts/research/r.md");
+			expect(result.lastArtifact).toBe(".myflow/artifacts/research/r.md");
 			// No newSession called — the continue path reuses the outer session
 			expect(chain.ctx.newSession).not.toHaveBeenCalled();
 			// Message sent via pi.sendUserMessage (sync)
@@ -881,10 +881,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("chains fresh → continue with correct branch offset", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
-			const priorArtifact = ".rpiv/artifacts/research/r.md";
-			const designArtifact = ".rpiv/artifacts/designs/d.md";
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
+			const priorArtifact = ".myflow/artifacts/research/r.md";
+			const designArtifact = ".myflow/artifacts/designs/d.md";
 
 			// Shared mutable branch — the fresh stage reads it as-is; the
 			// continue stage's sendUserMessage appends its entries.
@@ -934,10 +934,10 @@ describe("runWorkflow", () => {
 			// CONTINUE_HANDLER prefers `ctx.sendUserMessage` (the live inner
 			// ctx delivered to withSession, always valid); the host is only
 			// the fallback for workflow-start-with-continue-first-stage.
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
-			const priorArtifact = ".rpiv/artifacts/research/r.md";
-			const designArtifact = ".rpiv/artifacts/designs/d.md";
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
+			const priorArtifact = ".myflow/artifacts/research/r.md";
+			const designArtifact = ".myflow/artifacts/designs/d.md";
 
 			const sharedBranch: unknown[] = [mockAssistantMessage(`Wrote ${priorArtifact}`)];
 			const chain = createMockSessionChain({
@@ -1146,11 +1146,11 @@ describe("runWorkflow", () => {
 		// failed) and zero rows for stage 2.
 		// -------------------------------------------------------------------
 		it("attributes a mid-chain runStage throw to the failing stage, not to the prior one", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const mockPi = createMockPi({ skills: ["research", "implement"] });
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 				pi: mockPi.pi,
 			});
 
@@ -1183,10 +1183,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("branch offset prevents false positive from prior stage artifact", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			// Fresh stage produces artifact, continue stage fails to produce its own.
 			// Without offset, extractArtifactPath would return the prior artifact.
-			const priorArtifact = ".rpiv/artifacts/research/r.md";
+			const priorArtifact = ".myflow/artifacts/research/r.md";
 
 			// Shared mutable branch: pre-populated with the fresh stage's entry.
 			const sharedBranch: unknown[] = [mockAssistantMessage(`Wrote ${priorArtifact}`)];
@@ -1230,13 +1230,13 @@ describe("runWorkflow", () => {
 
 	describe("input validation", () => {
 		it("halts chain when prior output fails consumer's inputSchema", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			// Stage 1 (research) produces an artifact. Stage 2 (design) has an
 			// inputSchema that rejects the output data from stage 1.
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
 					// Stage 2 is never reached — input validation halts before executeSession
 				],
 			});
@@ -1261,10 +1261,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("error notification names both producing and consuming skill", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const schema = typeboxSchema(Type.Object({ version: Type.Integer() }));
@@ -1281,13 +1281,13 @@ describe("runWorkflow", () => {
 		});
 
 		it("stages without inputSchema are unaffected", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -1302,13 +1302,13 @@ describe("runWorkflow", () => {
 		});
 
 		it("passes when output data satisfies the consumer's inputSchema", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nrequiredField: hello\n---\n\nContent");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nrequiredField: hello\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -1323,10 +1323,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("halt path does not require ExecuteSessionParams (inline halt confirmed)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const schema = typeboxSchema(Type.Object({ mustExist: Type.String() }));
@@ -1349,10 +1349,10 @@ describe("runWorkflow", () => {
 		// schema whose Promise never settles must halt the stage within the
 		// configured budget rather than hang the preflight pipeline.
 		it("halts when an async inputSchema's Promise never settles within validateTimeoutMs", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const hangingSchema: StageSchema<unknown, unknown> = {
@@ -1379,7 +1379,7 @@ describe("runWorkflow", () => {
 
 	describe("contract input validation (ensureContractInputValid)", () => {
 		it("halts chain when upstream output fails declared consumes.data contract", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
 			// Register a declared contract: design consumes { requiredField: string }
 			registerSkillContracts([
 				[
@@ -1399,7 +1399,7 @@ describe("runWorkflow", () => {
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			// design has NO inputSchema — contract mirror should catch the violation
@@ -1419,8 +1419,8 @@ describe("runWorkflow", () => {
 		});
 
 		it("passes when upstream output satisfies the declared consumes.data contract", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nrequiredField: hello\n---\n\nContent");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nrequiredField: hello\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			registerSkillContracts([
 				[
 					"design",
@@ -1440,8 +1440,8 @@ describe("runWorkflow", () => {
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -1455,15 +1455,15 @@ describe("runWorkflow", () => {
 		});
 
 		it("degrades (no halt) when no declared contract exists", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			// No registerSkillContracts — no contract to validate against
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -1477,8 +1477,8 @@ describe("runWorkflow", () => {
 		});
 
 		it("degrades (no halt) when consumes.data is a non-object (malformed contract)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			registerSkillContracts([
 				[
 					"design",
@@ -1492,8 +1492,8 @@ describe("runWorkflow", () => {
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -1508,7 +1508,7 @@ describe("runWorkflow", () => {
 		});
 
 		it("skips contract check when stage has its own inputSchema (no double validation)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
 			// Register a contract that would fail, but the stage also has an inputSchema
 			registerSkillContracts([
 				[
@@ -1528,7 +1528,7 @@ describe("runWorkflow", () => {
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			// inputSchema that also rejects — the inputSchema path (ensureInputValid) should fire,
@@ -1544,8 +1544,8 @@ describe("runWorkflow", () => {
 		});
 
 		it("degrades when no consumes.data on the contract", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 			registerSkillContracts([
 				[
 					"design",
@@ -1559,8 +1559,8 @@ describe("runWorkflow", () => {
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/designs/d.md")] },
 				],
 			});
 
@@ -1574,7 +1574,7 @@ describe("runWorkflow", () => {
 		});
 
 		it("skips contract check when stage reads from named channels (reads:)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
 			registerSkillContracts([
 				[
 					"design",
@@ -1595,7 +1595,7 @@ describe("runWorkflow", () => {
 			// NOT the linear output.data, so the contract check must skip.
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const result = await runWorkflow(chain.ctx, {
@@ -1613,7 +1613,7 @@ describe("runWorkflow", () => {
 		});
 
 		it("skips contract check for prompt-dispatch stages", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nfoo: 1\n---\n\nContent");
 			registerSkillContracts([
 				[
 					"design",
@@ -1633,7 +1633,7 @@ describe("runWorkflow", () => {
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
 					{ branch: [mockAssistantMessage("Done")] },
 				],
 			});
@@ -1675,15 +1675,15 @@ describe("runWorkflow", () => {
 			// the runner does NOT adjudicate reads. This locks that decision: even a
 			// disjoint channel with a registered comparator runs to completion at runtime.
 			it("does NOT halt at runtime on a disjoint reads channel — reads validity is load-time", async () => {
-				writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nstatus: ready\n---\n");
-				writeArtifact(tmpDir, ".rpiv/artifacts/plans/p.md", "---\nstatus: ready\n---\n");
+				writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nstatus: ready\n---\n");
+				writeArtifact(tmpDir, ".myflow/artifacts/plans/p.md", "---\nstatus: ready\n---\n");
 				registerCompositionComparator("plans", kindComparator);
 				registerKinds("design", "plan"); // disjoint at the channel — yet must not halt the run
 				const chain = createMockSessionChain({
 					cwd: tmpDir,
 					steps: [
-						{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-						{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/plans/p.md")] },
+						{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+						{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/plans/p.md")] },
 					],
 				});
 				const result = await runWorkflow(chain.ctx, { workflow: readsWf(), input: "x" });
@@ -1700,8 +1700,8 @@ describe("runWorkflow", () => {
 			// {status:"ready"} against revise's `requiredField`-requiring schema and
 			// HALT. The guard skips it, so the run completes.
 			it("skips consumes.data validation for a reads: stage even when the named read is satisfied", async () => {
-				writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "---\nstatus: ready\n---\n");
-				writeArtifact(tmpDir, ".rpiv/artifacts/plans/p.md", "---\nstatus: ready\n---\n");
+				writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "---\nstatus: ready\n---\n");
+				writeArtifact(tmpDir, ".myflow/artifacts/plans/p.md", "---\nstatus: ready\n---\n");
 				registerSkillContracts([
 					["research", { source: "declared", produces: { kind: "produces", meta: { artifactKind: "plan" } } }],
 					[
@@ -1724,8 +1724,8 @@ describe("runWorkflow", () => {
 				const chain = createMockSessionChain({
 					cwd: tmpDir,
 					steps: [
-						{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-						{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/plans/p.md")] },
+						{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+						{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/plans/p.md")] },
 					],
 				});
 				// Without the reads guard this HALTS (success=false) on a consumes.data
@@ -1739,13 +1739,13 @@ describe("runWorkflow", () => {
 
 	describe("predicate routing", () => {
 		it("routes to commit when severeIssueCount is 0 (no severe issues)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					// commit (side-effect)
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
@@ -1766,22 +1766,22 @@ describe("runWorkflow", () => {
 			expect(result.stagesCompleted).toBe(3); // research + code-review + commit (revise skipped)
 			expect(chain.sentMessages).toEqual([
 				"/skill:research x",
-				"/skill:code-review .rpiv/artifacts/research/r.md",
-				"/skill:commit .rpiv/artifacts/code-review/cr.md",
+				"/skill:code-review .myflow/artifacts/research/r.md",
+				"/skill:commit .myflow/artifacts/code-review/cr.md",
 			]);
 		});
 
 		it("routes to revise when severeIssueCount > 0", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 3\n---\n\nContent");
-			writeArtifact(tmpDir, ".rpiv/artifacts/revise/rev.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 3\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/revise/rev.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					// revise (linear next after code-review)
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/revise/rev.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/revise/rev.md")] },
 					// commit — after revise, the runner continues linear to commit
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
@@ -1802,20 +1802,20 @@ describe("runWorkflow", () => {
 			expect(result.stagesCompleted).toBe(4); // research + code-review + revise + commit
 			expect(chain.sentMessages).toEqual([
 				"/skill:research x",
-				"/skill:code-review .rpiv/artifacts/research/r.md",
-				"/skill:revise .rpiv/artifacts/code-review/cr.md",
-				"/skill:commit .rpiv/artifacts/revise/rev.md",
+				"/skill:code-review .myflow/artifacts/research/r.md",
+				"/skill:revise .myflow/artifacts/code-review/cr.md",
+				"/skill:commit .myflow/artifacts/revise/rev.md",
 			]);
 		});
 
 		it("routing decision appears in JSONL as type: routing row", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					// Predicate routes to commit (skipping revise) — non-linear routing
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
@@ -1853,13 +1853,13 @@ describe("runWorkflow", () => {
 		});
 
 		it("routing row emitted when predicate skips a node (non-linear advance)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
 			});
@@ -1895,13 +1895,13 @@ describe("runWorkflow", () => {
 		});
 
 		it("readAllStages ignores routing rows (filters on stageNumber)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
 			});
@@ -1928,13 +1928,13 @@ describe("runWorkflow", () => {
 		});
 
 		it("readRoutingDecisions returns only routing rows", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n\nContent");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
 			});
@@ -2014,22 +2014,22 @@ describe("runWorkflow", () => {
 
 	describe("backward-jump cycle guard", () => {
 		it("halts the chain when decision-edge retries exceed MAX_BACKWARD_JUMPS", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a3.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b3.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a3.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b3.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a3.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b3.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a3.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b3.md")] },
 				],
 			});
 
@@ -2072,18 +2072,18 @@ describe("runWorkflow", () => {
 		});
 
 		it("allows decision-edge retries within limit before halting on next exceedance", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b2.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b2.md")] },
 				],
 			});
 
@@ -2104,13 +2104,13 @@ describe("runWorkflow", () => {
 		});
 
 		it("does not count forward jumps as backward jumps", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/code-review/cr.md", "---\nsevereIssueCount: 0\n---\n");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr.md")] },
 					{ branch: [mockAssistantMessage("Committed.")] },
 				],
 			});
@@ -2131,18 +2131,18 @@ describe("runWorkflow", () => {
 		});
 
 		it("respects custom maxBackwardJumps from RunWorkflowOptions", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b2.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b2.md")] },
 				],
 			});
 
@@ -2167,13 +2167,13 @@ describe("runWorkflow", () => {
 			// `visited.add(currentName)` at the top of advanceChain happens BEFORE
 			// the backward-jump check, so the very first decision-to-self counts.
 			// cap=1 → exactly two executions of `a` before the guard halts.
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a2.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a2.md")] },
 				],
 			});
 
@@ -2192,14 +2192,14 @@ describe("runWorkflow", () => {
 		});
 
 		it("clears status line on backward-jump exhaustion", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b1.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b1.md")] },
 				],
 			});
 
@@ -2216,14 +2216,14 @@ describe("runWorkflow", () => {
 		});
 
 		it("records a failure row on backward-jump exhaustion (co-extensive with state.termination.error)", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b1.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b1.md")] },
 				],
 			});
 
@@ -2263,22 +2263,22 @@ describe("runWorkflow", () => {
 			// Under the OLD per-hop semantic, the 2nd pass's a→b deterministic
 			// hop would have ticked the counter to 2 (>cap=1) mid-iteration,
 			// halting the run with only 4 stages completed instead of 6.
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/c/c1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/a/a2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/b/b2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/c/c2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/c/c1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/a/a2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/b/b2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/c/c2.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/c/c1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/a/a2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/b/b2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/c/c2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/c/c1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/a/a2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/b/b2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/c/c2.md")] },
 				],
 			});
 
@@ -2302,28 +2302,28 @@ describe("runWorkflow", () => {
 			// decision-edge escape from B → C. Each loop should get its own
 			// retry budget; without the escape-reset, loop 2's first retry
 			// would inherit loop 1's exhausted counter and trip immediately.
-			writeArtifact(tmpDir, ".rpiv/artifacts/A/A1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/B/B1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/A/A2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/B/B2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/C/C1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/D/D1.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/C/C2.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/D/D2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/A/A1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/B/B1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/A/A2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/B/B2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/C/C1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/D/D1.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/C/C2.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/D/D2.md");
 
 			let bDecisionCount = 0;
 			let dDecisionCount = 0;
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/A/A1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/B/B1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/A/A2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/B/B2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/C/C1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/D/D1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/C/C2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/D/D2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/A/A1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/B/B1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/A/A2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/B/B2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/C/C1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/D/D1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/C/C2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/D/D2.md")] },
 				],
 			});
 
@@ -2415,10 +2415,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("passes when pi recognizes the skill", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 				pi: createMockPi({ skills: ["research"] }).pi,
 			});
 
@@ -2444,8 +2444,8 @@ describe("runWorkflow", () => {
 			// This test simulates Pi's stale-ctx behavior by making getCommands
 			// throw on every call after the first, then asserts the workflow
 			// completes both stages and getCommands was invoked exactly once.
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
-			writeArtifact(tmpDir, ".rpiv/artifacts/designs/d.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/designs/d.md");
 
 			const mockPi = createMockPi({ skills: ["research", "design"] });
 			const getCommandsSpy = mockPi.pi.getCommands as unknown as ReturnType<typeof vi.fn> &
@@ -2468,8 +2468,8 @@ describe("runWorkflow", () => {
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("step 1 → .rpiv/artifacts/research/r.md")] },
-					{ branch: [mockAssistantMessage("step 2 → .rpiv/artifacts/designs/d.md")] },
+					{ branch: [mockAssistantMessage("step 1 → .myflow/artifacts/research/r.md")] },
+					{ branch: [mockAssistantMessage("step 2 → .myflow/artifacts/designs/d.md")] },
 				],
 				pi: mockPi.pi,
 			});
@@ -2498,10 +2498,10 @@ describe("runWorkflow", () => {
 			// same fail-soft posture the rest of the pi-optional surface uses.
 			// Run still proceeds; the dispatch-time behavior is whatever the
 			// caller's environment provides.
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const result = await runWorkflow(chain.ctx, {
@@ -2546,10 +2546,10 @@ describe("runWorkflow", () => {
 		const names = (calls: Array<[string, unknown[]]>) => calls.map(([n]) => n);
 
 		it("onWorkflowStart fires once before first stage; ctx carries correct identity", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 			});
 			const { calls, lifecycle } = recorder();
 			const result = await runWorkflow(chain.ctx, { workflow: wf("tiny", ["research"]), input: "x", lifecycle });
@@ -2569,11 +2569,11 @@ describe("runWorkflow", () => {
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage(`Plan: ${".rpiv/artifacts/research/r.md"}`)] },
+					{ branch: [mockAssistantMessage(`Plan: ${".myflow/artifacts/research/r.md"}`)] },
 					{ branch: [mockAssistantMessage("done")] },
 				],
 			});
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const { calls, lifecycle } = recorder();
 			await runWorkflow(chain.ctx, {
 				workflow: wf("two", ["research", "design"]),
@@ -2587,7 +2587,7 @@ describe("runWorkflow", () => {
 		});
 
 		it("onStageEnd fires only on success and carries the validated Output", async () => {
-			const planRel = ".rpiv/artifacts/research/r.md";
+			const planRel = ".myflow/artifacts/research/r.md";
 			writeArtifact(tmpDir, planRel, "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
@@ -2618,10 +2618,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("onRoute fires after the routing decision; `to` is the next stage name (or 'stop')", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 			});
 			const { calls, lifecycle } = recorder();
 			await runWorkflow(chain.ctx, { workflow: wf("tiny", ["research"]), input: "x", lifecycle });
@@ -2633,7 +2633,7 @@ describe("runWorkflow", () => {
 		});
 
 		it("onFanoutStart + onFanoutUnitStart/End fire in correct order for a 3-unit fanout", async () => {
-			const planRel = ".rpiv/artifacts/plans/p.md";
+			const planRel = ".myflow/artifacts/plans/p.md";
 			writeArtifact(tmpDir, planRel, "# Plan\n## Phase 1:\n## Phase 2:\n## Phase 3:\n");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
@@ -2671,10 +2671,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("onWorkflowEnd fires exactly once as the last event with the result envelope", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 			});
 			const { calls, lifecycle } = recorder();
 			const result = await runWorkflow(chain.ctx, { workflow: wf("tiny", ["research"]), input: "x", lifecycle });
@@ -2686,10 +2686,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("listener throws are caught and logged, run still completes, other events still fire", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 			});
 			const seen: string[] = [];
 			const result = await runWorkflow(chain.ctx, {
@@ -2721,10 +2721,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("LifecycleContext.trigger defaults to programmatic; ctx round-trips to JSONL header", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 			});
 			const { calls, lifecycle } = recorder();
 			await runWorkflow(chain.ctx, { workflow: wf("tiny", ["research"]), input: "x", lifecycle });
@@ -2735,10 +2735,10 @@ describe("runWorkflow", () => {
 		});
 
 		it("explicit trigger flows through every event and the JSONL header", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 			});
 			const { calls, lifecycle } = recorder();
 			const trigger = { kind: "external" as const, source: "github-webhook", ref: "deadbeef" };
@@ -2760,10 +2760,10 @@ describe("runWorkflow", () => {
 
 		describe("registerLifecycle (global registry)", () => {
 			const setupSingleStageRun = () => {
-				writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+				writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 				return createMockSessionChain({
 					cwd: tmpDir,
-					steps: [{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] }],
+					steps: [{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] }],
 				});
 			};
 
@@ -2853,11 +2853,11 @@ describe("runWorkflow", () => {
 					},
 				});
 				try {
-					writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md", "");
+					writeArtifact(tmpDir, ".myflow/artifacts/research/r.md", "");
 					const chain = createMockSessionChain({
 						cwd: tmpDir,
 						steps: [
-							{ branch: [mockAssistantMessage("Plan: .rpiv/artifacts/research/r.md")] },
+							{ branch: [mockAssistantMessage("Plan: .myflow/artifacts/research/r.md")] },
 							{ branch: [mockAssistantMessage("done")] },
 						],
 					});
@@ -2885,10 +2885,10 @@ describe("runWorkflow", () => {
 	describe("runWorkflowByName", () => {
 		it("loads the named workflow and runs it to success", async () => {
 			registerBuiltIns([wf("byname-tiny", ["research"])]);
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const result = await runWorkflowByName(chain.ctx, "byname-tiny", "add dark mode");
@@ -2897,7 +2897,7 @@ describe("runWorkflow", () => {
 				runId: expect.stringMatching(/^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}-[0-9a-f]{4}$/),
 				success: true,
 				stagesCompleted: 1,
-				lastArtifact: ".rpiv/artifacts/research/r.md",
+				lastArtifact: ".myflow/artifacts/research/r.md",
 				error: undefined,
 			});
 			expect(chain.sentMessages).toEqual(["/skill:research add dark mode"]);
@@ -2924,10 +2924,10 @@ describe("runWorkflow", () => {
 
 		it("forwards options (trigger) through to runWorkflow", async () => {
 			registerBuiltIns([wf("byname-tiny", ["research"])]);
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const result = await runWorkflowByName(chain.ctx, "byname-tiny", "add dark mode", {
@@ -2966,12 +2966,12 @@ describe("runWorkflow", () => {
 		});
 
 		it("aborting after stage 1 stops the chain: stage 2 is recorded 'aborted', its session never opens", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const controller = new AbortController();
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				// Only one step — stage 2 must never run.
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const result = await runWorkflow(chain.ctx, {
@@ -3002,11 +3002,11 @@ describe("runWorkflow", () => {
 		});
 
 		it("a never-aborted signal does not affect a normal run", async () => {
-			writeArtifact(tmpDir, ".rpiv/artifacts/research/r.md");
+			writeArtifact(tmpDir, ".myflow/artifacts/research/r.md");
 			const controller = new AbortController();
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
-				steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/research/r.md")] }],
+				steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/research/r.md")] }],
 			});
 
 			const result = await runWorkflow(chain.ctx, {

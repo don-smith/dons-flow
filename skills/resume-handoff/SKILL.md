@@ -19,14 +19,14 @@ You are tasked with resuming work from a handoff document through an interactive
 
 ## Input
 
-`$ARGUMENTS` — path to a handoff document under `.rpiv/artifacts/handoffs/`. If omitted, the skill lists available handoffs and asks which to resume from.
+`$ARGUMENTS` — path to a handoff document under `.myflow/artifacts/handoffs/`. If omitted, the skill lists available handoffs and asks which to resume from.
 
 ## Metadata
 
 ```!
 echo "### recent (read only in case of empty user input)"
 echo "recent handoffs:"
-node "${SKILL_DIR}/../_shared/list-recent.mjs" .rpiv/artifacts/handoffs 10
+node "${SKILL_DIR}/../_shared/list-recent.mjs" .myflow/artifacts/handoffs 10
 ```
 
 ## Flow
@@ -42,7 +42,7 @@ When this command is invoked:
 1. **If the path to a handoff document was provided**:
    - If a handoff document path was provided as a parameter, skip the default message
    - Immediately read the handoff document FULLY using the Read tool
-   - Immediately read any research or plan documents that it links to under `.rpiv/artifacts/plans` or `.rpiv/artifacts/research` or `.rpiv/artifacts/solutions`. Read these critical files DIRECTLY using the Read tool - do NOT invoke skills for this initial reading phase.
+   - Immediately read any research or plan documents that it links to under `.myflow/artifacts/plans` or `.myflow/artifacts/research` or `.myflow/artifacts/solutions`. Read these critical files DIRECTLY using the Read tool - do NOT invoke skills for this initial reading phase.
    - Begin the analysis process by ingesting relevant context from the handoff document, reading additional files it mentions
    - Then propose a course of action to the user and confirm, or ask for clarification on direction.
 
@@ -51,7 +51,7 @@ When this command is invoked:
    - **Exactly one entry** — confirm with `ask_user_question`: "Resume this handoff?" with options "Resume `<filename>` (Recommended)" and "Pick a different path". Do NOT call `ask_user_question` with a single option (the tool requires ≥2).
    - **Two or more entries** — present the top 4 filenames as `ask_user_question` options (a free-text "Other" row is appended automatically by the tool; do not list it manually).
 
-   Direct invocation alternative: `/skill:resume-handoff .rpiv/artifacts/handoffs/<filename>`
+   Direct invocation alternative: `/skill:resume-handoff .myflow/artifacts/handoffs/<filename>`
 
 ### Step 2: Read and Analyze Handoff
 
@@ -209,7 +209,7 @@ When this command is invoked:
 ## Example Interaction Flow
 
 ```
-User: /skill:resume-handoff .rpiv/artifacts/handoffs/2025-01-08_14-30-15_webhook-validation.md
+User: /skill:resume-handoff .myflow/artifacts/handoffs/2025-01-08_14-30-15_webhook-validation.md
 Assistant: Let me read and analyze that handoff document...
 
 {Reads handoff completely}

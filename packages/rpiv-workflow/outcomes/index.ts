@@ -2,7 +2,7 @@
  * Barrel re-exports for the bundled outcomes + their primitive parts.
  *
  * `artifactMdOutcome` is deliberately NOT bundled here — the
- * `.rpiv/artifacts/<bucket>/<file>.md` layout is an rpiv-pi convention,
+ * `.myflow/artifacts/<bucket>/<file>.md` layout is an rpiv-pi convention,
  * not a framework truth. rpiv-pi ships its own `rpivArtifactMdOutcome`
  * (and `rpivArtifactCollector` / `rpivBucketCollector` helpers) built on
  * top of the framework primitives re-exported from `./collectors` and

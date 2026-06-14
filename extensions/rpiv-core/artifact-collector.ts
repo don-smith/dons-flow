@@ -1,12 +1,12 @@
 /**
- * rpiv-flavoured artifact collection — the `.rpiv/artifacts/<bucket>/<file>.md`
+ * rpiv-flavoured artifact collection — the `.myflow/artifacts/<bucket>/<file>.md`
  * convention all rpiv-pi skills emit into. This module owns the
  * convention; the framework (`@juicesharp/rpiv-workflow`) ships only
  * the primitives (`ArtifactCollector`, `ArtifactParser`, handle
  * constructors, `defineCollector`, etc.) and stays layout-agnostic.
  *
  * Two collectors:
- *   - `rpivArtifactCollector` — accepts any `.rpiv/artifacts/<bucket>/...md`
+ *   - `rpivArtifactCollector` — accepts any `.myflow/artifacts/<bucket>/...md`
  *     path the agent announces in text (bucket-agnostic). Use when a
  *     stage may emit to several sibling subfolders.
  *   - `rpivBucketCollector(bucket)` — accepts only that one bucket's
@@ -43,13 +43,13 @@ import {
 
 const RPIV_ARTIFACT_PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
-/** Bucket-agnostic — accepts any `.rpiv/artifacts/<bucket>/...md`. */
+/** Bucket-agnostic — accepts any `.myflow/artifacts/<bucket>/...md`. */
 export const rpivArtifactCollector: ArtifactCollector = transcriptPathCollector({ pattern: RPIV_ARTIFACT_PATTERN });
 
-/** Bucket-narrowed — accepts only `.rpiv/artifacts/<bucket>/...md`. */
+/** Bucket-narrowed — accepts only `.myflow/artifacts/<bucket>/...md`. */
 export function rpivBucketCollector(bucket: string): ArtifactCollector {
 	const escaped = bucket.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	const pattern = new RegExp(`\\.rpiv/artifacts/${escaped}/[\\w.-]+\\.md`, "g");
+	const pattern = new RegExp(`\\.myflow/artifacts/${escaped}/[\\w.-]+\\.md`, "g");
 	return transcriptPathCollector({ pattern });
 }
 

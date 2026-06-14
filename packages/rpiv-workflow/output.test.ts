@@ -25,7 +25,7 @@ describe("finalizeOutput", () => {
 		const m = finalizeOutput(
 			{
 				kind: "artifact-md",
-				artifacts: [{ handle: fs(".rpiv/artifacts/research/r.md"), role: "primary" }],
+				artifacts: [{ handle: fs(".myflow/artifacts/research/r.md"), role: "primary" }],
 				data: { foo: 1 },
 			},
 			baseCtx,
@@ -40,7 +40,7 @@ describe("finalizeOutput", () => {
 	});
 
 	it("forwards `kind`, `artifacts`, and `data` from the input unchanged", () => {
-		const artifacts = [{ handle: fs(".rpiv/artifacts/prior/x.md") }];
+		const artifacts = [{ handle: fs(".myflow/artifacts/prior/x.md") }];
 		const m = finalizeOutput({ kind: "git-commit", artifacts, data: { sha: "deadbeef" } }, baseCtx);
 		expect(m.kind).toBe("git-commit");
 		expect(m.data).toEqual({ sha: "deadbeef" });

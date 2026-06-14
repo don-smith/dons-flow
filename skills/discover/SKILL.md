@@ -1,6 +1,6 @@
 ---
 name: discover
-description: Interview the developer one question at a time to extract feature intent and requirements, then synthesize into a Feature Requirements Document at .rpiv/artifacts/discover/. The first question is intent-only and runs before any codebase probe; subsequent questions ground in evidence the probe surfaces. Use as the canonical entry point of the pipeline before research, or to stress-test a feature idea before codebase discovery. The FRD's Decisions block is consumed by `research` and propagates through Developer Context into `design`.
+description: Interview the developer one question at a time to extract feature intent and requirements, then synthesize into a Feature Requirements Document at .myflow/artifacts/discover/. The first question is intent-only and runs before any codebase probe; subsequent questions ground in evidence the probe surfaces. Use as the canonical entry point of the pipeline before research, or to stress-test a feature idea before codebase discovery. The FRD's Decisions block is consumed by `research` and propagates through Developer Context into `design`.
 argument-hint: "[free-text feature description | existing artifact path]"
 shell-timeout: 10
 contract:
@@ -53,7 +53,7 @@ The final artifact is research-compatible — its Decisions block is translated 
    Then wait for input.
 
 2. **Detect input shape** — parse the input:
-   - If the argument is an existing file path (resolves to a readable `.md` under `.rpiv/artifacts/`, or any path the user mentions for refinement context), read it FULLY using the Read tool WITHOUT limit/offset. Treat its content as baseline context — the interview surfaces gaps, missing requirements, and unstated assumptions relative to what's already documented.
+   - If the argument is an existing file path (resolves to a readable `.md` under `.myflow/artifacts/`, or any path the user mentions for refinement context), read it FULLY using the Read tool WITHOUT limit/offset. Treat its content as baseline context — the interview surfaces gaps, missing requirements, and unstated assumptions relative to what's already documented.
    - Otherwise → fresh-feature mode: the entire argument is the free-text feature description.
 
 3. **Read any other files mentioned** in the prompt (tickets, docs, related artifacts, explicit `path:line` references) FULLY before proceeding.
@@ -177,7 +177,7 @@ Compile interview output into the FRD. The interview's logical order (problem �
 ### Step 7: Write Artifact, Present, Chain
 
 1. **Determine metadata** (from the Metadata block above):
-   - Filename: `.rpiv/artifacts/discover/<slug>_<topic>.md` — `<slug>` is the second tab-separated field on line 1 of the Metadata block above; `<topic>` is a kebab-case slug from the settled feature concept.
+   - Filename: `.myflow/artifacts/discover/<slug>_<topic>.md` — `<slug>` is the second tab-separated field on line 1 of the Metadata block above; `<topic>` is a kebab-case slug from the settled feature concept.
    - `repository:` ← `repo:` label; `branch:` / `commit:` ← matching labels.
    - `date:` / `last_updated:` ← `<iso>` (first tab-separated field on line 1 of the Metadata block above, offset verbatim).
    - Interviewer: `author:` from the Metadata block (fallback: `unknown`).
@@ -187,7 +187,7 @@ Compile interview output into the FRD. The interview's logical order (problem �
 3. **Present and chain**:
    ```
    Intent captured to:
-   `.rpiv/artifacts/discover/<YYYY-MM-DD_HH-MM-SS>_<topic>.md`
+   `.myflow/artifacts/discover/<YYYY-MM-DD_HH-MM-SS>_<topic>.md`
 
    {N} requirements, {M} decisions, {K} open questions.
 
@@ -197,7 +197,7 @@ Compile interview output into the FRD. The interview's logical order (problem �
 
    💬 Follow-up: discover writes a fresh FRD per call — re-invoke `/skill:discover` to iterate (the prior FRD stays unchanged on disk).
 
-   **Next step:** `/skill:research .rpiv/artifacts/discover/<YYYY-MM-DD_HH-MM-SS>_<topic>.md` — ground the intent in codebase reality.
+   **Next step:** `/skill:research .myflow/artifacts/discover/<YYYY-MM-DD_HH-MM-SS>_<topic>.md` — ground the intent in codebase reality.
 
    > 🆕 Tip: start a fresh session with `/new` first — chained skills work best with a clean context window.
    ```

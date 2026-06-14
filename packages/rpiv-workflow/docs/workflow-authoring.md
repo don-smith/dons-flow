@@ -280,7 +280,7 @@ load validation:
 acts.prompt({ prompt: "Implement the design spec discussed above.", sessionPolicy: "continue" })
 
 // produces chat turn — its reply runs the outcome collector like any produces stage
-produces.prompt({ prompt: "Write a one-paragraph summary to .rpiv/artifacts/summary/s.md", outcome: myOutcome })
+produces.prompt({ prompt: "Write a one-paragraph summary to .myflow/artifacts/summary/s.md", outcome: myOutcome })
 
 // dynamic — weave in the upstream Output (same ScriptContext script stages get)
 produces.prompt({
@@ -595,7 +595,7 @@ revise: produces({
 When `reads:` is set the runner replaces the default prompt with a labelled-flag form:
 
 ```
-/skill:revise --plans .rpiv/artifacts/plans/p.md --reviews .rpiv/artifacts/reviews/r.md
+/skill:revise --plans .myflow/artifacts/plans/p.md --reviews .myflow/artifacts/reviews/r.md
 ```
 
 Multi-artifact stages get flag repetition: an upstream with two `fs` artifacts expands to `--plans <a> --plans <b>` so skill arg-parsers collect repeated flags into arrays the same way `argparse`/`clap`/shell utilities do.

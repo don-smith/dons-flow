@@ -1,6 +1,6 @@
 ---
 name: blueprint
-description: Plan complex features by decomposing them into vertical slices (one slice equals one phase) with developer micro-checkpoints between phases, producing an implement-ready phased plan in .rpiv/artifacts/plans/. Use for complex multi-component features touching 6+ files across multiple layers when iterative review between slices is valuable. Optionally consumes a research/solutions artifact; can also run standalone with a free-text feature description for small tasks. Prefer blueprint over plan when mid-flight micro-checkpoints matter, and prefer plan when a straightforward phased breakdown is enough.
+description: Plan complex features by decomposing them into vertical slices (one slice equals one phase) with developer micro-checkpoints between phases, producing an implement-ready phased plan in .myflow/artifacts/plans/. Use for complex multi-component features touching 6+ files across multiple layers when iterative review between slices is valuable. Optionally consumes a research/solutions artifact; can also run standalone with a free-text feature description for small tasks. Prefer blueprint over plan when mid-flight micro-checkpoints matter, and prefer plan when a straightforward phased breakdown is enough.
 argument-hint: "[research artifact path or feature description]"
 shell-timeout: 10
 contract:
@@ -40,11 +40,11 @@ contract:
 
 # Blueprint
 
-You are tasked with planning how code will be shaped for a feature or change AND emitting an implement-ready phased plan. Decompose the feature into vertical slices (one slice = one phase), generate code slice-by-slice with developer micro-checkpoints between slices, and write the final artifact directly into `.rpiv/artifacts/plans/` for `/skill:implement` to consume.
+You are tasked with planning how code will be shaped for a feature or change AND emitting an implement-ready phased plan. Decompose the feature into vertical slices (one slice = one phase), generate code slice-by-slice with developer micro-checkpoints between slices, and write the final artifact directly into `.myflow/artifacts/plans/` for `/skill:implement` to consume.
 
 ## Input
 
-`$ARGUMENTS` — path to a research artifact (`.rpiv/artifacts/research/*.md`) or a solutions artifact (`.rpiv/artifacts/solutions/*.md`), or a free-text feature description (standalone mode for small tasks).
+`$ARGUMENTS` — path to a research artifact (`.myflow/artifacts/research/*.md`) or a solutions artifact (`.myflow/artifacts/solutions/*.md`), or a free-text feature description (standalone mode for small tasks).
 
 ## Metadata
 
@@ -55,10 +55,10 @@ node "${SKILL_DIR}/../_shared/git-context.mjs"
 echo
 echo "### recent (read only in case of empty user input)"
 echo "recent research:"
-node "${SKILL_DIR}/../_shared/list-recent.mjs" .rpiv/artifacts/research 4
+node "${SKILL_DIR}/../_shared/list-recent.mjs" .myflow/artifacts/research 4
 echo
 echo "recent solutions:"
-node "${SKILL_DIR}/../_shared/list-recent.mjs" .rpiv/artifacts/solutions 4
+node "${SKILL_DIR}/../_shared/list-recent.mjs" .myflow/artifacts/solutions 4
 ```
 
 Copy values verbatim — do not reformat the timezone offset.
@@ -77,7 +77,7 @@ When this command is invoked:
 
 1. **Read research artifact**:
 
-   **Research artifact provided** (argument contains a path to a `.md` file in `.rpiv/artifacts/`):
+   **Research artifact provided** (argument contains a path to a `.md` file in `.myflow/artifacts/`):
    - Read the research artifact FULLY using the Read tool WITHOUT limit/offset
    - Extract: Summary, Code References, Integration Points, Architecture Insights, Precedents & Lessons, Developer Context, Open Questions
    - **Read the key source files from Code References** into the main context — especially hooks, shared utilities, and integration points the design will depend on. Read them FULLY. This ensures you have complete understanding before proceeding.
@@ -239,7 +239,7 @@ After the design summary is confirmed, decompose the feature into vertical slice
 3. **Confirm decomposition** using the `ask_user_question` tool. Question: "{N} slices for {feature}. Slice 1: {name} (foundation). Slices 2-N: {brief}. Approve decomposition?". Header: "Slices". Options: "Approve (Recommended)" (Proceed to slice-by-slice code generation); "Adjust slices" (Reorder, merge, or split slices before generating); "Change scope" (Add or remove files from the decomposition).
 
 4. **Create skeleton artifact** — immediately after decomposition is approved:
-   - Determine metadata from the Metadata block above: filename `.rpiv/artifacts/plans/<slug>_<topic>.md` (use `<slug>` from line 1 of the Metadata block above); `repository:` from `repo:`; `branch:` / `commit:` from matching labels; `author:` ← matching label (fallback: `unknown`).
+   - Determine metadata from the Metadata block above: filename `.myflow/artifacts/plans/<slug>_<topic>.md` (use `<slug>` from line 1 of the Metadata block above); `repository:` from `repo:`; `branch:` / `commit:` from matching labels; `author:` ← matching label (fallback: `unknown`).
    - Timestamp: use `<iso>` from line 1 of the Metadata block above for `date:` and `last_updated:` (copy the offset verbatim).
    - Write skeleton using the Write tool with `status: in-progress` in frontmatter
    - **Include all prose sections filled** from Steps 1-5: Overview, Requirements, Current State Analysis, Desired End State, What We're NOT Doing, Decisions, Ordering Constraints, Verification Notes, Performance Considerations, Migration Notes, Pattern References, Developer Context, References
@@ -500,7 +500,7 @@ The 8-column header is retained when only one source returns; only rows from the
 3. **Present the plan artifact location** (after triage is complete):
    ```
    Implementation plan written to:
-   `.rpiv/artifacts/plans/{filename}.md`
+   `.myflow/artifacts/plans/{filename}.md`
 
    {N} architectural decisions fixed, {P} phases generated, {M} new files, {K} existing files modified.
    {R} revisions during generation. {T} reviewer findings triaged at Step 9 ({A} applied, {D} deferred, {DD} dismissed).
@@ -514,7 +514,7 @@ The 8-column header is retained when only one source returns; only rows from the
 
    💬 Follow-up: describe the change in chat to append a timestamped Follow-up section to this artifact. Re-run `/skill:blueprint` for a fresh artifact.
 
-   **Next step:** `/skill:implement .rpiv/artifacts/plans/{filename}.md Phase 1` — start execution at Phase 1 (omit `Phase 1` to run all phases sequentially).
+   **Next step:** `/skill:implement .myflow/artifacts/plans/{filename}.md Phase 1` — start execution at Phase 1 (omit `Phase 1` to run all phases sequentially).
 
    > 🆕 Tip: start a fresh session with `/new` first — chained skills work best with a clean context window.
    ```

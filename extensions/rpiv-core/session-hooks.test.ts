@@ -79,7 +79,7 @@ describe("registerSessionHooks — event wiring", () => {
 });
 
 describe("session_start hook — migration", () => {
-	it("does NOT create .rpiv/artifacts/ on fresh project (no migration source) — issue #31", async () => {
+	it("does NOT create .myflow/artifacts/ on fresh project (no migration source) — issue #31", async () => {
 		const { pi, captured } = createMockPi({ exec: stubGitExec({}) as never });
 		registerSessionHooks(pi);
 		const handler = captured.events.get("session_start")?.[0];
@@ -88,7 +88,7 @@ describe("session_start hook — migration", () => {
 		expect(existsSync(join(projectDir, ".rpiv", "artifacts"))).toBe(false);
 	});
 
-	it("migrates thoughts/shared/ to .rpiv/artifacts/ with content preservation", async () => {
+	it("migrates thoughts/shared/ to .myflow/artifacts/ with content preservation", async () => {
 		const oldResearch = join(projectDir, "thoughts", "shared", "research");
 		mkdirSync(oldResearch, { recursive: true });
 		writeFileSync(join(oldResearch, "test.md"), "# Test Research");
@@ -127,9 +127,9 @@ describe("session_start hook — migration", () => {
 		expect(existsSync(join(projectDir, "thoughts"))).toBe(true);
 	});
 
-	it("does NOT create .rpiv/artifacts/ when thoughts/shared/ exists but is empty", async () => {
+	it("does NOT create .myflow/artifacts/ when thoughts/shared/ exists but is empty", async () => {
 		// Edge case: thoughts/shared/ pre-exists (created by tool, partial migration, etc.) but holds no entries.
-		// Migration must not leak an empty .rpiv/artifacts/ tree, and must not delete the empty source.
+		// Migration must not leak an empty .myflow/artifacts/ tree, and must not delete the empty source.
 		mkdirSync(join(projectDir, "thoughts", "shared"), { recursive: true });
 
 		const { pi, captured } = createMockPi({ exec: stubGitExec({}) as never });
@@ -170,7 +170,7 @@ describe("session_start hook — migration", () => {
 		const ctx = createMockCtx({ cwd: projectDir, hasUI: true });
 		await handler?.({ reason: "startup" } as never, ctx as never);
 
-		// No migration source → no .rpiv/artifacts/ tree, no thoughts/ tree
+		// No migration source → no .myflow/artifacts/ tree, no thoughts/ tree
 		expect(existsSync(join(projectDir, ".rpiv", "artifacts"))).toBe(false);
 		expect(existsSync(join(projectDir, "thoughts"))).toBe(false);
 	});

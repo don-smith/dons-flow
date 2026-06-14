@@ -20,7 +20,7 @@ describe("resolveGuidance — ladder", () => {
 		writeGuidanceTree(projectDir, {
 			"src/AGENTS.md": "agents-body",
 			"src/CLAUDE.md": "claude-body",
-			".rpiv/guidance/src/architecture.md": "arch-body",
+			".myflow/guidance/src/architecture.md": "arch-body",
 		});
 		const resolved = resolveGuidance(join(projectDir, "src", "foo.ts"), projectDir);
 		const srcEntry = resolved.find((r) => r.relativePath.startsWith("src/"));
@@ -30,17 +30,17 @@ describe("resolveGuidance — ladder", () => {
 	it("depth 0 skips AGENTS/CLAUDE but keeps root architecture.md", () => {
 		writeGuidanceTree(projectDir, {
 			"AGENTS.md": "root-agents",
-			".rpiv/guidance/architecture.md": "root-arch",
+			".myflow/guidance/architecture.md": "root-arch",
 		});
 		const resolved = resolveGuidance(join(projectDir, "any", "file.ts"), projectDir);
-		const rootEntry = resolved.find((r) => r.relativePath === ".rpiv/guidance/architecture.md");
+		const rootEntry = resolved.find((r) => r.relativePath === ".myflow/guidance/architecture.md");
 		expect(rootEntry?.kind).toBe("architecture");
 		expect(resolved.some((r) => r.relativePath === "AGENTS.md")).toBe(false);
 	});
 
 	it("returns root-first, specific-last order", () => {
 		writeGuidanceTree(projectDir, {
-			".rpiv/guidance/architecture.md": "root",
+			".myflow/guidance/architecture.md": "root",
 			"a/AGENTS.md": "a",
 			"a/b/AGENTS.md": "ab",
 		});
@@ -59,7 +59,7 @@ describe("resolveGuidance — ladder", () => {
 
 describe("injectRootGuidance", () => {
 	it("sends root architecture.md when present", () => {
-		writeGuidanceTree(projectDir, { ".rpiv/guidance/architecture.md": "body" });
+		writeGuidanceTree(projectDir, { ".myflow/guidance/architecture.md": "body" });
 		const { pi } = createMockPi();
 		injectRootGuidance(projectDir, pi);
 		expect(pi.sendMessage).toHaveBeenCalledTimes(1);
@@ -70,7 +70,7 @@ describe("injectRootGuidance", () => {
 	});
 
 	it("is idempotent across calls within a session", () => {
-		writeGuidanceTree(projectDir, { ".rpiv/guidance/architecture.md": "body" });
+		writeGuidanceTree(projectDir, { ".myflow/guidance/architecture.md": "body" });
 		const { pi } = createMockPi();
 		injectRootGuidance(projectDir, pi);
 		injectRootGuidance(projectDir, pi);
@@ -78,7 +78,7 @@ describe("injectRootGuidance", () => {
 	});
 
 	it("re-injects after clearInjectionState", () => {
-		writeGuidanceTree(projectDir, { ".rpiv/guidance/architecture.md": "body" });
+		writeGuidanceTree(projectDir, { ".myflow/guidance/architecture.md": "body" });
 		const { pi } = createMockPi();
 		injectRootGuidance(projectDir, pi);
 		clearInjectionState();
@@ -122,7 +122,7 @@ describe("handleToolCallGuidance", () => {
 
 	it("emits one sendMessage combining multiple newly-resolved files", () => {
 		writeGuidanceTree(projectDir, {
-			".rpiv/guidance/architecture.md": "root",
+			".myflow/guidance/architecture.md": "root",
 			"src/AGENTS.md": "src",
 		});
 		const { pi } = createMockPi();

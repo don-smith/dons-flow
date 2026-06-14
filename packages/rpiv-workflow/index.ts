@@ -63,7 +63,7 @@
  *          `unionCollectors` and the empty-list primitive `noopCollector`.
  *        - parsers: `jsonBodyParser` (parses primary fs body),
  *          `gitCommitParser`.
- *      The `.rpiv/artifacts/<bucket>/<file>.md` outcome + the
+ *      The `.myflow/artifacts/<bucket>/<file>.md` outcome + the
  *      markdown-frontmatter parser live in `@juicesharp/rpiv-pi`
  *      (`rpivArtifactMdOutcome` / `frontmatterParser`) — those are
  *      rpiv conventions, not framework defaults.
@@ -80,7 +80,7 @@
  *      `validateOutputData`, `SchemaValidationFailure`.
  *
  *   8. Persistence (low-level — JSONL inspect) — `./state/index.js`
- *      Read past runs at `<cwd>/.rpiv/workflows/runs/<run-id>.jsonl`:
+ *      Read past runs at `<cwd>/.myflow/workflows/runs/<run-id>.jsonl`:
  *      `listRuns`, `readHeader`, `resolveRun` (run-id → header; today an
  *      alias of `readHeader`), `readLastStage`, `listArtifacts`,
  *      `stateFilePath`, `runsDir`, `RunSummary`,

@@ -4,7 +4,7 @@
  * surfaced to authors via the package's top-level barrel.
  *
  * The framework ships ONLY host-agnostic collectors — no Pi tool-name
- * defaults, no `.rpiv/artifacts/` defaults, no domain helpers
+ * defaults, no `.myflow/artifacts/` defaults, no domain helpers
  * (Linear/S3/Notion). Convention layers live in sibling packages
  * (`rpiv-pi` ships `rpivArtifactCollector` / `rpivBucketCollector`).
  */

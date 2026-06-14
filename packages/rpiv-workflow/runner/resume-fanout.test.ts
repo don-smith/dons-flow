@@ -264,7 +264,7 @@ describe("fanout-resume — looped (corrective) back-edge", () => {
 	it("died mid-second-pass: re-runs only the trailing generation's remaining unit, then routes onward", async () => {
 		// seed -> impl(fanout a,b) -> review(gate: loop to impl if blockers>0, else stop).
 		// Recorded: seed -> impl(a,b) gen 1 -> review(blockers=1, looped) -> impl(a) gen 2 done, impl(b) died.
-		writeLoopArtifact(".rpiv/artifacts/reviews/cr2.md", "---\nblockers_count: 0\n---\n");
+		writeLoopArtifact(".myflow/artifacts/reviews/cr2.md", "---\nblockers_count: 0\n---\n");
 		writeHeader(loopDir, loopHeader);
 		const rows: WorkflowStage[] = [
 			{
@@ -273,7 +273,7 @@ describe("fanout-resume — looped (corrective) back-edge", () => {
 				skill: "seed",
 				status: "completed",
 				ts: "t1",
-				output: out("seed", 1, ".rpiv/artifacts/seeds/s1.md"),
+				output: out("seed", 1, ".myflow/artifacts/seeds/s1.md"),
 			},
 			{ stageNumber: 2, stage: "impl (a)", skill: "impl", status: "completed", ts: "t2" },
 			{ stageNumber: 3, stage: "impl (b)", skill: "impl", status: "completed", ts: "t3" },
@@ -283,7 +283,7 @@ describe("fanout-resume — looped (corrective) back-edge", () => {
 				skill: "review",
 				status: "completed",
 				ts: "t4",
-				output: out("review", 4, ".rpiv/artifacts/reviews/cr1.md"),
+				output: out("review", 4, ".myflow/artifacts/reviews/cr1.md"),
 			},
 			// gen 2 — non-contiguous with gen 1 (the review row broke contiguity).
 			{ stageNumber: 5, stage: "impl (a)", skill: "impl", status: "completed", ts: "t5" },
@@ -295,7 +295,7 @@ describe("fanout-resume — looped (corrective) back-edge", () => {
 			cwd: loopDir,
 			steps: [
 				{ branch: [mockAssistantMessage("unit b done")] }, // impl gen-2 unit b re-run
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/cr2.md")] }, // review gen 2 → blockers=0
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/cr2.md")] }, // review gen 2 → blockers=0
 			],
 		});
 
@@ -322,7 +322,7 @@ describe("fanout-resume — looped (corrective) back-edge", () => {
 		expect(result.success).toBe(true);
 		// Only the trailing generation's remaining unit (b) re-ran — unit a of gen 2 did NOT.
 		// Then review re-ran (gen 2), saw blockers=0, and the gate routed to stop.
-		expect(chain.sentMessages).toEqual(["/skill:impl b", "/skill:review .rpiv/artifacts/reviews/cr1.md"]);
+		expect(chain.sentMessages).toEqual(["/skill:impl b", "/skill:review .myflow/artifacts/reviews/cr1.md"]);
 		// New rows appended after the originals with strictly greater stage numbers.
 		const all = readAllStages(loopDir, loopHeader.runId);
 		expect(all.slice(6).every((s) => s.stageNumber > 6)).toBe(true);

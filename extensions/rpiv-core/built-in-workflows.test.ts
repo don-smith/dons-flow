@@ -142,7 +142,7 @@ describe("readers must not silently drop the first row when no header is on disk
 			stageNumber: 1,
 			stage: "research",
 			skill: "research",
-			artifact: ".rpiv/artifacts/research/r.md",
+			artifact: ".myflow/artifacts/research/r.md",
 			status: "completed" as const,
 			ts: "2026-05-23T13:06:00-0400",
 		};
@@ -388,7 +388,7 @@ describe("phase fanout rows preserve both stage name (record key) and skill body
 	};
 
 	it("phase rows for an aliased implement stage carry skill=implement AND stage='implement-after-revise (phase N/M)'", async () => {
-		const planRelPath = ".rpiv/artifacts/plans/p.md";
+		const planRelPath = ".myflow/artifacts/plans/p.md";
 		mkdirSync(join(tmpDir, ".rpiv", "artifacts", "plans"), { recursive: true });
 		writeFileSync(join(tmpDir, planRelPath), "# Plan\n\n## Phase 1: a\nbody\n## Phase 2: b\nbody\n");
 
@@ -551,36 +551,36 @@ describe("vet workflow", () => {
 			// decision-edge increments backwardJumps to 3 (>2). The cycle:
 			//   cr1→bp1→impl1→v1 → cr2→bp2→impl2→v2 → cr3→bp3→impl3→v3 → cr4(HALT)
 			// Stages completed: 13 (cr×4 + bp×3 + impl×3 + validate×3).
-			writeArtifact(".rpiv/artifacts/code-review/cr1.md");
-			writeArtifact(".rpiv/artifacts/blueprint/bp1.md");
-			writeArtifact(".rpiv/artifacts/implement/impl1.md");
-			writeArtifact(".rpiv/artifacts/validate/v1.md");
-			writeArtifact(".rpiv/artifacts/code-review/cr2.md");
-			writeArtifact(".rpiv/artifacts/blueprint/bp2.md");
-			writeArtifact(".rpiv/artifacts/implement/impl2.md");
-			writeArtifact(".rpiv/artifacts/validate/v2.md");
-			writeArtifact(".rpiv/artifacts/code-review/cr3.md");
-			writeArtifact(".rpiv/artifacts/blueprint/bp3.md");
-			writeArtifact(".rpiv/artifacts/implement/impl3.md");
-			writeArtifact(".rpiv/artifacts/validate/v3.md");
-			writeArtifact(".rpiv/artifacts/code-review/cr4.md");
+			writeArtifact(".myflow/artifacts/code-review/cr1.md");
+			writeArtifact(".myflow/artifacts/blueprint/bp1.md");
+			writeArtifact(".myflow/artifacts/implement/impl1.md");
+			writeArtifact(".myflow/artifacts/validate/v1.md");
+			writeArtifact(".myflow/artifacts/code-review/cr2.md");
+			writeArtifact(".myflow/artifacts/blueprint/bp2.md");
+			writeArtifact(".myflow/artifacts/implement/impl2.md");
+			writeArtifact(".myflow/artifacts/validate/v2.md");
+			writeArtifact(".myflow/artifacts/code-review/cr3.md");
+			writeArtifact(".myflow/artifacts/blueprint/bp3.md");
+			writeArtifact(".myflow/artifacts/implement/impl3.md");
+			writeArtifact(".myflow/artifacts/validate/v3.md");
+			writeArtifact(".myflow/artifacts/code-review/cr4.md");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/blueprint/bp1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/implement/impl1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/validate/v1.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/blueprint/bp2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/implement/impl2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/validate/v2.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr3.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/blueprint/bp3.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/implement/impl3.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/validate/v3.md")] },
-					{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/code-review/cr4.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/blueprint/bp1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/implement/impl1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/validate/v1.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/blueprint/bp2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/implement/impl2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/validate/v2.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr3.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/blueprint/bp3.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/implement/impl3.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/validate/v3.md")] },
+					{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/code-review/cr4.md")] },
 				],
 			});
 
@@ -677,22 +677,22 @@ describe("polish workflow", () => {
 		const impl = (m: string) => ({ branch: [mockAssistantMessage(m)] });
 
 		it("happy path: one blueprint pass per review phase, each fed the prior plans; implement fans out the plans", async () => {
-			write(".rpiv/artifacts/architecture-reviews/rev.md", review2);
-			write(".rpiv/artifacts/plans/plan-1.md", plan());
-			write(".rpiv/artifacts/plans/plan-2.md", plan());
-			write(".rpiv/artifacts/validation/val.md", "");
-			write(".rpiv/artifacts/reviews/cr.md", cr(0));
+			write(".myflow/artifacts/architecture-reviews/rev.md", review2);
+			write(".myflow/artifacts/plans/plan-1.md", plan());
+			write(".myflow/artifacts/plans/plan-2.md", plan());
+			write(".myflow/artifacts/validation/val.md", "");
+			write(".myflow/artifacts/reviews/cr.md", cr(0));
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					impl("wrote .rpiv/artifacts/architecture-reviews/rev.md"),
-					impl("wrote .rpiv/artifacts/plans/plan-1.md"),
-					impl("wrote .rpiv/artifacts/plans/plan-2.md"),
+					impl("wrote .myflow/artifacts/architecture-reviews/rev.md"),
+					impl("wrote .myflow/artifacts/plans/plan-1.md"),
+					impl("wrote .myflow/artifacts/plans/plan-2.md"),
 					impl("phase done"),
 					impl("phase done"),
-					impl("wrote .rpiv/artifacts/validation/val.md"),
-					impl("wrote .rpiv/artifacts/reviews/cr.md"),
+					impl("wrote .myflow/artifacts/validation/val.md"),
+					impl("wrote .myflow/artifacts/reviews/cr.md"),
 					impl("committed"),
 				],
 			});
@@ -707,36 +707,36 @@ describe("polish workflow", () => {
 			expect(result.stagesCompleted).toBe(8);
 			// blueprint pulled one unit per review phase; phase 2 saw phase 1's plan.
 			expect(chain.sentMessages[1]).toBe(
-				"/skill:blueprint .rpiv/artifacts/architecture-reviews/rev.md Implement Phase 1: Alpha",
+				"/skill:blueprint .myflow/artifacts/architecture-reviews/rev.md Implement Phase 1: Alpha",
 			);
 			expect(chain.sentMessages[2]).toBe(
-				"/skill:blueprint .rpiv/artifacts/architecture-reviews/rev.md Implement Phase 2: Beta\n" +
-					"Prior phase plans (read first; build on them, don't duplicate): .rpiv/artifacts/plans/plan-1.md",
+				"/skill:blueprint .myflow/artifacts/architecture-reviews/rev.md Implement Phase 2: Beta\n" +
+					"Prior phase plans (read first; build on them, don't duplicate): .myflow/artifacts/plans/plan-1.md",
 			);
 			// implement fanned out each accumulated plan's `phases:` array, title-enriched.
 			expect(chain.sentMessages.filter((m) => m.startsWith("/skill:implement"))).toEqual([
-				"/skill:implement .rpiv/artifacts/plans/plan-1.md Phase 1: do the thing",
-				"/skill:implement .rpiv/artifacts/plans/plan-2.md Phase 1: do the thing",
+				"/skill:implement .myflow/artifacts/plans/plan-1.md Phase 1: do the thing",
+				"/skill:implement .myflow/artifacts/plans/plan-2.md Phase 1: do the thing",
 			]);
 		});
 
 		it("validate receives EVERY plan from the latest blueprint pass in one /skill:validate call", async () => {
-			write(".rpiv/artifacts/architecture-reviews/rev.md", review2);
-			write(".rpiv/artifacts/plans/plan-1.md", plan());
-			write(".rpiv/artifacts/plans/plan-2.md", plan());
-			write(".rpiv/artifacts/validation/val.md", "");
-			write(".rpiv/artifacts/reviews/cr.md", cr(0));
+			write(".myflow/artifacts/architecture-reviews/rev.md", review2);
+			write(".myflow/artifacts/plans/plan-1.md", plan());
+			write(".myflow/artifacts/plans/plan-2.md", plan());
+			write(".myflow/artifacts/validation/val.md", "");
+			write(".myflow/artifacts/reviews/cr.md", cr(0));
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					impl("wrote .rpiv/artifacts/architecture-reviews/rev.md"),
-					impl("wrote .rpiv/artifacts/plans/plan-1.md"),
-					impl("wrote .rpiv/artifacts/plans/plan-2.md"),
+					impl("wrote .myflow/artifacts/architecture-reviews/rev.md"),
+					impl("wrote .myflow/artifacts/plans/plan-1.md"),
+					impl("wrote .myflow/artifacts/plans/plan-2.md"),
 					impl("phase done"),
 					impl("phase done"),
-					impl("wrote .rpiv/artifacts/validation/val.md"),
-					impl("wrote .rpiv/artifacts/reviews/cr.md"),
+					impl("wrote .myflow/artifacts/validation/val.md"),
+					impl("wrote .myflow/artifacts/reviews/cr.md"),
 					impl("committed"),
 				],
 			});
@@ -750,35 +750,35 @@ describe("polish workflow", () => {
 			// The single validate session is handed ALL accumulated plans — not just
 			// the rolling-primary (last) plan — so every phase gets validated.
 			expect(chain.sentMessages.filter((m) => m.startsWith("/skill:validate"))).toEqual([
-				"/skill:validate .rpiv/artifacts/plans/plan-1.md .rpiv/artifacts/plans/plan-2.md",
+				"/skill:validate .myflow/artifacts/plans/plan-1.md .myflow/artifacts/plans/plan-2.md",
 			]);
 		});
 
 		it("corrective loop: implement consumes only the LATEST blueprint pass, never re-implementing a stale plan", async () => {
-			write(".rpiv/artifacts/architecture-reviews/rev.md", review1);
-			for (const n of [1, 2, 3]) write(`.rpiv/artifacts/plans/plan-${n}.md`, plan());
-			for (const n of [1, 2, 3]) write(`.rpiv/artifacts/validation/val-${n}.md`, "");
-			for (const n of [1, 2, 3]) write(`.rpiv/artifacts/reviews/cr-${n}.md`, cr(1)); // always blockers → loop
+			write(".myflow/artifacts/architecture-reviews/rev.md", review1);
+			for (const n of [1, 2, 3]) write(`.myflow/artifacts/plans/plan-${n}.md`, plan());
+			for (const n of [1, 2, 3]) write(`.myflow/artifacts/validation/val-${n}.md`, "");
+			for (const n of [1, 2, 3]) write(`.myflow/artifacts/reviews/cr-${n}.md`, cr(1)); // always blockers → loop
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					impl("wrote .rpiv/artifacts/architecture-reviews/rev.md"),
+					impl("wrote .myflow/artifacts/architecture-reviews/rev.md"),
 					// pass 0
-					impl("wrote .rpiv/artifacts/plans/plan-1.md"),
+					impl("wrote .myflow/artifacts/plans/plan-1.md"),
 					impl("phase done"),
-					impl("wrote .rpiv/artifacts/validation/val-1.md"),
-					impl("wrote .rpiv/artifacts/reviews/cr-1.md"),
+					impl("wrote .myflow/artifacts/validation/val-1.md"),
+					impl("wrote .myflow/artifacts/reviews/cr-1.md"),
 					// pass 1 (backward jump 1)
-					impl("wrote .rpiv/artifacts/plans/plan-2.md"),
+					impl("wrote .myflow/artifacts/plans/plan-2.md"),
 					impl("phase done"),
-					impl("wrote .rpiv/artifacts/validation/val-2.md"),
-					impl("wrote .rpiv/artifacts/reviews/cr-2.md"),
+					impl("wrote .myflow/artifacts/validation/val-2.md"),
+					impl("wrote .myflow/artifacts/reviews/cr-2.md"),
 					// pass 2 (backward jump 2)
-					impl("wrote .rpiv/artifacts/plans/plan-3.md"),
+					impl("wrote .myflow/artifacts/plans/plan-3.md"),
 					impl("phase done"),
-					impl("wrote .rpiv/artifacts/validation/val-3.md"),
-					impl("wrote .rpiv/artifacts/reviews/cr-3.md"),
+					impl("wrote .myflow/artifacts/validation/val-3.md"),
+					impl("wrote .myflow/artifacts/reviews/cr-3.md"),
 					// 3rd code-review's gate → blueprint = backward jump 3 > 2 → halt
 				],
 			});
@@ -793,16 +793,16 @@ describe("polish workflow", () => {
 			// Each implement round saw ONLY that pass's plan — the latest-pass slice
 			// dropped the stale generations, so no plan is implemented twice.
 			expect(chain.sentMessages.filter((m) => m.startsWith("/skill:implement"))).toEqual([
-				"/skill:implement .rpiv/artifacts/plans/plan-1.md Phase 1: do the thing",
-				"/skill:implement .rpiv/artifacts/plans/plan-2.md Phase 1: do the thing",
-				"/skill:implement .rpiv/artifacts/plans/plan-3.md Phase 1: do the thing",
+				"/skill:implement .myflow/artifacts/plans/plan-1.md Phase 1: do the thing",
+				"/skill:implement .myflow/artifacts/plans/plan-2.md Phase 1: do the thing",
+				"/skill:implement .myflow/artifacts/plans/plan-3.md Phase 1: do the thing",
 			]);
 			// validate shares the same latest-pass slice — each round validates only
 			// that pass's plan, never a stale generation.
 			expect(chain.sentMessages.filter((m) => m.startsWith("/skill:validate"))).toEqual([
-				"/skill:validate .rpiv/artifacts/plans/plan-1.md",
-				"/skill:validate .rpiv/artifacts/plans/plan-2.md",
-				"/skill:validate .rpiv/artifacts/plans/plan-3.md",
+				"/skill:validate .myflow/artifacts/plans/plan-1.md",
+				"/skill:validate .myflow/artifacts/plans/plan-2.md",
+				"/skill:validate .myflow/artifacts/plans/plan-3.md",
 			]);
 		});
 	});
@@ -857,10 +857,10 @@ describe("design-to-code example (prompt dispatch)", () => {
 		try {
 			// discover's spec must exist on disk (rpivArtifactMdOutcome reads frontmatter).
 			mkdirSync(join(tmpDir, ".rpiv", "artifacts", "research"), { recursive: true });
-			writeFileSync(join(tmpDir, ".rpiv/artifacts/research/spec.md"), "");
+			writeFileSync(join(tmpDir, ".myflow/artifacts/research/spec.md"), "");
 
 			// Shared mutable branch: discover reads it; each continue send grows it.
-			const sharedBranch: unknown[] = [mockAssistantMessage("wrote .rpiv/artifacts/research/spec.md")];
+			const sharedBranch: unknown[] = [mockAssistantMessage("wrote .myflow/artifacts/research/spec.md")];
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [{ branch: sharedBranch }],
@@ -886,7 +886,7 @@ describe("design-to-code example (prompt dispatch)", () => {
 			expect(chain.ctx.newSession).toHaveBeenCalledTimes(1);
 			expect(chain.sentMessages).toEqual([
 				"/skill:discover build a dashboard",
-				"/skill:frontend-design .rpiv/artifacts/research/spec.md",
+				"/skill:frontend-design .myflow/artifacts/research/spec.md",
 				"Implement the design spec discussed above.",
 			]);
 		} finally {
@@ -951,7 +951,7 @@ describe("ship workflow", () => {
 			});
 
 		it("reads phases from frontmatter and dispatches one title-enriched unit per phase", async () => {
-			const rel = ".rpiv/artifacts/plans/p.md";
+			const rel = ".myflow/artifacts/plans/p.md";
 			writePlan(
 				rel,
 				`---\nstatus: ready\nphase_count: 2\nphases:\n  - { n: 1, title: Schema layer }\n  - { n: 2, title: Runtime wiring }\n---\n# Plan\n## Phase 1: Schema layer\n## Phase 2: Runtime wiring\n`,
@@ -962,7 +962,7 @@ describe("ship workflow", () => {
 		});
 
 		it("throws when the frontmatter phases disagree with the body headings (stale derive)", () => {
-			const rel = ".rpiv/artifacts/plans/mismatch.md";
+			const rel = ".myflow/artifacts/plans/mismatch.md";
 			writePlan(
 				rel,
 				`---\nphases:\n  - { n: 1, title: Only one }\n---\n## Phase 1: a\n## Phase 2: b\n## Phase 3: c\n`,
@@ -971,7 +971,7 @@ describe("ship workflow", () => {
 		});
 
 		it("returns no units for a plan with neither structured phases nor body headings", async () => {
-			const rel = ".rpiv/artifacts/plans/empty.md";
+			const rel = ".myflow/artifacts/plans/empty.md";
 			writePlan(rel, `---\nstatus: ready\n---\n# Plan with no phases\n`);
 			expect(await runFanout(rel)).toEqual([]);
 		});
@@ -986,7 +986,7 @@ describe("ship workflow", () => {
 		});
 
 		it("throws when phase_count disagrees with the derived phases length", () => {
-			const rel = ".rpiv/artifacts/plans/pc-mismatch.md";
+			const rel = ".myflow/artifacts/plans/pc-mismatch.md";
 			writePlan(
 				rel,
 				`---\nstatus: ready\nphase_count: 3\nphases:\n  - { n: 1, title: A }\n  - { n: 2, title: B }\n---\n## Phase 1: A\n## Phase 2: B\n`,
@@ -995,7 +995,7 @@ describe("ship workflow", () => {
 		});
 
 		it("throws when a phased plan omits the required phase_count", () => {
-			const rel = ".rpiv/artifacts/plans/pc-absent.md";
+			const rel = ".myflow/artifacts/plans/pc-absent.md";
 			writePlan(rel, `---\nstatus: ready\nphases:\n  - { n: 1, title: A }\n---\n## Phase 1: A\n`);
 			expect(() => runFanout(rel)).toThrow(/phase_count \(undefined\) ≠ phases length \(1\)/);
 		});
@@ -1018,18 +1018,18 @@ describe("ship workflow", () => {
 
 		it("drives blueprint → implement (fanned from the derived phases) → validate → commit", async () => {
 			write(
-				".rpiv/artifacts/plans/plan.md",
+				".myflow/artifacts/plans/plan.md",
 				`---\nstatus: ready\nphase_count: 2\nphases:\n  - { n: 1, title: Schema layer }\n  - { n: 2, title: Runtime wiring }\n---\n# Plan\n## Phase 1: Schema layer\n## Phase 2: Runtime wiring\n`,
 			);
-			write(".rpiv/artifacts/validation/val.md", "");
+			write(".myflow/artifacts/validation/val.md", "");
 
 			const chain = createMockSessionChain({
 				cwd: tmpDir,
 				steps: [
-					step("wrote .rpiv/artifacts/plans/plan.md"), // blueprint
+					step("wrote .myflow/artifacts/plans/plan.md"), // blueprint
 					step("phase done"), // implement — phase 1 unit
 					step("phase done"), // implement — phase 2 unit
-					step("wrote .rpiv/artifacts/validation/val.md"), // validate
+					step("wrote .myflow/artifacts/validation/val.md"), // validate
 					step("committed"), // commit
 				],
 			});
@@ -1043,8 +1043,8 @@ describe("ship workflow", () => {
 			// blueprint + implement×2 (one per derived phase) + validate + commit
 			expect(result.stagesCompleted).toBe(5);
 			expect(chain.sentMessages.filter((m) => m.startsWith("/skill:implement"))).toEqual([
-				"/skill:implement .rpiv/artifacts/plans/plan.md Phase 1: Schema layer",
-				"/skill:implement .rpiv/artifacts/plans/plan.md Phase 2: Runtime wiring",
+				"/skill:implement .myflow/artifacts/plans/plan.md Phase 1: Schema layer",
+				"/skill:implement .myflow/artifacts/plans/plan.md Phase 2: Runtime wiring",
 			]);
 		});
 	});
@@ -1157,7 +1157,7 @@ describe("polish — REVIEW_PHASE_ITERATE (frontmatter-driven)", () => {
 	const out = () => ({ artifacts: [], data: undefined, kind: "", meta: {} }) as unknown as Output;
 
 	it("reads phases from frontmatter and dispatches one title-enriched unit per phase", async () => {
-		const rel = ".rpiv/artifacts/architecture-reviews/rev.md";
+		const rel = ".myflow/artifacts/architecture-reviews/rev.md";
 		write(rel, reviewWithPhases(2));
 		const { artifact, state } = stateFor(rel);
 
@@ -1173,7 +1173,7 @@ describe("polish — REVIEW_PHASE_ITERATE (frontmatter-driven)", () => {
 	});
 
 	it("reads only the depended-on prior plans; blast_radius/effort tag the label", async () => {
-		const rel = ".rpiv/artifacts/architecture-reviews/rev.md";
+		const rel = ".myflow/artifacts/architecture-reviews/rev.md";
 		write(
 			rel,
 			`---\nstatus: ready\nphases:\n` +
@@ -1185,7 +1185,7 @@ describe("polish — REVIEW_PHASE_ITERATE (frontmatter-driven)", () => {
 		const { artifact, state } = stateFor(rel);
 		const planOut = (n: number) =>
 			({
-				artifacts: [{ handle: fsHandle(`.rpiv/artifacts/plans/plan-${n}.md`) }],
+				artifacts: [{ handle: fsHandle(`.myflow/artifacts/plans/plan-${n}.md`) }],
 				data: undefined,
 				kind: "",
 				meta: {},
@@ -1198,13 +1198,13 @@ describe("polish — REVIEW_PHASE_ITERATE (frontmatter-driven)", () => {
 		const u3 = await iterate()({ cwd: tmpDir, artifact, state, accumulated: [planOut(1), planOut(2)], index: 2 });
 		expect(u3?.prompt).toBe(
 			`${rel} Implement Phase 3: Behavioural\n` +
-				`Prior phase plans (read first; build on them, don't duplicate): .rpiv/artifacts/plans/plan-1.md`,
+				`Prior phase plans (read first; build on them, don't duplicate): .myflow/artifacts/plans/plan-1.md`,
 		);
 		expect(u3?.label).toBe("phase 3/3 — Behavioural [L, public-API]");
 	});
 
 	it("throws when the frontmatter phases disagree with the body headings (stale derive)", () => {
-		const rel = ".rpiv/artifacts/architecture-reviews/mismatch.md";
+		const rel = ".myflow/artifacts/architecture-reviews/mismatch.md";
 		// 1 structured phase, 2 `### Phase N —` headings.
 		write(
 			rel,
@@ -1217,7 +1217,7 @@ describe("polish — REVIEW_PHASE_ITERATE (frontmatter-driven)", () => {
 	});
 
 	it("returns null for a review with neither structured phases nor body headings", async () => {
-		const rel = ".rpiv/artifacts/architecture-reviews/empty.md";
+		const rel = ".myflow/artifacts/architecture-reviews/empty.md";
 		write(rel, `---\nstatus: ready\n---\n# No phases\n`);
 		const { artifact, state } = stateFor(rel);
 		expect(await iterate()({ cwd: tmpDir, artifact, state, accumulated: [], index: 0 })).toBeNull();

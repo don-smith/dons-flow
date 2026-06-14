@@ -138,7 +138,7 @@ const fatalPayload = (message: string): ScriptedResult => ({ kind: "fatal", mess
 
 const FOO_EQ_2_SCHEMA = typeboxSchema(Type.Object({ foo: Type.Literal(2) }, { additionalProperties: true }));
 
-/** Read JSONL rows the audit layer wrote under cwd/.rpiv/workflows/<runId>.jsonl. */
+/** Read JSONL rows the audit layer wrote under cwd/.myflow/workflows/<runId>.jsonl. */
 const readStageRows = (cwd: string): Array<Record<string, unknown>> => {
 	const dir = join(cwd, ".rpiv", "workflows", "runs");
 	const files = readdirSync(dir);
@@ -616,7 +616,7 @@ describe("sessions — outcome resolution", () => {
 			cwd: tmpDir,
 			steps: [{ branch: [mockAssistantMessage("done")] }],
 		});
-		const prior = { handle: fsHandle(".rpiv/artifacts/research/r.md"), role: "primary" };
+		const prior = { handle: fsHandle(".myflow/artifacts/research/r.md"), role: "primary" };
 		const state = freshRunState({ primaryArtifact: prior });
 		const onSuccess = vi.fn(async () => {});
 
@@ -644,7 +644,7 @@ describe("sessions — outcome resolution", () => {
 			cwd: tmpDir,
 			steps: [{ branch: [mockAssistantMessage("done")] }],
 		});
-		const prior = { handle: fsHandle(".rpiv/artifacts/research/r.md"), role: "primary" };
+		const prior = { handle: fsHandle(".myflow/artifacts/research/r.md"), role: "primary" };
 		const state = freshRunState({ primaryArtifact: prior });
 		const onSuccess = vi.fn(async () => {});
 
@@ -939,7 +939,7 @@ describe("sessions — success persistence", () => {
 		// stage). output.artifacts records it; primaryArtifact stays
 		// undefined because only produces stages advance the chain
 		// input.
-		const recorded = ".rpiv/artifacts/research/from-collector.md";
+		const recorded = ".myflow/artifacts/research/from-collector.md";
 		await runStageSession(
 			chain.ctx as WorkflowHostContext,
 			stageSession({
@@ -970,7 +970,7 @@ describe("sessions — success persistence", () => {
 			steps: [{ branch: [mockAssistantMessage("done")] }],
 		});
 		const state = freshRunState();
-		const path = ".rpiv/artifacts/research/r.md";
+		const path = ".myflow/artifacts/research/r.md";
 
 		await runStageSession(
 			chain.ctx as WorkflowHostContext,

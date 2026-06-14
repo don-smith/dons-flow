@@ -27,7 +27,7 @@ import { validateWorkflow } from "./validate-workflow.js";
 
 const PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
-/** Outcome that scans the assistant transcript for `.rpiv/artifacts/<bucket>/<file>.md` paths. */
+/** Outcome that scans the assistant transcript for `.myflow/artifacts/<bucket>/<file>.md` paths. */
 const makeOutcome = (name?: string): OutputSpec<unknown, "artifact-md", Record<string, unknown>> => ({
 	...(name !== undefined ? { name } : {}),
 	collector: {
@@ -80,7 +80,7 @@ describe("state.named — publish key resolution + accumulation", () => {
 	});
 
 	it("publishes under outcome.name when the outcome carries one", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p1.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p1.md");
 
 		const workflow = defineWorkflow({
 			name: "wf",
@@ -93,7 +93,7 @@ describe("state.named — publish key resolution + accumulation", () => {
 
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p1.md")] }],
+			steps: [{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p1.md")] }],
 		});
 
 		const result = await runWorkflow(chain.ctx, { workflow, input: "x" });
@@ -101,12 +101,12 @@ describe("state.named — publish key resolution + accumulation", () => {
 		// JSONL row carries the artifact under the produces stage; reading
 		// the named slot via the runner's behavior is what we care about.
 		// We assert prompt-side resolution in the reads tests below.
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/plans/p1.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/plans/p1.md");
 	});
 
 	it("falls back to stage record key when outcome has no name", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/anything/a.md");
-		writeArtifact(tmpDir, ".rpiv/artifacts/anything/b.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/anything/a.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/anything/b.md");
 
 		const workflow = defineWorkflow({
 			name: "wf",
@@ -121,7 +121,7 @@ describe("state.named — publish key resolution + accumulation", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/anything/a.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/anything/a.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -131,13 +131,13 @@ describe("state.named — publish key resolution + accumulation", () => {
 		// The downstream "consume-it" stage built its prompt from
 		// state.named["produce-it"] — by stage record key, since the outcome
 		// had no name.
-		expect(chain.sentMessages).toContain("/skill:consume-it --produce-it .rpiv/artifacts/anything/a.md");
+		expect(chain.sentMessages).toContain("/skill:consume-it --produce-it .myflow/artifacts/anything/a.md");
 	});
 
 	it("accumulates outputs across loop iterations — each produces run appends", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p1.md", "---\nblockers_count: 1\n---\n");
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p2.md", "---\nblockers_count: 1\n---\n");
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p3.md", "---\nblockers_count: 0\n---\n");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p1.md", "---\nblockers_count: 1\n---\n");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p2.md", "---\nblockers_count: 1\n---\n");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p3.md", "---\nblockers_count: 0\n---\n");
 
 		// Use a frontmatter-reading outcome so the gate routes deterministically.
 		const fmOutcome: OutputSpec<unknown, "artifact-md", Record<string, unknown>> = {
@@ -187,9 +187,9 @@ describe("state.named — publish key resolution + accumulation", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p2.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p3.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p3.md")] },
 				{ branch: [mockAssistantMessage("done")] },
 			],
 		});
@@ -198,7 +198,7 @@ describe("state.named — publish key resolution + accumulation", () => {
 		expect(result.success).toBe(true);
 		// produce ran 3 times — only the LAST path is exposed as lastArtifact,
 		// but state.named["plans"] internally is an array of length 3.
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/plans/p3.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/plans/p3.md");
 		expect(result.stagesCompleted).toBe(4); // 3× produce + 1× done
 	});
 });
@@ -217,8 +217,8 @@ describe("reads: prompt format", () => {
 	});
 
 	it("builds a labelled-flag prompt from upstream named slots", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p.md");
-		writeArtifact(tmpDir, ".rpiv/artifacts/reviews/r.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/reviews/r.md");
 
 		const workflow = defineWorkflow({
 			name: "wf",
@@ -234,8 +234,8 @@ describe("reads: prompt format", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/r.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/r.md")] },
 				{ branch: [mockAssistantMessage("revised")] },
 			],
 		});
@@ -244,14 +244,14 @@ describe("reads: prompt format", () => {
 		expect(result.success).toBe(true);
 		expect(chain.sentMessages).toEqual([
 			"/skill:blueprint x",
-			"/skill:review .rpiv/artifacts/plans/p.md",
-			"/skill:revise --plans .rpiv/artifacts/plans/p.md --reviews .rpiv/artifacts/reviews/r.md",
+			"/skill:review .myflow/artifacts/plans/p.md",
+			"/skill:revise --plans .myflow/artifacts/plans/p.md --reviews .myflow/artifacts/reviews/r.md",
 		]);
 	});
 
 	it("repeats the flag for each artifact when a stage's output carries multiple", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/a.md");
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/b.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/a.md");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/b.md");
 
 		const workflow = defineWorkflow({
 			name: "wf",
@@ -267,7 +267,7 @@ describe("reads: prompt format", () => {
 			cwd: tmpDir,
 			steps: [
 				{
-					branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/a.md and .rpiv/artifacts/plans/b.md")],
+					branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/a.md and .myflow/artifacts/plans/b.md")],
 				},
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
@@ -276,13 +276,13 @@ describe("reads: prompt format", () => {
 		const result = await runWorkflow(chain.ctx, { workflow, input: "x" });
 		expect(result.success).toBe(true);
 		expect(chain.sentMessages[1]).toBe(
-			"/skill:consume --plans .rpiv/artifacts/plans/a.md --plans .rpiv/artifacts/plans/b.md",
+			"/skill:consume --plans .myflow/artifacts/plans/a.md --plans .myflow/artifacts/plans/b.md",
 		);
 	});
 
 	it("reads the LATEST entry when the slot accumulated multiple iterations", async () => {
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p1.md", "---\nblockers_count: 1\n---\n");
-		writeArtifact(tmpDir, ".rpiv/artifacts/plans/p2.md", "---\nblockers_count: 0\n---\n");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p1.md", "---\nblockers_count: 1\n---\n");
+		writeArtifact(tmpDir, ".myflow/artifacts/plans/p2.md", "---\nblockers_count: 0\n---\n");
 
 		const fmOutcome: OutputSpec<unknown, "artifact-md", Record<string, unknown>> = {
 			name: "plans",
@@ -330,15 +330,15 @@ describe("reads: prompt format", () => {
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/p2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/p2.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
 
 		const result = await runWorkflow(chain.ctx, { workflow, input: "x" });
 		expect(result.success).toBe(true);
-		expect(chain.sentMessages.at(-1)).toBe("/skill:consume --plans .rpiv/artifacts/plans/p2.md");
+		expect(chain.sentMessages.at(-1)).toBe("/skill:consume --plans .myflow/artifacts/plans/p2.md");
 	});
 });
 

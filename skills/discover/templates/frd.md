@@ -75,4 +75,4 @@ last_updated_by: {`author:` from Metadata block}
 
 ## References
 - {Input file or ticket}
-- {Related artifact, e.g., `.rpiv/artifacts/research/<YYYY-MM-DD_HH-MM-SS>_<topic>.md`}
+- {Related artifact, e.g., `.myflow/artifacts/research/<YYYY-MM-DD_HH-MM-SS>_<topic>.md`}

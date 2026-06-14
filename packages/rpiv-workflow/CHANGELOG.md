@@ -13,11 +13,11 @@
 - Reads-channel compatibility is enforced at load time against *all* publishers of a channel (`checkReadsChannelCompat`), and per-channel composition comparators (`registerCompositionComparator`) let consumers adjudicate named-channel metadata (e.g. `artifactKind`) without the framework interpreting the ontology.
 - `OutcomeDeriverFn` extension point — consumers can auto-wire `produces`-stage outcomes from the contract registry at load time, after `buildEffectiveContracts` and before validation.
 - A `produces` stage with no explicit `outputSchema` now sources it from the dispatched skill's contract `produces.data` (`effectiveOutputSchema`), the input-side mirror of `ensureContractInputValid`; fail-soft when contracts are absent.
-- `/wf --name <slug>` assigns a human-readable alias to a run, and `@<name>` resumes it. The alias is stored in the JSONL header and a sidecar `names.json` index under `.rpiv/workflows/runs/`; `resolveRun` resolves a name to its run in O(1) and falls back to a literal run-id lookup, so existing `@<run-id>` resumes are unchanged. Names must match `/^[a-zA-Z_][a-zA-Z0-9_-]{0,63}$/`. Surfaced on `RunSummary.name` / `WorkflowHeader.name` (optional — legacy unnamed runs parse unchanged). `--name` is rejected on `@resume` (the ref already identifies the run, so it's ignored with a warning).
+- `/wf --name <slug>` assigns a human-readable alias to a run, and `@<name>` resumes it. The alias is stored in the JSONL header and a sidecar `names.json` index under `.myflow/workflows/runs/`; `resolveRun` resolves a name to its run in O(1) and falls back to a literal run-id lookup, so existing `@<run-id>` resumes are unchanged. Names must match `/^[a-zA-Z_][a-zA-Z0-9_-]{0,63}$/`. Surfaced on `RunSummary.name` / `WorkflowHeader.name` (optional — legacy unnamed runs parse unchanged). `--name` is rejected on `@resume` (the ref already identifies the run, so it's ignored with a warning).
 - `claimName(cwd, name, runId)` (state layer) — the single transactional door for reserving a name: validate → collision-check → persist, claimed before the JSONL header so the collision guard can never lag the header. Returns a tagged `ClaimResult` (`ok` / `invalid` / `collision` / `write-failed`) and writes nothing on failure. Also exports `isValidName`, `VALID_NAME`, `readNamesIndex`, `addNameToIndex`, and `rebuildIndex` (rebuilds the index from JSONL headers and warns on duplicate name claims). New `RunWorkflowOptions.name` is validated and collision-checked at the runner entry point, so programmatic callers get the same guarantees as `/wf`.
 
 ### Changed
-- `resolveRun` (and therefore `/wf @<ref>`) now accepts a path to a run's JSONL, not just the bare run-id slug. The run-id fallback normalizes the ref to a slug — drops any directory prefix (`basename`) and strips a trailing `.jsonl` — so `@<id>`, `@<id>.jsonl`, and `@/abs/or/rel/path/.rpiv/workflows/runs/<id>.jsonl` resolve interchangeably, making the editor's `@` file-autosuggestion usable for resume. Name lookup still matches the raw ref (a run name is never a path). The `MSG_RESUME_USAGE` hint now reads `/wf @<run-id | name | path-to.jsonl>`.
+- `resolveRun` (and therefore `/wf @<ref>`) now accepts a path to a run's JSONL, not just the bare run-id slug. The run-id fallback normalizes the ref to a slug — drops any directory prefix (`basename`) and strips a trailing `.jsonl` — so `@<id>`, `@<id>.jsonl`, and `@/abs/or/rel/path/.myflow/workflows/runs/<id>.jsonl` resolve interchangeably, making the editor's `@` file-autosuggestion usable for resume. Name lookup still matches the raw ref (a run name is never a path). The `MSG_RESUME_USAGE` hint now reads `/wf @<run-id | name | path-to.jsonl>`.
 - Schema-validation failures now name the offending value and the allowed enum values — e.g. `status: must be one of "ready" - got "done"` instead of `/status - must be equal to one of the allowed values` — via a shared `describeFailure` formatter across extraction, stage-lifecycle, and script-stage.
 
 ### Fixed
@@ -53,22 +53,22 @@
 ## [1.17.0] - 2026-06-01
 
 ### BREAKING CHANGES
-- Project workflow config moved from `.rpiv-workflow/` to the unified `.rpiv/workflows/` tree, and the three concerns now each have their own subfolder:
-  - `.rpiv-workflow/workflows.config.ts` → `.rpiv/workflows/config.ts`
-  - `.rpiv-workflow/workflows/*.ts` → `.rpiv/workflows/packs/*.ts`
-  - run state `.rpiv/workflows/<run-id>.jsonl` → `.rpiv/workflows/runs/<run-id>.jsonl`
+- Project workflow config moved from `.rpiv-workflow/` to the unified `.myflow/workflows/` tree, and the three concerns now each have their own subfolder:
+  - `.rpiv-workflow/workflows.config.ts` → `.myflow/workflows/config.ts`
+  - `.rpiv-workflow/workflows/*.ts` → `.myflow/workflows/packs/*.ts`
+  - run state `.myflow/workflows/<run-id>.jsonl` → `.myflow/workflows/runs/<run-id>.jsonl`
 
-  The user layer's inner names are aligned for symmetry: `~/.config/rpiv-workflow/{config.ts, packs/}`. The new paths are the **only** locations read — there is no legacy fallback. One-time load-time warnings fire when a stale layout is detected (each advisory, never blocking): a legacy project `.rpiv-workflow/` directory, orphaned top-level `.rpiv/workflows/*.jsonl` run files written before the `runs/` relocation, and a legacy user-layer `~/.config/rpiv-workflow/workflows.config.ts`. Each points at the matching `mv`. Migrate:
+  The user layer's inner names are aligned for symmetry: `~/.config/rpiv-workflow/{config.ts, packs/}`. The new paths are the **only** locations read — there is no legacy fallback. One-time load-time warnings fire when a stale layout is detected (each advisory, never blocking): a legacy project `.rpiv-workflow/` directory, orphaned top-level `.myflow/workflows/*.jsonl` run files written before the `runs/` relocation, and a legacy user-layer `~/.config/rpiv-workflow/workflows.config.ts`. Each points at the matching `mv`. Migrate:
 
   ```sh
-  mkdir -p .rpiv/workflows
-  mv .rpiv-workflow/workflows.config.ts .rpiv/workflows/config.ts
-  mv .rpiv-workflow/workflows .rpiv/workflows/packs
+  mkdir -p .myflow/workflows
+  mv .rpiv-workflow/workflows.config.ts .myflow/workflows/config.ts
+  mv .rpiv-workflow/workflows .myflow/workflows/packs
   ```
 
-- **`.rpiv/workflows/` is commonly gitignored** (it holds ephemeral run state), so the moved project `config.ts` + `packs/` may be **silently uncommittable** — `git add .rpiv/workflows/config.ts` is a no-op with no error. Teams that version-control their workflow config must un-ignore the config surface, e.g. add `!.rpiv/workflows/config.ts` and `!.rpiv/workflows/packs/` to `.gitignore`. The legacy-overlay load warning now carries this advisory inline.
+- **`.myflow/workflows/` is commonly gitignored** (it holds ephemeral run state), so the moved project `config.ts` + `packs/` may be **silently uncommittable** — `git add .myflow/workflows/config.ts` is a no-op with no error. Teams that version-control their workflow config must un-ignore the config surface, e.g. add `!.myflow/workflows/config.ts` and `!.myflow/workflows/packs/` to `.gitignore`. The legacy-overlay load warning now carries this advisory inline.
 
-- The public `workflowsDir` export is renamed `runsDir` and now points at `.rpiv/workflows/runs` (was `.rpiv/workflows`). Update any direct importers.
+- The public `workflowsDir` export is renamed `runsDir` and now points at `.myflow/workflows/runs` (was `.myflow/workflows`). Update any direct importers.
 
 ### Added
 - New `skillAliases` config field — declaratively remap skill names across **all** workflows (built-in + user + project) at load time, without redeclaring any workflow or touching the runner. In `config.ts`:
@@ -80,7 +80,7 @@
   Every dispatching stage whose effective skill (`stage.skill ?? stageName`) matches an alias key is remapped — implicit skills are materialised. One hop only (no transitive chains); `run`/`prompt` stages are skipped; aliases merge project-over-user per key. Surfaced in `/wf` preview as a `Skill aliases in effect: …` banner; an alias key matching no dispatched skill emits a load-time warning (no-op). The `{ workflows, default?, skillAliases? }` envelope now makes `workflows` optional (an alias-only config is valid); packs still reject the envelope. New export: `aliasSkills`; `LoadedWorkflows` gains `skillAliases` (the merged, applied map).
 
 ### Fixed
-- The in-product legacy-`.rpiv-workflow/` migration shell now creates the destination directory and globs `packs/*.ts`, so the suggested commands succeed on a clean repo and the packs directory lands directly under `.rpiv/workflows/packs/` instead of being nested under `packs/workflows/`.
+- The in-product legacy-`.rpiv-workflow/` migration shell now creates the destination directory and globs `packs/*.ts`, so the suggested commands succeed on a clean repo and the packs directory lands directly under `.myflow/workflows/packs/` instead of being nested under `packs/workflows/`.
 - A present-but-non-array `workflows` field in an envelope-shaped `config.ts` is now reported as a load error instead of crashing the loader with `TypeError`, restoring the "loader never throws" contract.
 
 ## [1.16.1] - 2026-05-30

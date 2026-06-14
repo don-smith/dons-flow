@@ -714,7 +714,7 @@ describe("reconstructState", () => {
 
 const RPIV_ARTIFACT_PATTERN = /\.rpiv\/artifacts\/[\w.-]+\/[\w.-]+\.md/g;
 
-/** Minimal outcome that scans assistant text for .rpiv/artifacts paths. */
+/** Minimal outcome that scans assistant text for .myflow/artifacts paths. */
 const artifactOutcome: import("../output.js").OutputSpec<unknown, "artifact-md", Record<string, unknown>> = {
 	collector: {
 		collect: (ctx) => {
@@ -739,7 +739,7 @@ const artifactOutcome: import("../output.js").OutputSpec<unknown, "artifact-md",
 			if (!lastMatch) {
 				return {
 					kind: "fatal",
-					message: `${ctx.skill} finished without producing a .rpiv/artifacts path`,
+					message: `${ctx.skill} finished without producing a .myflow/artifacts path`,
 				};
 			}
 			return { kind: "ok", artifacts: [{ handle: fsHandle(lastMatch), role: "primary" }] };
@@ -815,10 +815,10 @@ describe("resumeWorkflow", () => {
 			},
 		]);
 
-		writeArtifact(".rpiv/artifacts/builds/b1.md");
+		writeArtifact(".myflow/artifacts/builds/b1.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/builds/b1.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/builds/b1.md")] }],
 		});
 
 		const result = await resumeWorkflow(chain.ctx, {
@@ -831,7 +831,7 @@ describe("resumeWorkflow", () => {
 		expect(result.runId).toBe(resumeHeader.runId);
 		// 1 (original plan) + 1 (re-ran build) = 2
 		expect(result.stagesCompleted).toBe(2);
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/builds/b1.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/builds/b1.md");
 
 		// JSONL should have: original header + plan(completed) + build(failed) + build(completed)
 		const stages = readRunStages(resumeHeader.runId);
@@ -864,10 +864,10 @@ describe("resumeWorkflow", () => {
 			},
 		]);
 
-		writeArtifact(".rpiv/artifacts/builds/b1.md");
+		writeArtifact(".myflow/artifacts/builds/b1.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/builds/b1.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/builds/b1.md")] }],
 		});
 
 		const result = await resumeWorkflow(chain.ctx, {
@@ -1015,10 +1015,10 @@ describe("resumeWorkflow", () => {
 			},
 		]);
 
-		writeArtifact(".rpiv/artifacts/builds/b1.md");
+		writeArtifact(".myflow/artifacts/builds/b1.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/builds/b1.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/builds/b1.md")] }],
 		});
 
 		await resumeWorkflow(chain.ctx, {
@@ -1064,10 +1064,10 @@ describe("resumeWorkflow", () => {
 			},
 		]);
 
-		writeArtifact(".rpiv/artifacts/builds/b1.md");
+		writeArtifact(".myflow/artifacts/builds/b1.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/builds/b1.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/builds/b1.md")] }],
 		});
 
 		await resumeWorkflow(chain.ctx, {
@@ -1099,10 +1099,10 @@ describe("resumeWorkflow", () => {
 			},
 		]);
 
-		writeArtifact(".rpiv/artifacts/builds/b1.md");
+		writeArtifact(".myflow/artifacts/builds/b1.md");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("Wrote .rpiv/artifacts/builds/b1.md")] }],
+			steps: [{ branch: [mockAssistantMessage("Wrote .myflow/artifacts/builds/b1.md")] }],
 		});
 
 		// Use lifecycle listeners to capture the trigger from LifecycleContext

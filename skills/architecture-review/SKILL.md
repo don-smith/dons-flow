@@ -1,6 +1,6 @@
 ---
 name: architecture-review
-description: Conduct a top-down, layer-by-layer architecture review of a software module by reading every file in scope, running a uniform 10-dimension checklist per layer, and triaging each candidate finding through a structured developer checkpoint. Produces a phased polish plan in .rpiv/artifacts/architecture-reviews/ that blueprint can consume per phase. Language-agnostic — works on TypeScript, Java, .NET, Rust, Python, Go, or any other typed module. Use before a 1.0 release, after a major refactor, or when a module has grown enough to warrant a structural audit.
+description: Conduct a top-down, layer-by-layer architecture review of a software module by reading every file in scope, running a uniform 10-dimension checklist per layer, and triaging each candidate finding through a structured developer checkpoint. Produces a phased polish plan in .myflow/artifacts/architecture-reviews/ that blueprint can consume per phase. Language-agnostic — works on TypeScript, Java, .NET, Rust, Python, Go, or any other typed module. Use before a 1.0 release, after a major refactor, or when a module has grown enough to warrant a structural audit.
 argument-hint: "[target path: file, directory, or module]"
 shell-timeout: 10
 contract:
@@ -118,7 +118,7 @@ Layers mirror dependency direction. Higher layers consume lower-layer vocabulary
 
 1. **Read the template** at `${SKILL_DIR}/templates/architecture-review.md` FULLY (no limit/offset).
 
-2. **Determine metadata** from the Metadata block above: filename `.rpiv/artifacts/architecture-reviews/<slug>_<topic>.md` (use `<slug>` from line 1; `<topic>` is a brief kebab-case description); `repository:` from `repo:`; `branch:` / `commit:` from matching labels; `author:` ← matching label (fallback: `unknown`); `date:` / `last_updated:` ← `<iso>` from line 1 (copy the offset verbatim).
+2. **Determine metadata** from the Metadata block above: filename `.myflow/artifacts/architecture-reviews/<slug>_<topic>.md` (use `<slug>` from line 1; `<topic>` is a brief kebab-case description); `repository:` from `repo:`; `branch:` / `commit:` from matching labels; `author:` ← matching label (fallback: `unknown`); `date:` / `last_updated:` ← `<iso>` from line 1 (copy the offset verbatim).
 
 3. **Write the skeleton** using the Write tool with `status: in-progress` in frontmatter. Sections:
    - **Frontmatter:** date, author, commit, branch, repository, target, target_kind, layer_count, `phases` (derived from the `### Phase N — name` headings — see Step 6), unresolved_finding_count, status, tags, last_updated, last_updated_by.
@@ -282,7 +282,7 @@ Phases are agent-driven: each one will be handed to `blueprint` → `implement`.
 
    ```
    Architecture review written to:
-   `.rpiv/artifacts/architecture-reviews/{filename}.md`
+   `.myflow/artifacts/architecture-reviews/{filename}.md`
 
    {F} findings reviewed: {A} accepted, {R} rejected, {D} deferred, {W} withdrawn.
    {P} methodology principles captured, {T} cross-cutting themes, {N} phases across {Files} files.
@@ -290,7 +290,7 @@ Phases are agent-driven: each one will be handed to `blueprint` → `implement`.
    The artifact is blueprint-consumable per phase:
 
    **Next step (per-phase landing):**
-   - `/skill:blueprint .rpiv/artifacts/architecture-reviews/{filename}.md` followed by free-text "Implement Phase 1: {phase name}" — blueprint treats the named phase as the feature scope.
+   - `/skill:blueprint .myflow/artifacts/architecture-reviews/{filename}.md` followed by free-text "Implement Phase 1: {phase name}" — blueprint treats the named phase as the feature scope.
    - Repeat for each phase.
 
    > 🆕 Tip: start a fresh session with `/new` before each blueprint invocation — chained skills work best with a clean context window.

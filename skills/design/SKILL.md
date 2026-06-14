@@ -1,6 +1,6 @@
 ---
 name: design
-description: Design complex features by decomposing them into vertical slices, generating code slice-by-slice with per-slice verifier dispatch and post-finalization independent code review, and producing a design artifact (architecture decisions, slice breakdown, file map) in .rpiv/artifacts/designs/. The design feeds the plan or blueprint skill. Use for complex multi-component features touching 6+ files across multiple layers, when the user wants a feature designed before implementation. Requires a research artifact or a solutions artifact (from explore). Prefer design over plan or blueprint when the focus is architecture and decomposition rather than phased execution steps.
+description: Design complex features by decomposing them into vertical slices, generating code slice-by-slice with per-slice verifier dispatch and post-finalization independent code review, and producing a design artifact (architecture decisions, slice breakdown, file map) in .myflow/artifacts/designs/. The design feeds the plan or blueprint skill. Use for complex multi-component features touching 6+ files across multiple layers, when the user wants a feature designed before implementation. Requires a research artifact or a solutions artifact (from explore). Prefer design over plan or blueprint when the focus is architecture and decomposition rather than phased execution steps.
 argument-hint: "[research artifact path]"
 shell-timeout: 10
 contract:
@@ -29,7 +29,7 @@ You are tasked with designing how code will be shaped for a feature or change. T
 
 ## Input
 
-`$ARGUMENTS` — path to a research artifact (`.rpiv/artifacts/research/*.md`) or a solutions artifact (`.rpiv/artifacts/solutions/*.md`).
+`$ARGUMENTS` — path to a research artifact (`.myflow/artifacts/research/*.md`) or a solutions artifact (`.myflow/artifacts/solutions/*.md`).
 
 ## Metadata
 
@@ -40,10 +40,10 @@ node "${SKILL_DIR}/../_shared/git-context.mjs"
 echo
 echo "### recent (read only in case of empty user input)"
 echo "recent research:"
-node "${SKILL_DIR}/../_shared/list-recent.mjs" .rpiv/artifacts/research 4
+node "${SKILL_DIR}/../_shared/list-recent.mjs" .myflow/artifacts/research 4
 echo
 echo "recent solutions:"
-node "${SKILL_DIR}/../_shared/list-recent.mjs" .rpiv/artifacts/solutions 4
+node "${SKILL_DIR}/../_shared/list-recent.mjs" .myflow/artifacts/solutions 4
 ```
 
 Copy values verbatim — do not reformat the timezone offset.
@@ -62,7 +62,7 @@ When this command is invoked:
 
 1. **Read research artifact**:
 
-   **Research artifact provided** (argument contains a path to a `.md` file in `.rpiv/artifacts/`):
+   **Research artifact provided** (argument contains a path to a `.md` file in `.myflow/artifacts/`):
    - Read the research artifact FULLY using the Read tool WITHOUT limit/offset
    - Extract: Summary, Code References, Integration Points, Architecture Insights, Precedents & Lessons, Developer Context, Open Questions
    - **Read the key source files from Code References** into the main context — especially hooks, shared utilities, and integration points the design will depend on. Read them FULLY. This ensures you have complete understanding before proceeding.
@@ -225,7 +225,7 @@ After the design summary is confirmed, decompose the feature into vertical slice
 3. **Confirm decomposition** using the `ask_user_question` tool. Question: "{N} slices for {feature}. Slice 1: {name} (foundation). Slices 2-N: {brief}. Approve decomposition?". Header: "Slices". Options: "Approve (Recommended)" (Proceed to slice-by-slice code generation); "Adjust slices" (Reorder, merge, or split slices before generating); "Change scope" (Add or remove files from the decomposition).
 
 4. **Create skeleton artifact** — immediately after decomposition is approved:
-   - Determine metadata from the Metadata block above: filename `.rpiv/artifacts/designs/<slug>_<topic>.md` (use `<slug>` from line 1 of the Metadata block above); `repository:` from `repo:`; `branch:` / `commit:` from matching labels; `author:` ← matching label (fallback: `unknown`).
+   - Determine metadata from the Metadata block above: filename `.myflow/artifacts/designs/<slug>_<topic>.md` (use `<slug>` from line 1 of the Metadata block above); `repository:` from `repo:`; `branch:` / `commit:` from matching labels; `author:` ← matching label (fallback: `unknown`).
    - Timestamp: use `<iso>` from line 1 of the Metadata block above for `date:` and `last_updated:` (copy the offset verbatim).
    - Write skeleton using the Write tool with `status: in-progress` in frontmatter
    - **Include all prose sections filled** from Steps 1-5: Summary, Requirements, Current State Analysis, Scope, Decisions, Desired End State, File Map, Ordering Constraints, Verification Notes, Performance Considerations, Migration Notes, Pattern References, Developer Context, References
@@ -379,7 +379,7 @@ Present the design artifact location to the developer:
 
    ```
    Design artifact written to:
-   `.rpiv/artifacts/designs/{filename}.md`
+   `.myflow/artifacts/designs/{filename}.md`
 
    {N} architectural decisions fixed, {M} new files designed, {K} existing files modified.
    {Sl} slices generated, {R} revisions during generation. Success Criteria authored alongside each slice in 6.1 and verified by slice-verifier in 6.2.
@@ -393,7 +393,7 @@ Present the design artifact location to the developer:
 
    💬 Follow-up: describe the change in chat to append a timestamped Follow-up section to this artifact. Re-run `/skill:design` for a fresh artifact.
 
-   **Next step:** `/skill:plan .rpiv/artifacts/designs/{filename}.md` — sequence the design into implementation phases (slice ≡ phase, 1:1) and run the artifact reviewer pair.
+   **Next step:** `/skill:plan .myflow/artifacts/designs/{filename}.md` — sequence the design into implementation phases (slice ≡ phase, 1:1) and run the artifact reviewer pair.
 
    > 🆕 Tip: start a fresh session with `/new` first — chained skills work best with a clean context window.
    ```

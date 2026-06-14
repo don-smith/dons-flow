@@ -25,7 +25,7 @@ Running `/wf` without arguments shows a list of every loaded workflow and its st
 ## File structure
 
 ```
-<cwd>/.rpiv/workflows/
+<cwd>/.myflow/workflows/
 ├── config.ts                 # The project's workflow config (hand-edited)
 ├── packs/                    # Pack files (installable bundles)
 │   ├── my-pipeline.ts
@@ -51,8 +51,8 @@ The loader merges workflows from five layers. Each later layer overrides earlier
 built-in (registered by sibling packages like rpiv-pi)
   ← user packs        (~/.config/rpiv-workflow/packs/*.ts, alpha-sorted)
   ← user config       (~/.config/rpiv-workflow/config.ts)
-  ← project packs     (<cwd>/.rpiv/workflows/packs/*.ts, alpha-sorted)
-  ← project config    (<cwd>/.rpiv/workflows/config.ts)
+  ← project packs     (<cwd>/.myflow/workflows/packs/*.ts, alpha-sorted)
+  ← project config    (<cwd>/.myflow/workflows/config.ts)
 ```
 
 Within a layer, the config file wins by workflow name over pack files. Only the config file may set the `default` workflow (the one `/wf <input>` runs without specifying a name). Defaults cascade: `project config > user config > first registered workflow`.
@@ -103,7 +103,7 @@ This is what makes installable workflow packs safe: a pack contributes new workf
 `skillAliases` remaps a skill name everywhere — across built-in, user, and project workflows — with one declarative config entry. It lives in the config-file envelope (packs can't set it) and is applied at load time, so `/wf` preview, the JSONL audit, and the runtime skill-registry preflight all see the final skill:
 
 ```typescript
-// .rpiv/workflows/config.ts
+// .myflow/workflows/config.ts
 export default {
   skillAliases: { commit: "attributed-commit" },
 };
@@ -139,6 +139,6 @@ export default defineWorkflow({
 });
 ```
 
-Save this as `.rpiv/workflows/config.ts` in your project, then run `/wf review-and-ship implement auth feature`.
+Save this as `.myflow/workflows/config.ts` in your project, then run `/wf review-and-ship implement auth feature`.
 
 For the full DSL reference (all stage factories, routing, outcomes, validators), see [workflow-authoring.md](./workflow-authoring.md).

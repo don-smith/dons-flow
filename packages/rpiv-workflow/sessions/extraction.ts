@@ -71,7 +71,7 @@ export async function produceAndValidateOutput(
  * Explicit `stage.outcome` wins. Defaults:
  *  - `side-effect` → `sideEffectOutcome` (universal — emits empty artifacts).
  *  - `produces`    → throws. There is no framework-wide default; the
- *    `.rpiv/artifacts/<bucket>/<file>.md` layout is an rpiv-pi convention
+ *    `.myflow/artifacts/<bucket>/<file>.md` layout is an rpiv-pi convention
  *    and lives in that package. `validate-workflow.ts` rejects this at
  *    load time; the runtime throw is defense-in-depth for programmatic
  *    embedders that bypassed validation.
@@ -84,7 +84,7 @@ function resolveOutcome(stage: StageDef, skill: string): OutputSpec {
 		case "produces":
 			throw new Error(
 				`runStage: stage "${skill}" has kind "produces" but no \`outcome\` — ` +
-					"there is no framework default for produces stages (the `.rpiv/artifacts/` layout is " +
+					"there is no framework default for produces stages (the `.myflow/artifacts/` layout is " +
 					"an rpiv-pi convention). Either wire `outcome: rpivArtifactMdOutcome` (from @juicesharp/rpiv-pi) " +
 					"or supply your own `{ collector, parser? }`.",
 			);

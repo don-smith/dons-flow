@@ -1,6 +1,6 @@
 /**
  * Sidecar `names.json` index — maps human-readable run names to runIds for
- * O(1) resolution. Lives in `<cwd>/.rpiv/workflows/runs/names.json`, alongside
+ * O(1) resolution. Lives in `<cwd>/.myflow/workflows/runs/names.json`, alongside
  * the JSONL audit files.
  *
  * Internal module — not re-exported from registration.ts. The runner calls

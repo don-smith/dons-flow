@@ -643,16 +643,16 @@ export default {
 });
 
 // ---------------------------------------------------------------------------
-// Path layout — unified `.rpiv/workflows/` tree
+// Path layout — unified `.myflow/workflows/` tree
 // ---------------------------------------------------------------------------
 
-describe("loadWorkflows — unified .rpiv/workflows/ layout", () => {
-	it("resolves project overlay paths under .rpiv/workflows/{config.ts, packs}", () => {
+describe("loadWorkflows — unified .myflow/workflows/ layout", () => {
+	it("resolves project overlay paths under .myflow/workflows/{config.ts, packs}", () => {
 		expect(PROJECT_PATHS.configFile).toBe(join(TEST_TMP, ".rpiv", "workflows", "config.ts"));
 		expect(PROJECT_PATHS.packsDir).toBe(join(TEST_TMP, ".rpiv", "workflows", "packs"));
 	});
 
-	it("loads a config.ts + pack from the new .rpiv/workflows/ location", async () => {
+	it("loads a config.ts + pack from the new .myflow/workflows/ location", async () => {
 		writeProjectConfig(
 			TEST_TMP,
 			`${importApi}
@@ -707,7 +707,7 @@ export default defineWorkflow({ name: "legacy-wf", start: "x", stages: { x: prod
 		expect(loaded.issues.some((i) => i.kind === "load" && /\.rpiv-workflow/.test(i.message))).toBe(false);
 	});
 
-	it("warns when orphaned run JSONLs sit directly under .rpiv/workflows/", async () => {
+	it("warns when orphaned run JSONLs sit directly under .myflow/workflows/", async () => {
 		// Run files written before the `runs/` relocation. `listRuns` reads only
 		// `runs/`, so these are invisible — surface a one-time advisory.
 		const workflowsDir = join(TEST_TMP, ".rpiv", "workflows");

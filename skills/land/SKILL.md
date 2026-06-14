@@ -121,4 +121,3 @@ Every stage produces an artifact consumed by the next. `epiphany-tabling` runs a
 ## See also
 
 - Pipeline visual: `docs/myflow-v3-pipeline.html`
-- Pipeline spec: `docs/specs/2026-06-14-myflow-v3-pipeline-design.md`

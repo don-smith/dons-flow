@@ -3,7 +3,7 @@
  * no I/O. Writes and reads import from here so the on-disk layout has
  * one authoritative source.
  *
- *   <cwd>/.rpiv/workflows/runs/<run-id>.jsonl
+ *   <cwd>/.myflow/workflows/runs/<run-id>.jsonl
  *
  * The slug format mirrors `skills/_shared/now.mjs` so audit files
  * sort chronologically by filename.

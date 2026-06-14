@@ -106,7 +106,7 @@
   </g>
 
   <!-- Caption -->
-  <text class="mono text-distant" x="640" y="660" font-size="12" letter-spacing="0.2em" text-anchor="middle">TYPED STAGES &#183; PREDICATE ROUTING &#183; TS SCRIPTING &#183; .rpiv/workflows/</text>
+  <text class="mono text-distant" x="640" y="660" font-size="12" letter-spacing="0.2em" text-anchor="middle">TYPED STAGES &#183; PREDICATE ROUTING &#183; TS SCRIPTING &#183; .myflow/workflows/</text>
 
   <line x1="80" y1="740" x2="1200" y2="740" stroke="#2e2b27" stroke-width="1"/>
 

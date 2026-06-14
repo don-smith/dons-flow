@@ -1,6 +1,6 @@
 ---
 name: explore
-description: Analyze solution options for a feature or change, comparing approaches with pros, cons, trade-offs, and a recommended path. Use when the user is weighing approaches, asks "what are the options" or "how should we approach X", wants approaches compared, says "explore solutions", or faces a decision with multiple valid implementations. Produces solutions documents in .rpiv/artifacts/solutions/, which can feed the design skill.
+description: Analyze solution options for a feature or change, comparing approaches with pros, cons, trade-offs, and a recommended path. Use when the user is weighing approaches, asks "what are the options" or "how should we approach X", wants approaches compared, says "explore solutions", or faces a decision with multiple valid implementations. Produces solutions documents in .myflow/artifacts/solutions/, which can feed the design skill.
 argument-hint: "[feature/change description]"
 shell-timeout: 10
 contract:
@@ -159,7 +159,7 @@ Wait for ALL agents to complete before proceeding.
 
 Use the substituted values from the Metadata block at the top of this skill:
 
-- Filename: `.rpiv/artifacts/solutions/<slug>_<topic>.md` — `<slug>` is the second tab-separated field on line 1 of the Metadata block above; `<topic>` is a brief kebab-case description.
+- Filename: `.myflow/artifacts/solutions/<slug>_<topic>.md` — `<slug>` is the second tab-separated field on line 1 of the Metadata block above; `<topic>` is a brief kebab-case description.
 - `repository:` ← `repo:` label; `branch:` / `commit:` ← matching labels (already include `no-branch` / `no-commit` fallbacks).
 - `date:` / `last_updated:` ← `<iso>` (first tab-separated field on line 1 of the Metadata block above, offset verbatim).
 - Author: `author:` from the Metadata block (fallback: `unknown`).
@@ -339,9 +339,9 @@ Use the substituted values from the Metadata block at the top of this skill:
 
   ## References
 
-  - `.rpiv/artifacts/research/{file}.md` - {Context}
+  - `.myflow/artifacts/research/{file}.md` - {Context}
   - `src/file.ext:line` - {Similar implementation}
-  - `.rpiv/artifacts/{file}.md` - {Historical decision}
+  - `.myflow/artifacts/{file}.md` - {Historical decision}
   ```
 
 ### Step 8: Present Findings
@@ -350,7 +350,7 @@ Print a concise summary, highlight key integration points, then close with the s
 
 ```
 Solutions document written to:
-`.rpiv/artifacts/solutions/{filename}.md`
+`.myflow/artifacts/solutions/{filename}.md`
 
 {N} candidates evaluated, {M} dimensions scored, recommendation: {chosen}.
 
@@ -358,7 +358,7 @@ Solutions document written to:
 
 💬 Follow-up: describe the change in chat to append a timestamped Follow-up section to this artifact. Re-run `/skill:explore` for a fresh artifact.
 
-**Next step:** `/skill:design .rpiv/artifacts/solutions/{filename}.md` — turn the chosen option into a design artifact (or `/skill:blueprint .rpiv/artifacts/solutions/{filename}.md` for the fast path on smaller tasks).
+**Next step:** `/skill:design .myflow/artifacts/solutions/{filename}.md` — turn the chosen option into a design artifact (or `/skill:blueprint .myflow/artifacts/solutions/{filename}.md` for the fast path on smaller tasks).
 
 > 🆕 Tip: start a fresh session with `/new` first — chained skills work best with a clean context window.
 ```

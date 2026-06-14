@@ -1,5 +1,5 @@
 /**
- * JSONL state at `.rpiv/workflows/runs/<run-id>.jsonl`. Append-only audit
+ * JSONL state at `.myflow/workflows/runs/<run-id>.jsonl`. Append-only audit
  * trail; every line is a self-contained JSON object. All I/O is
  * fail-soft (logs via console.warn with `[rpiv-workflow]` prefix, never
  * throws).

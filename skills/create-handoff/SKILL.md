@@ -48,7 +48,7 @@ Copy values verbatim — do not reformat the timezone offset or any other field.
 ### 1. Filepath & frontmatter mapping
 
 From the Metadata block above:
-- `<slug>` → filename prefix: `.rpiv/artifacts/handoffs/<slug>_<description>.md` (`<description>` is a kebab-case slug from `$ARGUMENTS`).
+- `<slug>` → filename prefix: `.myflow/artifacts/handoffs/<slug>_<description>.md` (`<description>` is a kebab-case slug from `$ARGUMENTS`).
 - `<iso>` → frontmatter `date:` and `last_updated:`.
 - `repo:` → frontmatter `repository:`.
 - `branch:` / `commit:` → matching frontmatter fields.
@@ -105,7 +105,7 @@ Once this is completed, you should respond to the user with the template between
 
 <template_response>
 Handoff written to:
-`.rpiv/artifacts/handoffs/YYYY-MM-DD_HH-MM-SS_description.md`
+`.myflow/artifacts/handoffs/YYYY-MM-DD_HH-MM-SS_description.md`
 
 Replace the path below with your actual handoff file path before running.
 
@@ -113,7 +113,7 @@ Replace the path below with your actual handoff file path before running.
 
 💬 Follow-up: describe extra context in chat to append to this handoff before chaining; re-run `/skill:create-handoff` for a fresh handoff document.
 
-**Next step:** `/skill:resume-handoff .rpiv/artifacts/handoffs/YYYY-MM-DD_HH-MM-SS_description.md` — pick up where this session left off in a fresh context.
+**Next step:** `/skill:resume-handoff .myflow/artifacts/handoffs/YYYY-MM-DD_HH-MM-SS_description.md` — pick up where this session left off in a fresh context.
 
 > 🆕 Tip: start a fresh session with `/new` first — chained skills work best with a clean context window.
 </template_response>

@@ -1,6 +1,6 @@
 ---
 name: migrate-to-guidance
-description: Migrate a project's inline CLAUDE.md files to the .rpiv/guidance/ shadow-tree system. Finds every CLAUDE.md, transforms internal references, and creates equivalent architecture.md files under .rpiv/guidance/. Use when the user wants to move from inline CLAUDE.md to the guidance shadow tree, consolidate scattered CLAUDE.md files into one place, or invokes /migrate-to-guidance.
+description: Migrate a project's inline CLAUDE.md files to the .myflow/guidance/ shadow-tree system. Finds every CLAUDE.md, transforms internal references, and creates equivalent architecture.md files under .myflow/guidance/. Use when the user wants to move from inline CLAUDE.md to the guidance shadow tree, consolidate scattered CLAUDE.md files into one place, or invokes /migrate-to-guidance.
 argument-hint: [--delete-originals]
 allowed-tools: Bash, Read, Glob
 contract:
@@ -15,9 +15,9 @@ contract:
 
 # Migrate CLAUDE.md to Guidance
 
-You are tasked with migrating a project's existing `CLAUDE.md` files (typically created by `/skill:annotate-inline`) into the `.rpiv/guidance/` system.
+You are tasked with migrating a project's existing `CLAUDE.md` files (typically created by `/skill:annotate-inline`) into the `.myflow/guidance/` system.
 
-The migration relocates files from in-place `CLAUDE.md` to `.rpiv/guidance/{path}/architecture.md` and transforms internal cross-references.
+The migration relocates files from in-place `CLAUDE.md` to `.myflow/guidance/{path}/architecture.md` and transforms internal cross-references.
 
 ## Input
 
@@ -28,7 +28,7 @@ The migration relocates files from in-place `CLAUDE.md` to `.rpiv/guidance/{path
 1. **Pre-flight check:**
    - Use Glob to find all `**/CLAUDE.md` files in the project
    - If none are found, inform the user: "No CLAUDE.md files found in this project. Nothing to migrate." and stop
-   - If `.rpiv/guidance/` already exists, note this — there may be conflicts
+   - If `.myflow/guidance/` already exists, note this — there may be conflicts
 
 2. **Dry run — preview the migration:**
    - Run the migration script in dry-run mode:
@@ -43,21 +43,21 @@ The migration relocates files from in-place `CLAUDE.md` to `.rpiv/guidance/{path
 
      | Source | Target | Lines |
      |--------|--------|-------|
-     | CLAUDE.md | .rpiv/guidance/architecture.md | 45 |
-     | src/core/CLAUDE.md | .rpiv/guidance/src/core/architecture.md | 78 |
+     | CLAUDE.md | .myflow/guidance/architecture.md | 45 |
+     | src/core/CLAUDE.md | .myflow/guidance/src/core/architecture.md | 78 |
      | ... | ... | ... |
      ```
    - If there are **conflicts** (targets that already exist), list them:
      ```
      ### Conflicts (targets already exist):
-     - .rpiv/guidance/src/core/architecture.md
+     - .myflow/guidance/src/core/architecture.md
 
      Use --force to overwrite these.
      ```
    - If there are **warnings** (unresolved prose references), list them:
      ```
      ### Warnings:
-     - .rpiv/guidance/architecture.md line 23: Prose reference may need manual update
+     - .myflow/guidance/architecture.md line 23: Prose reference may need manual update
      ```
    - Ask the user for confirmation before proceeding. Ask whether they want to:
      - Delete the original CLAUDE.md files after migration (`--delete-originals`)
@@ -75,8 +75,8 @@ The migration relocates files from in-place `CLAUDE.md` to `.rpiv/guidance/{path
 
      | Source | Target | Lines | Refs Updated |
      |--------|--------|-------|--------------|
-     | CLAUDE.md | .rpiv/guidance/architecture.md | 45 | 3 |
-     | src/core/CLAUDE.md | .rpiv/guidance/src/core/architecture.md | 78 | 1 |
+     | CLAUDE.md | .myflow/guidance/architecture.md | 45 | 3 |
+     | src/core/CLAUDE.md | .myflow/guidance/src/core/architecture.md | 78 | 1 |
      | ... | ... | ... | ... |
 
      Total: {N} files migrated
@@ -89,7 +89,7 @@ The migration relocates files from in-place `CLAUDE.md` to `.rpiv/guidance/{path
      - Offer to fix the remaining references using contextual knowledge of the project structure
    - Print the closing footer (verbatim, with placeholders filled):
      ```
-     Migration complete: {N} files migrated to `.rpiv/guidance/`.
+     Migration complete: {N} files migrated to `.myflow/guidance/`.
      {Originals deleted: yes/no}
      Verification: run `claude` in the project and read a source file to confirm guidance injection works.
 
@@ -105,6 +105,6 @@ The migration relocates files from in-place `CLAUDE.md` to `.rpiv/guidance/{path
 ## Important notes:
 - The migration script handles all file operations — do not manually copy or move CLAUDE.md files
 - Content format is preserved as-is (same markdown structure, same `<important if>` blocks)
-- Only cross-references between files are transformed (`CLAUDE.md` paths → `.rpiv/guidance/` paths)
+- Only cross-references between files are transformed (`CLAUDE.md` paths → `.myflow/guidance/` paths)
 - The script outputs JSON to stdout — parse it for structured results
 - Debug logs go to stderr (visible with `claude --verbose`)

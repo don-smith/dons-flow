@@ -9,8 +9,8 @@
  * Paths (per layer):
  *   user    — config  `~/.config/rpiv-workflow/config.ts`
  *             packs   `~/.config/rpiv-workflow/packs/*.ts`
- *   project — config  `<cwd>/.rpiv/workflows/config.ts`
- *             packs   `<cwd>/.rpiv/workflows/packs/*.ts`
+ *   project — config  `<cwd>/.myflow/workflows/config.ts`
+ *             packs   `<cwd>/.myflow/workflows/packs/*.ts`
  *
  * Config file — accepts three default-export shapes:
  *   1. A single `Workflow`               — single-entry namespace
@@ -38,7 +38,7 @@
  * tool that respects `<cwd>` configuration: Pi already operates in a
  * context that implicitly trusts the current working directory. Users
  * running Pi in a freshly-cloned untrusted repo should diff
- * `.rpiv/workflows/config.ts` and `.rpiv/workflows/packs/*.ts`
+ * `.myflow/workflows/config.ts` and `.myflow/workflows/packs/*.ts`
  * (the config file + pack files) before running `/wf`.
  *
  * Module map:
@@ -189,7 +189,7 @@ export async function loadWorkflows(cwd: string): Promise<LoadedWorkflows> {
 	if (projectOutcome.contributed) layers.push("project");
 
 	// One-time legacy migration advisories — each independent, each a warning
-	// (advisory, never blocks the run). The new `.rpiv/workflows/` (project) and
+	// (advisory, never blocks the run). The new `.myflow/workflows/` (project) and
 	// `~/.config/rpiv-workflow/config.ts` (user) locations are the only ones
 	// read; these probes point the user at each move so nothing is silently
 	// ignored / stranded.
@@ -255,9 +255,9 @@ export async function loadWorkflows(cwd: string): Promise<LoadedWorkflows> {
 /**
  * Push the three independent legacy-migration advisories. Each is a `"warning"`
  * (never blocks the run) and each probes a distinct stale layout the unified
- * `.rpiv/workflows/` move left behind:
+ * `.myflow/workflows/` move left behind:
  *   - project dashed dir   `<cwd>/.rpiv-workflow/`           → config.ts + packs/
- *   - orphaned run JSONLs   `<cwd>/.rpiv/workflows/*.jsonl`   → runs/
+ *   - orphaned run JSONLs   `<cwd>/.myflow/workflows/*.jsonl`   → runs/
  *   - user-layer rename     `~/.config/rpiv-workflow/workflows.config.ts` → config.ts
  */
 function pushLegacyNotices(cwd: string, userPaths: OverlayPaths, acc: LoadAccumulator): void {
@@ -281,7 +281,7 @@ function pushLegacyNotices(cwd: string, userPaths: OverlayPaths, acc: LoadAccumu
 }
 
 /**
- * True when `<cwd>/.rpiv/workflows/` holds top-level `*.jsonl` run files written
+ * True when `<cwd>/.myflow/workflows/` holds top-level `*.jsonl` run files written
  * before the `runs/` relocation. `readdirSync` lists only immediate entries, so
  * files already inside `runs/` never match. A missing / unreadable dir → false.
  */

@@ -228,7 +228,7 @@ export const MSG_NAME_INVALID = (name: string) =>
 export const MSG_NAME_COLLISION = (name: string, runId: string) => `name '${name}' already used by run ${runId}`;
 
 export const MSG_NAME_INDEX_WRITE_FAILED = (name: string) =>
-	`/wf: could not persist name "${name}" to the names index — run aborted (no run started). Check filesystem permissions for .rpiv/workflows/runs/`;
+	`/wf: could not persist name "${name}" to the names index — run aborted (no run started). Check filesystem permissions for .myflow/workflows/runs/`;
 
 export const MSG_NAME_IGNORED_ON_RESUME =
 	"/wf: --name has no effect on @resume (the ref already identifies the run) — ignoring it";
@@ -243,14 +243,14 @@ export const MSG_WORKFLOW_NOT_FOUND = (name: string) => `/wf: workflow "${name}"
  * instead of trying to run with an undefined default — without rpiv-pi
  * installed and no user overlay, the merged registry is genuinely empty
  * and the user needs to install a sibling that bundles workflows or
- * author one in `.rpiv/workflows/config.ts`.
+ * author one in `.myflow/workflows/config.ts`.
  */
 export const MSG_NO_WORKFLOWS_REGISTERED =
-	"/wf: no workflows registered — install a sibling that bundles workflows or author one in `.rpiv/workflows/config.ts`";
+	"/wf: no workflows registered — install a sibling that bundles workflows or author one in `.myflow/workflows/config.ts`";
 
 /**
  * Legacy `.rpiv-workflow/` overlay directory detected at load time. The
- * package moved project config under the unified `.rpiv/workflows/` tree
+ * package moved project config under the unified `.myflow/workflows/` tree
  * (config.ts + packs/) alongside run state. The old directory is NO LONGER
  * read — this notice points the user at the new location and the one-line
  * `mv` migration. Emitted as a load WARNING (advisory, non-blocking).
@@ -262,27 +262,27 @@ export const MSG_NO_WORKFLOWS_REGISTERED =
  */
 export const LEGACY_OVERLAY_NOTICE = (cwd: string): string =>
 	`rpiv-workflow: detected legacy \`${join(cwd, ".rpiv-workflow")}\` — project config now lives at ` +
-	"`.rpiv/workflows/config.ts` + `.rpiv/workflows/packs/` and is the only location read. " +
-	"Move it: `mkdir -p .rpiv/workflows/packs; " +
-	"[ -f .rpiv-workflow/workflows.config.ts ] && mv .rpiv-workflow/workflows.config.ts .rpiv/workflows/config.ts; " +
-	"find .rpiv-workflow/workflows -name '*.ts' -exec mv {} .rpiv/workflows/packs/ \\; 2>/dev/null; " +
+	"`.myflow/workflows/config.ts` + `.myflow/workflows/packs/` and is the only location read. " +
+	"Move it: `mkdir -p .myflow/workflows/packs; " +
+	"[ -f .rpiv-workflow/workflows.config.ts ] && mv .rpiv-workflow/workflows.config.ts .myflow/workflows/config.ts; " +
+	"find .rpiv-workflow/workflows -name '*.ts' -exec mv {} .myflow/workflows/packs/ \\; 2>/dev/null; " +
 	"rm -rf .rpiv-workflow` " +
 	"(the old directory is ignored). " +
-	"Note: `.rpiv/workflows/` is commonly gitignored (it holds run state), so the moved " +
-	"`config.ts` + `packs/` may be silently uncommittable — add `!.rpiv/workflows/config.ts` and " +
-	"`!.rpiv/workflows/packs/` to your `.gitignore` to version-control team workflow config.";
+	"Note: `.myflow/workflows/` is commonly gitignored (it holds run state), so the moved " +
+	"`config.ts` + `packs/` may be silently uncommittable — add `!.myflow/workflows/config.ts` and " +
+	"`!.myflow/workflows/packs/` to your `.gitignore` to version-control team workflow config.";
 
 /**
- * Orphaned run JSONLs detected directly under `.rpiv/workflows/` at load time.
- * Run state moved one level down into `.rpiv/workflows/runs/`; files written by
+ * Orphaned run JSONLs detected directly under `.myflow/workflows/` at load time.
+ * Run state moved one level down into `.myflow/workflows/runs/`; files written by
  * an older version still sit at the parent and are no longer enumerated by
  * `listRuns` (so `/wf` past-run inspection silently can't see them). Emitted as
  * a load WARNING (advisory, non-blocking) — the files are orphaned, not deleted.
  */
 export const LEGACY_RUNS_NOTICE = (cwd: string): string =>
 	`rpiv-workflow: detected legacy run files directly under \`${join(cwd, ".rpiv", "workflows")}\` — ` +
-	"run state now lives in `.rpiv/workflows/runs/` and these top-level `*.jsonl` files are no longer " +
-	"read by `/wf`. Move them: `mkdir -p .rpiv/workflows/runs && mv .rpiv/workflows/*.jsonl .rpiv/workflows/runs/`.";
+	"run state now lives in `.myflow/workflows/runs/` and these top-level `*.jsonl` files are no longer " +
+	"read by `/wf`. Move them: `mkdir -p .myflow/workflows/runs && mv .myflow/workflows/*.jsonl .myflow/workflows/runs/`.";
 
 /**
  * Legacy user-layer config filename (`workflows.config.ts`) detected at load

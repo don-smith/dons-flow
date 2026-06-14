@@ -19,7 +19,7 @@ Cross-cutting patterns and domain-specific conventions go in `<important if>` bl
 
 Root conditional blocks are for **cross-cutting conventions that don't belong to any single layer**. Layer-specific recipes (like "adding a new controller" or "adding a new repository") belong in the subfolder architecture.md, not the root.
 
-**Deduplication rule:** If a layer has its own subfolder architecture.md, do NOT add a root conditional block summarizing that layer's conventions. The subfolder file is the authoritative guide — it provides detailed layer-specific documentation in `.rpiv/guidance/`. Root conditionals that mirror subfolder content waste attention budget and create staleness risk.
+**Deduplication rule:** If a layer has its own subfolder architecture.md, do NOT add a root conditional block summarizing that layer's conventions. The subfolder file is the authoritative guide — it provides detailed layer-specific documentation in `.myflow/guidance/`. Root conditionals that mirror subfolder content waste attention budget and create staleness risk.
 
 Root MAY include cross-layer vertical-slice checklists (e.g., "adding a new domain entity end-to-end") that reference multiple subfolder architecture.md files — but each step should point to the relevant subfolder for details, not inline them.
 

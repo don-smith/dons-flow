@@ -123,14 +123,14 @@ describe("iterate executor", () => {
 	});
 
 	it("pulls units until null; runs one session per unit in order; threads accumulated + index + frozen artifact", async () => {
-		writeArtifact(".rpiv/artifacts/reviews/rev.md", REVIEW_3_PHASES);
+		writeArtifact(".myflow/artifacts/reviews/rev.md", REVIEW_3_PHASES);
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/rev.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-2.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-3.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/rev.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-3.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -145,25 +145,25 @@ describe("iterate executor", () => {
 		// a monotonic index, accumulated growing by one, and prior plan paths.
 		expect(chain.sentMessages).toEqual([
 			"/skill:review x",
-			"/skill:blueprint .rpiv/artifacts/reviews/rev.md Phase 1 idx=0 acc=0 prior=[]",
-			"/skill:blueprint .rpiv/artifacts/reviews/rev.md Phase 2 idx=1 acc=1 prior=[.rpiv/artifacts/plans/plan-1.md]",
-			"/skill:blueprint .rpiv/artifacts/reviews/rev.md Phase 3 idx=2 acc=2 prior=[.rpiv/artifacts/plans/plan-1.md,.rpiv/artifacts/plans/plan-2.md]",
+			"/skill:blueprint .myflow/artifacts/reviews/rev.md Phase 1 idx=0 acc=0 prior=[]",
+			"/skill:blueprint .myflow/artifacts/reviews/rev.md Phase 2 idx=1 acc=1 prior=[.myflow/artifacts/plans/plan-1.md]",
+			"/skill:blueprint .myflow/artifacts/reviews/rev.md Phase 3 idx=2 acc=2 prior=[.myflow/artifacts/plans/plan-1.md,.myflow/artifacts/plans/plan-2.md]",
 			// consume is a side-effect stage inheriting the rolling primary — the LAST unit's plan.
-			"/skill:consume .rpiv/artifacts/plans/plan-3.md",
+			"/skill:consume .myflow/artifacts/plans/plan-3.md",
 		]);
 		// Rolling primary advanced to the last unit's artifact.
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/plans/plan-3.md");
+		expect(result.lastArtifact).toBe(".myflow/artifacts/plans/plan-3.md");
 	});
 
 	it("decorates each unit's JSONL row with id; named keying still resolves to outcome.name (one slot)", async () => {
-		writeArtifact(".rpiv/artifacts/reviews/rev.md", REVIEW_3_PHASES);
+		writeArtifact(".myflow/artifacts/reviews/rev.md", REVIEW_3_PHASES);
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/rev.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-2.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-3.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/rev.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-3.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -181,14 +181,14 @@ describe("iterate executor", () => {
 	});
 
 	it("accumulates every unit's Output under outcome.name; a downstream fanout reads all of them", async () => {
-		writeArtifact(".rpiv/artifacts/reviews/rev.md", REVIEW_3_PHASES);
+		writeArtifact(".myflow/artifacts/reviews/rev.md", REVIEW_3_PHASES);
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/rev.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-2.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-3.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/rev.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-3.md")] },
 				// one consume-fanout unit per accumulated plan
 				{ branch: [mockAssistantMessage("impl 1")] },
 				{ branch: [mockAssistantMessage("impl 2")] },
@@ -204,18 +204,18 @@ describe("iterate executor", () => {
 		// The fanout read state.named["plans"] and saw ALL three accumulated plans,
 		// proving the decorated rows did not split the named slot.
 		expect(chain.sentMessages.slice(-3)).toEqual([
-			"/skill:consume .rpiv/artifacts/plans/plan-1.md",
-			"/skill:consume .rpiv/artifacts/plans/plan-2.md",
-			"/skill:consume .rpiv/artifacts/plans/plan-3.md",
+			"/skill:consume .myflow/artifacts/plans/plan-1.md",
+			"/skill:consume .myflow/artifacts/plans/plan-2.md",
+			"/skill:consume .myflow/artifacts/plans/plan-3.md",
 		]);
 	});
 
 	it("first generator call returns null → zero-unit no-op completes, advances, leaves primary at entry", async () => {
-		writeArtifact(".rpiv/artifacts/reviews/rev.md", "# Review with no phases\n");
+		writeArtifact(".myflow/artifacts/reviews/rev.md", "# Review with no phases\n");
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/rev.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/rev.md")] },
 				{ branch: [mockAssistantMessage("consumed")] },
 			],
 		});
@@ -228,20 +228,20 @@ describe("iterate executor", () => {
 		expect(chain.remaining()).toBe(0);
 		// consume inherited the UNCHANGED primary (the review artifact), proving
 		// the no-op did not touch the rolling slot or publish anything.
-		expect(chain.sentMessages).toEqual(["/skill:review x", "/skill:consume .rpiv/artifacts/reviews/rev.md"]);
-		expect(result.lastArtifact).toBe(".rpiv/artifacts/reviews/rev.md");
+		expect(chain.sentMessages).toEqual(["/skill:review x", "/skill:consume .myflow/artifacts/reviews/rev.md"]);
+		expect(result.lastArtifact).toBe(".myflow/artifacts/reviews/rev.md");
 	});
 
 	it("maxIterations backstop halts with a terminal failure when the generator never returns null", async () => {
-		writeArtifact(".rpiv/artifacts/reviews/rev.md", REVIEW_3_PHASES);
+		writeArtifact(".myflow/artifacts/reviews/rev.md", REVIEW_3_PHASES);
 		// A generator that ALWAYS returns a unit (ignores the phase list).
 		const runaway: IterateFn = ({ index }) => ({ prompt: `unit ${index}`, label: `u${index}` });
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/rev.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/rev.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-2.md")] },
 			],
 		});
 
@@ -266,13 +266,13 @@ describe("iterate executor", () => {
 	});
 
 	it("generator throw halts the stage, attributed to the stage", async () => {
-		writeArtifact(".rpiv/artifacts/reviews/rev.md", REVIEW_3_PHASES);
+		writeArtifact(".myflow/artifacts/reviews/rev.md", REVIEW_3_PHASES);
 		const boom: IterateFn = () => {
 			throw new Error("generator exploded");
 		};
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
-			steps: [{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/rev.md")] }],
+			steps: [{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/rev.md")] }],
 		});
 
 		const result = await runWorkflow(chain.ctx, {
@@ -383,24 +383,24 @@ describe("iterate executor — corrective back-edge", () => {
 
 	it("accumulates plans append-only across a corrective loop; generator re-reads review from state.named", async () => {
 		writeArtifact(
-			".rpiv/artifacts/architecture_reviews/rev.md",
+			".myflow/artifacts/architecture_reviews/rev.md",
 			"# Review\n\n### Phase 1 — A\nx\n### Phase 2 — B\ny\n",
 		);
-		writeArtifact(".rpiv/artifacts/reviews/cr1.md", "---\nblockers_count: 1\n---\n");
-		writeArtifact(".rpiv/artifacts/reviews/cr2.md", "---\nblockers_count: 0\n---\n");
+		writeArtifact(".myflow/artifacts/reviews/cr1.md", "---\nblockers_count: 1\n---\n");
+		writeArtifact(".myflow/artifacts/reviews/cr2.md", "---\nblockers_count: 0\n---\n");
 
 		const chain = createMockSessionChain({
 			cwd: tmpDir,
 			steps: [
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/architecture_reviews/rev.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/architecture_reviews/rev.md")] },
 				// pass 1: 2 plans
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-1.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-2.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/cr1.md")] }, // blockers=1 → loop
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-1.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-2.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/cr1.md")] }, // blockers=1 → loop
 				// pass 2: 2 more plans (append-only)
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-3.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/plans/plan-4.md")] },
-				{ branch: [mockAssistantMessage("wrote .rpiv/artifacts/reviews/cr2.md")] }, // blockers=0 → consume
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-3.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/plans/plan-4.md")] },
+				{ branch: [mockAssistantMessage("wrote .myflow/artifacts/reviews/cr2.md")] }, // blockers=0 → consume
 				// consume fanout: one unit per accumulated plan (expects 4)
 				{ branch: [mockAssistantMessage("impl 1")] },
 				{ branch: [mockAssistantMessage("impl 2")] },
@@ -438,10 +438,10 @@ describe("iterate executor — corrective back-edge", () => {
 		// The consume fanout saw ALL FOUR plans — proving state.named["plans"] is
 		// append-only across the back-edge (both loop generations survive).
 		expect(chain.sentMessages.slice(-4)).toEqual([
-			"/skill:consume .rpiv/artifacts/plans/plan-1.md",
-			"/skill:consume .rpiv/artifacts/plans/plan-2.md",
-			"/skill:consume .rpiv/artifacts/plans/plan-3.md",
-			"/skill:consume .rpiv/artifacts/plans/plan-4.md",
+			"/skill:consume .myflow/artifacts/plans/plan-1.md",
+			"/skill:consume .myflow/artifacts/plans/plan-2.md",
+			"/skill:consume .myflow/artifacts/plans/plan-3.md",
+			"/skill:consume .myflow/artifacts/plans/plan-4.md",
 		]);
 	});
 });

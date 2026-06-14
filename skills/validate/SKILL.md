@@ -29,7 +29,7 @@ You are tasked with validating that an implementation plan was correctly execute
 
 ## Input
 
-`$ARGUMENTS` — optional path to a plan in `.rpiv/artifacts/plans/`. If omitted, branch on the recent-plans list in the Metadata block.
+`$ARGUMENTS` — optional path to a plan in `.myflow/artifacts/plans/`. If omitted, branch on the recent-plans list in the Metadata block.
 
 ## Metadata
 
@@ -40,7 +40,7 @@ node "${SKILL_DIR}/../_shared/git-context.mjs"
 echo
 echo "### recent (read only in case of empty user input)"
 echo "recent plans:"
-node "${SKILL_DIR}/../_shared/list-recent.mjs" .rpiv/artifacts/plans 10
+node "${SKILL_DIR}/../_shared/list-recent.mjs" .myflow/artifacts/plans 10
 ```
 
 ## Steps
@@ -56,7 +56,7 @@ When invoked:
 2. **Locate the plan**:
    - If plan path provided, use it.
    - Otherwise, branch on the `recent plans:` listing in the Metadata block:
-     - **Empty** — no plans under `.rpiv/artifacts/plans/`; ask the user for a path in prose.
+     - **Empty** — no plans under `.myflow/artifacts/plans/`; ask the user for a path in prose.
      - **Exactly one entry** — confirm with `ask_user_question`: "Validate this plan?" with options "Validate `<filename>` (Recommended)" and "Pick a different path".
      - **Two or more entries** — present the top 4 filenames as `ask_user_question` options (a free-text "Other" row is appended automatically).
 
@@ -116,7 +116,7 @@ For each phase in the plan:
 ### Step 3: Write the Validation Report
 
 1. **Determine metadata** (from the Metadata block at the top of this skill):
-   - Filename: `.rpiv/artifacts/validation/<slug>_<plan-topic-kebab>.md` — `<slug>` is the second tab-separated field on line 1 of the Metadata block above; `<plan-topic-kebab>` is the plan's `topic:` frontmatter value lowercased and hyphen-joined.
+   - Filename: `.myflow/artifacts/validation/<slug>_<plan-topic-kebab>.md` — `<slug>` is the second tab-separated field on line 1 of the Metadata block above; `<plan-topic-kebab>` is the plan's `topic:` frontmatter value lowercased and hyphen-joined.
    - `repository:` ← `repo:` label; `branch:` / `commit:` ← matching labels.
    - `date:` ← `<iso>` (first tab-separated field on line 1 of the Metadata block above, offset verbatim).
    - `author:` ← matching label (fallback: `unknown`).
@@ -136,7 +136,7 @@ For each phase in the plan:
 
 ```
 Validation written to:
-`.rpiv/artifacts/validation/{filename}.md`
+`.myflow/artifacts/validation/{filename}.md`
 
 Verdict: {pass | fail}
 ```

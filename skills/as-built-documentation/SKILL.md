@@ -24,7 +24,7 @@ Gather source material from the completed work:
 1. **Git history**: Understand the arc of work — what was built, in what order, and any pivots or reversals.
    - On a feature branch: `git log main..HEAD --oneline`
    - On main: `git log --oneline` for the relevant range of commits (use planning docs and commit messages to identify the boundary)
-2. **Planning documents**: Read all docs in `docs/plans/` that relate to the completed work. These are the primary source material for synthesis.
+2. **Planning documents**: Read all docs in `.myflow/plans/` that relate to the completed work. These are the primary source material for synthesis.
 3. **Code changes**: Identify scope from the git history, then read the key files to understand the current architecture. Prioritize repo-level AGENTS.md files — they often capture the implementation's shape already.
 4. **Existing documentation**: Check for any other docs, comments, or READMEs that were created or modified as part of this work.
 5. **Existing as-built docs**: Check `docs/changes/` for related documents. If one exists for this area, consider updating it rather than creating a new one.
@@ -68,11 +68,11 @@ Most as-built docs will be repo-specific. Ask: "does this document primarily hel
 
 **Retiring planning documents:**
 
-Planning documents from root `docs/plans/` that are repo-specific should be either:
+Planning documents from `.myflow/plans/` that are repo-specific should be either:
 - **Deleted** if fully consumed into the as-built doc
 - **Moved** to the repo's `docs/` folder if they contain standing rationale that agents may need (e.g., "why we chose X over Y") but aren't linked from navigational documents
 
-Cross-repo planning documents in root `docs/plans/` should only be deleted if they've been fully superseded.
+Cross-repo planning documents in `.myflow/plans/` should only be deleted if they've been fully superseded.
 
 **Then:**
 2. **Stage** all changes (new/updated files + deletions) with `git add`
@@ -140,4 +140,4 @@ Keep this short - a few sentences to a short paragraph.>
 | Documenting every small decision | Focus on decisions that affect future work or have regression risk |
 | Writing for a human narrative | Structure for quick scanning - headers, lists, tables over prose |
 | Including implementation steps | The code is the implementation; document the "what" and "why," not the "how to build it" |
-| Forgetting to delete old plans | Always check `docs/plans/` for branch-related documents to remove |
+| Forgetting to delete old plans | Always check `.myflow/plans/` for branch-related documents to remove |

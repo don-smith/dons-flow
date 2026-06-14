@@ -193,7 +193,7 @@ export function resolveRun(cwd: string, ref: string): WorkflowHeader | undefined
 }
 
 /**
- * Enumerate every `<cwd>/.rpiv/workflows/runs/<run-id>.jsonl` and return its
+ * Enumerate every `<cwd>/.myflow/workflows/runs/<run-id>.jsonl` and return its
  * header projected as a `RunSummary`. Empty array when the runs
  * directory doesn't exist (no runs yet). Files without a valid header
  * are skipped silently (corrupt / mid-write).

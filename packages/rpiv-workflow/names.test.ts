@@ -113,7 +113,7 @@ describe("resolveRun", () => {
 	it("resolves a relative path with dir prefix to the run's JSONL", () => {
 		const runId = generateRunId();
 		seedRun(runId);
-		expect(resolveRun(tmpDir, `.rpiv/workflows/runs/${runId}.jsonl`)?.runId).toBe(runId);
+		expect(resolveRun(tmpDir, `.myflow/workflows/runs/${runId}.jsonl`)?.runId).toBe(runId);
 	});
 
 	it("prefers a verbatim name match over slug normalization (name is never a path)", () => {

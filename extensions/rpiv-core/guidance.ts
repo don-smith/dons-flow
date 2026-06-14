@@ -3,13 +3,13 @@
  *
  * At each directory depth from project root down to the touched file's
  * directory, picks the first existing of:
- *   AGENTS.md > CLAUDE.md > .rpiv/guidance/<sub>/architecture.md
+ *   AGENTS.md > CLAUDE.md > .myflow/guidance/<sub>/architecture.md
  *
  * Depth 0 (project root) skips AGENTS.md/CLAUDE.md because Pi's own
  * resource-loader (loadContextFileFromDir at resource-loader.js:30-46)
  * already loads <cwd>/AGENTS.md or <cwd>/CLAUDE.md into the system
  * prompt's # Project Context block. Depth 0 still checks
- * <cwd>/.rpiv/guidance/architecture.md — Pi's loader does not see that
+ * <cwd>/.myflow/guidance/architecture.md — Pi's loader does not see that
  * path.
  *
  * `resolveGuidance` is pure logic with no ExtensionAPI references
@@ -125,7 +125,7 @@ export function clearInjectionState() {
 // ---------------------------------------------------------------------------
 
 /**
- * Inject the root `.rpiv/guidance/architecture.md` at session start.
+ * Inject the root `.myflow/guidance/architecture.md` at session start.
  *
  * Called from `session_start` so the root guidance is available before the
  * first agent turn — without waiting for a read/edit/write tool_call.
@@ -223,8 +223,8 @@ function shortenPath(filePath: string, cwd: string): string {
  * Format a guidance file's heading label.
  *   extensions/rpiv-core/AGENTS.md          → "extensions/rpiv-core (AGENTS.md)"
  *   scripts/CLAUDE.md                       → "scripts (CLAUDE.md)"
- *   .rpiv/guidance/scripts/architecture.md  → "scripts (architecture.md)"
- *   .rpiv/guidance/architecture.md          → "root (architecture.md)"
+ *   .myflow/guidance/scripts/architecture.md  → "scripts (architecture.md)"
+ *   .myflow/guidance/architecture.md          → "root (architecture.md)"
  */
 function sendGuidanceMessage(pi: ExtensionAPI, content: string): void {
 	pi.sendMessage({

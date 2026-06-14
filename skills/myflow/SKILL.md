@@ -59,7 +59,7 @@ Shape the work. Capture intent.
 
 **Typical flow:** `brainstorming` → `discover` (formalize output) → `explore` (if multiple valid paths). Or skip straight to `discover` if the work is already well-shaped.
 
-**Artifact:** `.rpiv/artifacts/discover/` (FRD) or `.rpiv/artifacts/solutions/` (Solutions doc)
+**Artifact:** `.myflow/artifacts/discover/` (FRD) or `.myflow/artifacts/solutions/` (Solutions doc)
 
 **Checkpoint:** Run `capturing-learnings` after the artifact is accepted.
 
@@ -85,7 +85,7 @@ Ground intent in codebase reality. Design the solution. Stress-test the architec
 - **Complex:** `design` → `architecture-review` → `plan` (for large or cross-cutting work)
 - **Fast:** `blueprint` (single pass → implement-ready plan)
 
-**Artifact:** `.rpiv/artifacts/plans/` — canonical format. `implement` consumes this.
+**Artifact:** `.myflow/artifacts/plans/` — canonical format. `implement` consumes this.
 
 **Checkpoint:** Run `capturing-learnings` after the plan is accepted.
 
@@ -138,7 +138,7 @@ Verify the work. Gate the commit.
 
 **Gate:** `code-review` loops until zero blockers (max 3 passes). Blockers → `revise` → re-implement → re-validate. Zero blockers → proceed to stage 5. Three loops with remaining blockers → stops for human decision.
 
-**Artifact:** `.rpiv/artifacts/validation/` + `.rpiv/artifacts/reviews/`
+**Artifact:** `.myflow/artifacts/validation/` + `.myflow/artifacts/reviews/`
 
 **Checkpoint:** Run `capturing-learnings` after validate + review pass.
 
@@ -221,7 +221,7 @@ Your codebase should contain these documents and folders. They are owned by the 
 | Stage | Primary Skill(s) | Artifact Produced |
 |---|---|---|
 | 1. Discover & Align | `discover`, `brainstorming`, `explore` | FRD or Solutions |
-| 2. Research & Design | `research`, `design`/`blueprint`, `plan` | Plan (`.rpiv/artifacts/plans/`) |
+| 2. Research & Design | `research`, `design`/`blueprint`, `plan` | Plan (`.myflow/artifacts/plans/`) |
 | 3. Implement | `implement` + TDD, subagents | Working tree changes |
 | 4. Validate & Review | `validate`, `code-review`, `revise` | Validation + Review |
 | 5. Land & Learn | `land` (→ commit, as-built, retro...) | `docs/changes/`, retros, memory |
@@ -259,4 +259,3 @@ Your codebase should contain these documents and folders. They are owned by the 
 - `verification-before-completion` — evidence-first discipline
 - `docs/runbooks/monitor-upstream-evolution.md` — upstream tracking
 - Pipeline visual: `docs/myflow-v3-pipeline.html`
-- Pipeline spec: `docs/specs/2026-06-14-myflow-v3-pipeline-design.md`

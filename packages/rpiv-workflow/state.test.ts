@@ -52,13 +52,13 @@ describe("generateRunId", () => {
 });
 
 describe("runsDir / stateFilePath", () => {
-	it("resolves to .rpiv/workflows/runs under cwd", () => {
-		expect(runsDir("/project")).toBe("/project/.rpiv/workflows/runs");
+	it("resolves to .myflow/workflows/runs under cwd", () => {
+		expect(runsDir("/project")).toBe("/project/.myflow/workflows/runs");
 	});
 
 	it("resolves state file with .jsonl extension", () => {
 		expect(stateFilePath("/project", "2026-05-20_15-30-45")).toBe(
-			"/project/.rpiv/workflows/runs/2026-05-20_15-30-45.jsonl",
+			"/project/.myflow/workflows/runs/2026-05-20_15-30-45.jsonl",
 		);
 	});
 });
@@ -393,7 +393,7 @@ describe("listArtifacts", () => {
 			skill: "research",
 			status: "completed",
 			ts: "2026",
-			output: mkOutput([{ kind: "fs", path: ".rpiv/artifacts/research/r.md" }]),
+			output: mkOutput([{ kind: "fs", path: ".myflow/artifacts/research/r.md" }]),
 		});
 		// Stage without artifacts — should NOT appear in the list.
 		appendStage(tmpDir, runId, { stageNumber: 2, stage: "commit", skill: "commit", status: "completed", ts: "2026" });
@@ -403,19 +403,19 @@ describe("listArtifacts", () => {
 			skill: "design",
 			status: "completed",
 			ts: "2026",
-			output: mkOutput([{ kind: "fs", path: ".rpiv/artifacts/design/d.md" }]),
+			output: mkOutput([{ kind: "fs", path: ".myflow/artifacts/design/d.md" }]),
 		});
 
 		expect(listArtifacts(tmpDir, runId)).toEqual([
 			{
 				stage: "research",
 				skill: "research",
-				artifact: { handle: { kind: "fs", path: ".rpiv/artifacts/research/r.md" } },
+				artifact: { handle: { kind: "fs", path: ".myflow/artifacts/research/r.md" } },
 			},
 			{
 				stage: "design",
 				skill: "design",
-				artifact: { handle: { kind: "fs", path: ".rpiv/artifacts/design/d.md" } },
+				artifact: { handle: { kind: "fs", path: ".myflow/artifacts/design/d.md" } },
 			},
 		]);
 	});
