@@ -23,7 +23,7 @@ To update, `git pull` in the cloned repo and restart Pi. No npm reinstall needed
 /skill:setup-myflow
 ```
 
-This creates the repo-owned conventions listed below.
+This creates/loads your personal per-repo MyFlow store, initializes gitignored worktree scratch space, and records where this repo keeps committed artifacts such as status and as-built documentation.
 
 ## The 5-stage pipeline
 
@@ -52,44 +52,36 @@ myflow provides the full workflow:
 | Skill | Purpose |
 |---|---|
 | `myflow` | The map. Guides you through the 5-stage pipeline for any piece of work. |
-| `setup-myflow` | Onboarding: creates repo conventions for the myflow workflow. |
+| `setup-myflow` | Onboarding: creates/loads the personal repo store and configures artifact paths. |
 | `land` | The 9-step closeout in 3 groups: Commit & Document, Reflect & Reconcile, Update & Close. |
-| `epiphany-tabling` | Capture mid-flight realizations in `docs/tabled.md` without derailing current work. |
-| `as-built-documentation` | Replace spec/plan scaffolding with a permanent `docs/changes/` record of what shipped. |
+| `epiphany-tabling` | Capture mid-flight realizations in the personal repo tabled file without derailing current work. |
+| `as-built-documentation` | Replace spec/plan scaffolding with a permanent record at the configured as-built path. |
 | `capturing-learnings` | End-of-artifact checkpoints + the "once is a moment; twice is a pattern" promotion rule. |
 | `writing-retros` | Produce frozen retrospective documents at milestone close. |
 | `verification-before-completion` | Evidence-before-claims discipline embedded in execution. |
 | `finishing-a-development-branch` | Merge / PR / cleanup decisions at cycle end. |
 | `using-git-worktrees` | Isolated workspaces for parallel workstreams. |
 
-## Repo conventions
+## Storage model
 
-These documents live in the codebase because they are shared context for the whole team. The skills that produce and maintain them live in this package.
+MyFlow is personal developer workflow tooling. It uses three storage scopes:
 
-| Path | Purpose |
-|---|---|
-| `docs/tabled.md` | Working memory for deferred ideas and follow-ups |
-| `docs/status.md` | Living status: Recently Completed, What's Next |
-| `docs/memory/` | Persistent memory entries + `MEMORY.md` index |
-| `docs/changes/` | As-built documentation: what shipped and why |
-| `docs/retros/` | Frozen retrospective documents |
-| `docs/runbooks/` | Multi-skill processes |
-| `AGENTS.md` | Repo-level agent guidance |
+| Scope | Location | Purpose |
+|---|---|---|
+| Global MyFlow install | This package / installed Pi assets | Skills, agents, extensions, templates, workflow defaults. |
+| Personal repo store | `~/.myflow/repos/<repo-id>/` | Repo-specific path map, tabled items, memory, retros. |
+| Worktree scratch | `<worktree>/.myflow/` | Gitignored artifacts, specs, guidance, handoffs for the current branch/worktree. |
 
-## Philosophy: what lives where
+Committed target-repo artifacts are configurable per repo through `~/.myflow/repos/<repo-id>/config.toml`:
 
-**In the codebase (shared):**
-- The code changes.
-- As-built docs (`docs/changes/`).
-- Retros (`docs/retros/`).
-- Status, memory, and runbooks.
+| Logical path | Default | Purpose |
+|---|---|---|
+| `as_built` | `docs/changes` | As-built documentation: what shipped and why. |
+| `status` | `docs/status.md` | Living status: Recently Completed, What's Next. |
+| `runbooks` | `docs/runbooks` | Durable repo-relevant processes and practices. |
+| `agents` | `AGENTS.md` | Repo-level agent guidance. |
 
-**In this repo (developer-owned):**
-- The skills and workflow conventions.
-- The closeout ritual (`land`).
-- The promotion rules for turning observations into durable artifacts.
-
-Clone this repo anywhere you want the workflow. It travels with you across codebases while keeping each project's shared knowledge in the project.
+MyFlow process state — tabled items, memory, retros — stays in the personal repo store so target repos do not need MyFlow-specific committed configuration or conventions docs.
 
 ## Tracking upstream changes
 
@@ -98,14 +90,14 @@ Superpowers and RPIV evolve independently. The `sync-upstream` skill surfaces wh
 - Skill: `/skill:sync-upstream`
 - Script: `scripts/sync-upstream.sh`
 - Runbook: `docs/runbooks/monitor-upstream-evolution.md`
-- Memory: `docs/memory/monitor_upstream_evolution.md`
+- Memory: personal repo memory (`node skills/_shared/repo-store.mjs state memory`)
 
 Run the sync monthly or after every 2–3 projects to stay informed.
 
 ## Typical first use
 
 1. Clone the repo: `git clone https://github.com/don-smith/myflow.git && pi install ./myflow`.
-2. Run `/skill:setup-myflow` to scaffold repo conventions.
+2. Run `/skill:setup-myflow` to initialize the personal repo store and configure artifact paths.
 3. Start with `/skill:myflow` to see the 5-stage pipeline. Begin at stage 1 (Discover & Align) with `brainstorming` or `/skill:discover`.
 4. Close the cycle with `/skill:land`.
 5. After 2–3 projects, run `/skill:sync-upstream`.

@@ -11,8 +11,8 @@ Keep an eye on upstream changes to **Superpowers** and **RPIV** — not to incor
 2. Copies selected Superpowers skills into `vendor/superpowers/skills/` (for diffing against what's in the repo).
 3. Clones or pulls `juicesharp/rpiv-mono` to review RPIV changes.
 4. Compares the current HEAD of each repo against the last-synced hash.
-5. Emits a dated report in `docs/memory/upstream-sync-YYYY-MM-DD.md`.
-6. Updates `docs/memory/.upstream-last-sync.json` so the next run only shows new changes.
+5. Emits a dated report in the personal repo memory directory: `upstream-sync-YYYY-MM-DD.md`.
+6. Updates `.upstream-last-sync.json` in that same memory directory so the next run only shows new changes.
 
 ## Announce at start
 
@@ -44,7 +44,8 @@ If `jq` is missing, install it (`brew install jq` on macOS, `apt-get install jq`
 Open the generated report:
 
 ```bash
-ls docs/memory/upstream-sync-*.md | tail -1
+memory_dir="$(node "${SKILL_DIR}/../_shared/repo-store.mjs" state memory)"
+ls "$memory_dir"/upstream-sync-*.md | tail -1
 ```
 
 The report contains:
@@ -61,11 +62,10 @@ If something is compelling enough to incorporate, make a deliberate decision and
 
 Edit the report in place with your observations.
 
-### Step 4: Update memory and commit
+### Step 4: Update memory
 
-1. Update `docs/memory/monitor_upstream_evolution.md` with the review date and any notable observations.
-2. Commit the new sync report and updated memory.
-3. Push.
+1. Update `monitor_upstream_evolution.md` in the personal repo memory directory with the review date and any notable observations.
+2. Keep the sync report and memory local unless a specific repo-facing decision should be promoted into committed docs.
 
 No version bumps, no publishing — just awareness.
 
@@ -78,5 +78,5 @@ No version bumps, no publishing — just awareness.
 ## See also
 
 - `docs/runbooks/monitor-upstream-evolution.md` — the monthly runbook
-- `docs/memory/monitor_upstream_evolution.md` — long-term decision context
+- Personal repo memory (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state memory`) — long-term decision context
 - `scripts/sync-upstream.sh` — the underlying script

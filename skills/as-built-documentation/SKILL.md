@@ -27,7 +27,7 @@ Gather source material from the completed work:
 2. **Planning documents**: Read all docs in `.myflow/plans/` that relate to the completed work. These are the primary source material for synthesis.
 3. **Code changes**: Identify scope from the git history, then read the key files to understand the current architecture. Prioritize repo-level AGENTS.md files — they often capture the implementation's shape already.
 4. **Existing documentation**: Check for any other docs, comments, or READMEs that were created or modified as part of this work.
-5. **Existing as-built docs**: Check `docs/changes/` for related documents. If one exists for this area, consider updating it rather than creating a new one.
+5. **Existing as-built docs**: Check the configured as-built path (`node "${SKILL_DIR}/../_shared/repo-store.mjs" path as_built`) for related documents. If one exists for this area, consider updating it rather than creating a new one.
 
 ### Phase 2: Synthesis
 
@@ -49,19 +49,25 @@ If you have gaps or uncertainties that can't be resolved from code and docs alon
 
 **Where does the as-built document go?**
 
+Resolve the configured as-built path first:
+
+```bash
+node "${SKILL_DIR}/../_shared/repo-store.mjs" path as_built
+```
+
 Documents live where their scope lives:
-- **Repo-specific work** (transforms, adapters, features within one repo) → the repo's `docs/changes/` folder
-- **Cross-repo or project-level changes** (architecture, shared conventions, infrastructure that affects all repos) → root `docs/changes/`
+- **Repo-specific work** (transforms, adapters, features within one repo) → the configured as-built path for that repo
+- **Cross-repo or project-level changes** (architecture, shared conventions, infrastructure that affects all repos) → the configured as-built path for the project-level repo
 
 Most as-built docs will be repo-specific. Ask: "does this document primarily help agents working in one repo, or across multiple repos?"
 
 **Creating a new document:**
-1. **Write** to `docs/changes/YYYY-MM-DD-<topic>.md` (in the appropriate repo or root)
+1. **Write** to `<configured-as-built-path>/YYYY-MM-DD-<topic>.md` (in the appropriate repo or root)
    - Use today's date
    - Use a short, descriptive kebab-case topic name
 
 **Updating an existing document:**
-1. **Edit** the existing document in `docs/changes/` to incorporate the new work
+1. **Edit** the existing document in the configured as-built path to incorporate the new work
    - Update the date and Quick Reference section
    - Revise "How It Works Now" from the current code
    - Add any new Key Decisions

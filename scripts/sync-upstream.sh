@@ -14,8 +14,8 @@ set -euo pipefail
 #   vendor/superpowers-source/  git mirror of obra/superpowers
 #   vendor/superpowers/skills/  selected Superpowers skills vendored into myflow
 #   vendor/superpowers/LICENSE  Superpowers MIT license
-#   docs/memory/upstream-sync-YYYY-MM-DD.md  decision report
-#   docs/memory/.upstream-last-sync.json     last-synced commit hashes
+#   <personal repo memory>/upstream-sync-YYYY-MM-DD.md  decision report
+#   <personal repo memory>/.upstream-last-sync.json     last-synced commit hashes
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
@@ -23,7 +23,8 @@ cd "$REPO_ROOT"
 SOURCE_DIR="$REPO_ROOT/vendor/superpowers-source"
 VENDOR_DIR="$REPO_ROOT/vendor/superpowers"
 VENDOR_SKILLS_DIR="$VENDOR_DIR/skills"
-MEMORY_DIR="$REPO_ROOT/docs/memory"
+node "$REPO_ROOT/skills/_shared/repo-store.mjs" ensure >/dev/null
+MEMORY_DIR="$(node "$REPO_ROOT/skills/_shared/repo-store.mjs" state memory)"
 TODAY="$(date +%Y-%m-%d)"
 REPORT_FILE="$MEMORY_DIR/upstream-sync-$TODAY.md"
 LAST_SYNC_FILE="$MEMORY_DIR/.upstream-last-sync.json"

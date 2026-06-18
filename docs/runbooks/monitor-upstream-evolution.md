@@ -29,7 +29,7 @@ This clones or pulls:
 - `https://github.com/obra/superpowers` → `vendor/superpowers-source`
 - `https://github.com/juicesharp/rpiv-mono` → `vendor/rpiv-mono`
 
-It then copies selected Superpowers skills into `vendor/superpowers/skills/`, compares each repo's current HEAD against the last-synced hash stored in `docs/memory/.upstream-last-sync.json`, and writes a dated report to `docs/memory/upstream-sync-YYYY-MM-DD.md`.
+It then copies selected Superpowers skills into `vendor/superpowers/skills/`, compares each repo's current HEAD against the last-synced hash stored in the personal repo memory directory, and writes a dated report there as `upstream-sync-YYYY-MM-DD.md`.
 
 If `jq` is missing, install it first:
 
@@ -43,7 +43,8 @@ apt-get install jq     # Debian/Ubuntu
 Open the latest report:
 
 ```bash
-ls docs/memory/upstream-sync-*.md | tail -1
+memory_dir="$(node skills/_shared/repo-store.mjs state memory)"
+ls "$memory_dir"/upstream-sync-*.md | tail -1
 ```
 
 For each upstream project, the report shows:
@@ -68,23 +69,29 @@ Edit the report in place with your observations.
 
 ### 4. Update long-term memory
 
-Open `docs/memory/monitor_upstream_evolution.md` and:
+Open `monitor_upstream_evolution.md` in the personal repo memory directory:
+
+```bash
+memory_dir="$(node skills/_shared/repo-store.mjs state memory)"
+$EDITOR "$memory_dir/monitor_upstream_evolution.md"
+```
+
+Then:
 
 - Update `last-reviewed` and `next-review` dates.
 - Add a paragraph summarizing this month's sync and any notable observations.
 
-### 5. Commit
+### 5. Promote only durable repo-facing decisions
 
-1. Commit the new sync report and updated memory.
-2. Push.
+Keep routine sync reports and memory local. If a sync produces a repo-facing decision — for example, changing vendored skills or dependency versions — implement that decision separately and commit the actual code/docs change.
 
-No version bumps, no publishing, no applying changes — just awareness.
+No version bumps, no publishing, no applying changes by default — just awareness.
 
 ## Outputs
 
-- Updated `docs/memory/upstream-sync-YYYY-MM-DD.md`.
-- Updated `docs/memory/monitor_upstream_evolution.md`.
-- Updated `docs/memory/.upstream-last-sync.json`.
+- Updated `<personal repo memory>/upstream-sync-YYYY-MM-DD.md`.
+- Updated `<personal repo memory>/monitor_upstream_evolution.md`.
+- Updated `<personal repo memory>/.upstream-last-sync.json`.
 
 ## Anti-patterns
 

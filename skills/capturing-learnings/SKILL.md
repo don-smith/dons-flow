@@ -22,9 +22,9 @@ After each approved spec, plan, or major commit set — and **before proceeding 
 
 1. **Is the current artifact solid?** Does it include what it should? Any obvious gap or drift?
 2. **Are we carrying an assumption that hasn't been tested?** If yes, note it — ideally as a tabled entry or a memory update.
-3. **What in `docs/tabled.md` is ready to be processed?** Walk each entry; decide destination.
+3. **What in the repo's personal tabled file is ready to be processed?** Resolve it with `node "${SKILL_DIR}/../_shared/repo-store.mjs" state tabled`, walk each entry, and decide destination.
 4. **What should be promoted to an artifact (skill, runbook, memory) or remembered going forward?**
-5. **Any existing memory in `docs/memory/` that is now stale?** Glance through the index. If a memory's rationale has dissolved (milestone shipped, decision was reversed, scope narrowed), update or remove it. Announce the change per AGENTS.md.
+5. **Any existing personal memory for this repo that is now stale?** Resolve it with `node "${SKILL_DIR}/../_shared/repo-store.mjs" state memory`, glance through the index, and update or remove entries whose rationale has dissolved (milestone shipped, decision reversed, scope narrowed). Announce changes when they affect future work.
 
 The checkpoint produces either (a) a concrete change (a file written, a memory updated, a skill created) or (b) an explicit "nothing to do" — never a vague promise to "come back to this later."
 
@@ -44,9 +44,9 @@ When the second sighting arrives, match the learning to an artifact type:
 | Learning shape | Artifact | Where it lives | Half-life |
 |---|---|---|---|
 | A tactical, reusable how-to — the specific steps for doing one thing well (may include a script) | **Skill** | Project-local `.pi/skills/<name>/SKILL.md`, global `~/.pi/agent/skills/<name>/SKILL.md`, or an installed Pi package skill | Long — skills travel. |
-| A broader process or practice — often composing multiple skills, sometimes with its own scripts | **Runbook** | `docs/runbooks/<name>.md` | Medium — check on use; runbooks rot fast. |
-| A recurring user preference, constraint, or project context to carry across sessions | **Memory entry** | `docs/memory/<type>_<topic>.md` + index in `docs/memory/MEMORY.md` | Long — until the context shifts. |
-| A permanent record of shipped work | **As-built** | `docs/changes/YYYY-MM-DD-<topic>.md` | Permanent — frozen. See the `as-built-documentation` skill. |
+| A broader process or practice — often composing multiple skills, sometimes with its own scripts | **Runbook** | Configured runbook path: `node "${SKILL_DIR}/../_shared/repo-store.mjs" path runbooks` | Medium — check on use; runbooks rot fast. |
+| A recurring user preference, constraint, or project context to carry across sessions | **Memory entry** | Personal repo memory: `node "${SKILL_DIR}/../_shared/repo-store.mjs" state memory` | Long — until the context shifts. |
+| A permanent record of shipped work | **As-built** | Configured as-built path: `node "${SKILL_DIR}/../_shared/repo-store.mjs" path as_built` | Permanent — frozen. See the `as-built-documentation` skill. |
 
 **Skill vs runbook — working heuristic:** a **skill** is the tactical detail: how you do one specific thing (e.g. "epiphany-tabling," "as-built-documentation," "running a particular class of query"). A **runbook** is a broader process or practice that often orchestrates multiple skills (e.g. "onboard a new agent," "release a new image") and may also carry its own scripts. Both skills and runbooks can reference or invoke scripts; the difference is scope — tactical vs. procedural.
 

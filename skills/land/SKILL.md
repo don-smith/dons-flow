@@ -40,7 +40,7 @@ Group staged/unstaged changes into logical, atomic commits. Use `/skill:commit [
 
 #### 2. As-Built Documentation
 
-Once the code is committed, capture what changed and why in `docs/changes/`. Use the `as-built-documentation` skill — it handles the synthesis, writing, and cleanup of superseded plans. This is the permanent record; specs and plans are scaffolding, as-builts are durable.
+Once the code is committed, capture what changed and why in the configured as-built path (`node "${SKILL_DIR}/../_shared/repo-store.mjs" path as_built`). Use the `as-built-documentation` skill — it handles the synthesis, writing, and cleanup of superseded plans. This is the permanent record; specs and plans are scaffolding, as-builts are durable.
 
 ### Group 2 — Reflect & Reconcile
 
@@ -48,7 +48,7 @@ Look back at what happened and what we learned.
 
 #### 3. Retro
 
-Reflect on the cycle. What went well, what was hard, patterns to capture, anti-patterns to nudge against. Produce a permanent retro doc at `docs/retros/YYYY-MM-DD-<topic>.md`. **Start by reading the previous retro in `docs/retros/`** — this threads the continual-improvement loop forward across cycles. Retro closes off the cycle's work — process improvement, not scope.
+Reflect on the cycle. What went well, what was hard, patterns to capture, anti-patterns to nudge against. Produce a retro in the personal repo retros directory (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state retros`). **Start by reading the previous retro in that directory** — this threads the continual-improvement loop forward across cycles on this machine. Retro closes off the cycle's work — process improvement, not scope. Promote repo-relevant lessons to committed artifacts when warranted.
 
 #### 4. Capturing Learnings
 
@@ -68,11 +68,11 @@ Root and repo-level. Only update what actually changed during this cycle.
 
 #### 7. Memory Reconcile
 
-Review persistent memory (`docs/memory/`) against the new state. Correct stale entries, remove redundancies, add new memories warranted by the cycle. Memory is a thin index pointing at authoritative sources, not a duplication.
+Review personal repo memory (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state memory`) against the new state. Correct stale entries, remove redundancies, add new memories warranted by the cycle. Memory is a thin index pointing at authoritative sources, not a duplication.
 
 #### 8. Status Review + Tabled Items Resolution
 
-Walk through `docs/status.md` with the cycle's tabled items in hand. Update Recently Completed and What's Next. **Resolve every tabled item in `docs/tabled.md`** — either decide-now (document the decision and remove the entry) or move-to-status (substance moves to What's Next). `docs/tabled.md` should end the cycle empty or near-empty. Identify the next piece of work — usually the highest-priority moved-to-status item.
+Walk through the configured status file (`node "${SKILL_DIR}/../_shared/repo-store.mjs" path status`) with the cycle's tabled items in hand (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state tabled`). Update Recently Completed and What's Next. **Resolve every tabled item** — either decide-now (document the decision and remove the entry) or move-to-status (substance moves to What's Next). The tabled file should end the cycle empty or near-empty. Identify the next piece of work — usually the highest-priority moved-to-status item.
 
 #### 9. Integrate
 
@@ -84,8 +84,8 @@ If on **`main`**, stage all close-out changes in appropriately grouped commits a
 
 - **Each step is a conversation.** Surface findings, get review, advance together. Don't execute multiple steps in a single agent turn without human checkpoints.
 - **This skill owns the sequence; child skills own the execution.** Don't duplicate instructions that live in referenced skills (`as-built-documentation`, `finishing-a-development-branch`, `capturing-learnings`).
-- **Documents live where their scope lives.** Repo-specific docs in the repo. Cross-repo / project-level docs at the root.
-- **Set up the next agent for success.** Every step should leave the codebase navigable: tabled items resolved, status current, retro filed, memories reconciled.
+- **Documents live where their scope lives.** Repo-specific durable docs go to configured repo paths. MyFlow process state lives in the personal per-repo store.
+- **Set up the next agent for success.** Every step should leave the codebase navigable: tabled items resolved, status current, retro filed in the personal store, memories reconciled.
 - **Reviews happen before land.** Code review and architectural review live in stages 2 and 4 of the pipeline — do not re-review during closeout unless something changed.
 
 ## Anti-patterns

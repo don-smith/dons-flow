@@ -1,11 +1,11 @@
 ---
 name: setup-myflow
-description: Use when onboarding myflow in a repo — checks that the workflow is available and creates repo conventions
+description: Use when onboarding myflow in a repo — creates the personal per-repo MyFlow store, initializes worktree scratch space, and records repo-specific artifact paths
 ---
 
 # Setup myflow
 
-Onboard a repo to myflow. This skill checks that the workflow is available and creates the repo-owned conventions.
+Onboard a repo to myflow. This skill creates or loads the developer's personal per-repo MyFlow store, initializes worktree-local scratch space, and records where this repo keeps committed artifacts such as status and as-built documentation.
 
 ## Announce at start
 
@@ -14,7 +14,8 @@ Onboard a repo to myflow. This skill checks that the workflow is available and c
 ## When to use
 
 - Right after installing myflow in a repo.
-- When setting up a fresh repo for this workflow.
+- When setting up a fresh repo or worktree for this workflow.
+- When a repo stores durable artifacts in non-default paths and MyFlow needs to remember them.
 
 ## What myflow provides
 
@@ -23,8 +24,21 @@ Cloning myflow and running `pi install ./myflow` brings everything with it:
 - **Pipeline skills** — discover, research, blueprint, implement, validate, code-review, and more.
 - **Execution skills** — brainstorming, TDD, subagent-driven development, parallel dispatch.
 - **Closeout skills** — landing, documentation, retros, learning capture.
+- **Repo-store resolver** — `skills/_shared/repo-store.mjs`, which maps logical artifact roles to repo-specific paths.
 
 The full workflow comes with the clone — no separate installs needed.
+
+## Storage model
+
+MyFlow uses three locations:
+
+| Location | Purpose |
+|---|---|
+| Global MyFlow install | Skills, agents, extensions, templates, defaults. |
+| `~/.myflow/repos/<repo-id>/` | Personal durable state for this repo: path map, tabled items, memory, retros. |
+| `<worktree>/.myflow/` | Gitignored branch/worktree scratch: artifacts, specs, guidance, handoffs. |
+
+Target repos should only receive committed artifacts that are useful to the repo/team, such as the configured status file, as-built docs, runbooks, or agent guidance updates. MyFlow-specific process state stays in the personal per-repo store.
 
 ## Process
 
@@ -36,38 +50,78 @@ Check that myflow skills are discoverable:
 ls skills/myflow/SKILL.md 2>/dev/null || echo "myflow not found"
 ```
 
-1. Clone and install: `git clone https://github.com/don-smith/myflow.git && pi install ./myflow`.
-
-### Step 2: Check repo conventions
-
-Check whether these project-owned files and folders exist:
+If missing, clone and install:
 
 ```bash
-ls docs/tabled.md docs/status.md docs/memory/MEMORY.md docs/changes docs/retros docs/runbooks AGENTS.md 2>/dev/null
+git clone https://github.com/don-smith/myflow.git && pi install ./myflow
 ```
 
-Expected:
+### Step 2: Initialize the personal repo store
 
-| Path | Purpose |
-|---|---|
-| `docs/tabled.md` | Working memory for deferred ideas |
-| `docs/status.md` | Living status |
-| `docs/memory/` | Persistent memory + `MEMORY.md` index |
-| `docs/changes/` | As-built documentation |
-| `docs/retros/` | Frozen retrospectives |
-| `docs/runbooks/` | Multi-skill processes |
-| `AGENTS.md` | Repo-level agent guidance |
-
-### Step 3: Create missing conventions
-
-If the user approves, create missing conventions:
+Run the resolver from the target repo/worktree:
 
 ```bash
-mkdir -p docs/{memory,changes,retros,runbooks}
-touch docs/tabled.md docs/status.md docs/memory/MEMORY.md AGENTS.md
+node "${SKILL_DIR}/../_shared/repo-store.mjs" ensure
 ```
 
-Seed `docs/status.md` with:
+This creates or loads:
+
+```text
+~/.myflow/repos/<repo-id>/
+  config.toml
+  tabled.md
+  memory/
+  retros/
+
+<worktree>/.myflow/
+  artifacts/
+  specs/
+  guidance/
+```
+
+The default `config.toml` maps logical committed artifact roles to conventional paths:
+
+```toml
+[paths]
+as_built = "docs/changes"
+status = "docs/status.md"
+runbooks = "docs/runbooks"
+agents = "AGENTS.md"
+```
+
+If this repo uses different paths, edit the personal config directly. Examples:
+
+```toml
+[paths]
+as_built = "docs/historical"
+status = "roadmap.md"
+runbooks = "documentation/runbooks"
+agents = "AGENTS.md"
+```
+
+### Step 3: Check configured committed artifact paths
+
+Resolve the configured paths:
+
+```bash
+node "${SKILL_DIR}/../_shared/repo-store.mjs" path status
+node "${SKILL_DIR}/../_shared/repo-store.mjs" path as_built
+node "${SKILL_DIR}/../_shared/repo-store.mjs" path runbooks
+node "${SKILL_DIR}/../_shared/repo-store.mjs" path agents
+```
+
+If a configured committed artifact should exist and is missing, ask before creating it. The repo belongs to the team; do not create committed docs unilaterally.
+
+Useful defaults when the developer approves:
+
+```bash
+mkdir -p "$(dirname "$(node "${SKILL_DIR}/../_shared/repo-store.mjs" path status)")"
+touch "$(node "${SKILL_DIR}/../_shared/repo-store.mjs" path status)"
+mkdir -p "$(node "${SKILL_DIR}/../_shared/repo-store.mjs" path as_built)"
+mkdir -p "$(node "${SKILL_DIR}/../_shared/repo-store.mjs" path runbooks)"
+```
+
+Seed the configured status file with:
 
 ```markdown
 # Status
@@ -85,49 +139,39 @@ _None yet._
 _None yet._
 ```
 
-Seed `docs/memory/MEMORY.md` with:
-
-```markdown
-# Memory Index
-
-Cross-session context for this project.
-
-## Entries
-
-_None yet._
-```
-
-Seed `AGENTS.md` with a minimal entry:
+A minimal configured agents file can say:
 
 ```markdown
 # AGENTS.md
 
-This project uses the myflow workflow:
-- 5-stage pipeline: Discover & Align → Research & Design → Implement → Validate & Review → Land & Learn.
-- Skills for brainstorming, TDD, subagent-driven development, and parallel dispatch.
-- `land` skill for 9-step closeout in 3 groups (Commit & Document, Reflect & Reconcile, Update & Close).
-
-See `docs/runbooks/` for detailed processes and `docs/memory/` for project context.
+This project may use MyFlow-generated artifacts:
+- Status is tracked in the configured status file.
+- As-built documentation is written to the configured as-built directory.
+- MyFlow process state is personal and not committed to this repo.
 ```
 
 ### Step 4: Report status and next steps
 
 Present a concise summary:
 
-```
+```text
 Setup status for <repo>:
 
 ✓ myflow skills available
-✓ Repo conventions created
+✓ Personal repo store ready: ~/.myflow/repos/<repo-id>/
+✓ Worktree scratch ready: <worktree>/.myflow/
+✓ Committed artifact paths configured
 
 Next step: /skill:myflow to see the workflow map.
 ```
 
 ## Anti-patterns
 
-- **Creating conventions without asking.** The repo belongs to the team; don't mutate its doc structure unilaterally.
+- **Creating committed docs without asking.** The repo belongs to the team; don't mutate its documentation structure unilaterally.
+- **Committing MyFlow process state to target repos.** Tabled items, MyFlow memory, and retros live in the personal repo store.
 - **Trying to install components separately.** Everything ships with myflow.
 
 ## Integration
 
-- Should be re-run after major myflow updates to refresh conventions.
+- Re-run after major myflow updates to refresh path mappings and scratch directories.
+- Re-run in a new worktree to create that worktree's `.myflow/` scratch directories while reusing the same global repo store.

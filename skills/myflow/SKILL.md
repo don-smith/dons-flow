@@ -89,7 +89,7 @@ Ground intent in codebase reality. Design the solution. Stress-test the architec
 
 **Checkpoint:** Run `capturing-learnings` after the plan is accepted.
 
-**Cross-cutting:** `epiphany-tabling` active. Any realization not trivially in-scope → `docs/tabled.md`.
+**Cross-cutting:** `epiphany-tabling` active. Any realization not trivially in-scope → the personal repo tabled file (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state tabled`).
 
 **Skill invocations:**
 | I want to... | Invoke |
@@ -159,9 +159,9 @@ Close the cycle. Document. Reflect. Prepare for next.
 **What it does:** 9 steps in 3 groups:
 - **Group 1 — Commit & Document:** `commit` → `as-built-documentation`
 - **Group 2 — Reflect & Reconcile:** `writing-retros` → `capturing-learnings`
-- **Group 3 — Update & Close:** Doc/knowledge-graph review → AGENTS.md → memory reconcile → status review + resolve `docs/tabled.md` → `finishing-a-development-branch`
+- **Group 3 — Update & Close:** Doc/knowledge-graph review → configured agents path → memory reconcile → status review + resolve tabled items → `finishing-a-development-branch`
 
-**Artifacts:** `docs/changes/`, `docs/retros/`, `docs/memory/`, `docs/status.md`, git commits.
+**Artifacts:** configured as-built/status/runbook/agents paths, personal repo retros/memory/tabled files, git commits.
 
 **Skill invocation:**
 | I want to... | Invoke |
@@ -174,7 +174,7 @@ These practices run continuously across the pipeline, not at a single stage.
 
 ### Epiphany tabling (`epiphany-tabling`)
 
-Use `epiphany-tabling` whenever an unexpected realization surfaces mid-task during stages 2-4. Add it to `docs/tabled.md`. Never lose it, never let it derail current work. Resolve tabled items at end-of-artifact checkpoints and during Land step 8.
+Use `epiphany-tabling` whenever an unexpected realization surfaces mid-task during stages 2-4. Add it to the personal repo tabled file (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state tabled`). Never lose it, never let it derail current work. Resolve tabled items at end-of-artifact checkpoints and during Land step 8.
 
 ### Capturing learnings (`capturing-learnings`)
 
@@ -192,25 +192,29 @@ If you must stop mid-work at any stage, use `/skill:create-handoff`. Resume with
 
 Upstream projects that contribute skills to myflow evolve independently. The `sync-upstream` skill lets you check for changes — see `docs/runbooks/monitor-upstream-evolution.md` for the process. The default stance is **observe, don't integrate.**
 
-## Repo conventions this workflow expects
+## Storage this workflow expects
 
-Your codebase should contain these documents and folders. They are owned by the team, not by any package:
+MyFlow uses three storage scopes:
 
-| Path | Purpose |
-|---|---|
-| `docs/tabled.md` | Working memory for epiphanies and deferred work |
-| `docs/status.md` | Living status: Recently Completed, What's Next |
-| `docs/memory/` | Persistent project/session memory entries |
-| `docs/memory/MEMORY.md` | Index of memory entries |
-| `docs/changes/` | As-built documentation: what shipped and why |
-| `docs/retros/` | Frozen retrospective documents |
-| `docs/runbooks/` | Multi-skill processes and practices |
-| `AGENTS.md` | Repo-level agent guidance |
+| Scope | Location | Purpose |
+|---|---|---|
+| Global install | myflow package / installed Pi assets | Skills, agents, extensions, templates, workflow defaults. |
+| Personal repo store | `~/.myflow/repos/<repo-id>/` | Repo-specific path map, tabled items, memory, retros. |
+| Worktree scratch | `<worktree>/.myflow/` | Gitignored artifacts, specs, guidance, handoffs for the current worktree. |
+
+Committed repo artifacts are configurable per repo through the personal repo store:
+
+| Logical path | Default | Purpose |
+|---|---|---|
+| `as_built` | `docs/changes` | As-built documentation: what shipped and why. |
+| `status` | `docs/status.md` | Living status: Recently Completed, What's Next. |
+| `runbooks` | `docs/runbooks` | Durable repo-relevant processes and practices. |
+| `agents` | `AGENTS.md` | Repo-level agent guidance. |
 
 ## Anti-patterns
 
 - **Skipping `land`.** Stage 4 is not the finish line. Close the cycle.
-- **Carrying `docs/tabled.md` across cycles.** Resolve every entry during Land step 8.
+- **Carrying tabled items across cycles.** Resolve every entry during Land step 8.
 - **Editing source files during stages 1-2.** Discover, research, design, and blueprint produce artifacts; `implement` (stage 3) edits code.
 - **Recomposing slice boundaries.** `design`/`blueprint` owns decomposition; `plan` inherits slices 1:1.
 - **Letting verification become a rubber stamp.** Evidence first, claims second.
@@ -224,7 +228,7 @@ Your codebase should contain these documents and folders. They are owned by the 
 | 2. Research & Design | `research`, `design`/`blueprint`, `plan` | Plan (`.myflow/artifacts/plans/`) |
 | 3. Implement | `implement` + TDD, subagents | Working tree changes |
 | 4. Validate & Review | `validate`, `code-review`, `revise` | Validation + Review |
-| 5. Land & Learn | `land` (→ commit, as-built, retro...) | `docs/changes/`, retros, memory |
+| 5. Land & Learn | `land` (→ commit, as-built, retro...) | Configured repo docs + personal repo retros/memory |
 
 | I want to... | Invoke |
 |---|---|
