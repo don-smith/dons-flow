@@ -575,6 +575,9 @@ function commitStaleUnlinks(
 /**
  * Synchronize bundled agents from <PACKAGE_ROOT>/agents/ into ~/.pi/agent/agents/.
  *
+ * @param apply — when true, force-overwrite divergent files (manual sync).
+ * @param targetDir — optional override directory; defaults to `join(getAgentDir(), "agents")`.
+ *
  * Resolution policy (apply=false, session_start):
  *   - New source files → always copied.
  *   - Existing files, dest === src → unchanged, hash recorded.
@@ -598,16 +601,16 @@ function commitStaleUnlinks(
  *
  * Never throws — errors are collected in `result.errors`.
  */
-export function syncBundledAgents(apply: boolean): SyncResult {
+export function syncBundledAgents(apply: boolean, targetDir?: string): SyncResult {
 	const result = emptySyncResult();
 
 	if (!existsSync(BUNDLED_AGENTS_DIR)) {
 		return result;
 	}
 
-	const targetDir = join(getAgentDir(), "agents");
+	const effectiveTarget = targetDir ?? join(getAgentDir(), "agents");
 	try {
-		mkdirSync(targetDir, { recursive: true });
+		mkdirSync(effectiveTarget, { recursive: true });
 	} catch (e) {
 		result.errors.push({
 			op: SYNC_OP.MKDIR,
@@ -621,23 +624,23 @@ export function syncBundledAgents(apply: boolean): SyncResult {
 	if (sourceEntries === null) return result;
 
 	const sourceNames = new Set(sourceEntries);
-	const manifest = readManifest(targetDir);
-	const hasV2Data = hasV2Marker(targetDir);
+	const manifest = readManifest(effectiveTarget);
+	const hasV2Data = hasV2Marker(effectiveTarget);
 
 	// 2. Process each source file
-	const newManifest = processSourceEntries(sourceEntries, targetDir, manifest, hasV2Data, apply, result);
+	const newManifest = processSourceEntries(sourceEntries, effectiveTarget, manifest, hasV2Data, apply, result);
 
 	// 3. Stale-removal: Pass A (classify) → Pass B (write manifest) → Pass C (commit unlinks).
-	const toUnlink = classifyStaleEntries(manifest, sourceNames, targetDir, hasV2Data, apply, newManifest, result);
+	const toUnlink = classifyStaleEntries(manifest, sourceNames, effectiveTarget, hasV2Data, apply, newManifest, result);
 
 	// Pass B — persist manifest before destructive ops.
-	writeManifest(targetDir, newManifest, result);
+	writeManifest(effectiveTarget, newManifest, result);
 	if (!hasV2Data && !result.errors.some((e) => e.op === SYNC_OP.MANIFEST_WRITE)) {
-		writeV2Marker(targetDir);
+		writeV2Marker(effectiveTarget);
 	}
 
 	// Pass C — commit unlinks after the manifest is durable.
-	commitStaleUnlinks(toUnlink, manifest, newManifest, targetDir, result);
+	commitStaleUnlinks(toUnlink, manifest, newManifest, effectiveTarget, result);
 
 	return result;
 }
