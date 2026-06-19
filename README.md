@@ -13,7 +13,7 @@ git clone https://github.com/don-smith/myflow.git
 pi install ./myflow
 ```
 
-Restart Pi and the workflow is active — all skills are discovered from `skills/` and `vendor/superpowers/skills/`.
+Restart Pi and the workflow is active — all skills are discovered from `skills/`.
 
 To update, `git pull` in the cloned repo and restart Pi. No npm reinstall needed.
 
