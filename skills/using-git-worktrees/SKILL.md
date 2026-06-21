@@ -21,31 +21,51 @@ Follow this priority order:
 
 ```bash
 # Check in priority order
-ls -d .worktrees 2>/dev/null     # Preferred (hidden)
-ls -d worktrees 2>/dev/null      # Alternative
+ls -d worktrees 2>/dev/null      # Preferred (hidden)
+ls -d .worktrees 2>/dev/null     # Alternative
 ```
 
-**If found:** Use that directory. If both exist, `.worktrees` wins.
+**If found:** Use that directory. If both exist, `worktrees` wins.
 
-### 2. Check CLAUDE.md
+### 2. Check AGENTS.md
 
 ```bash
-grep -i "worktree.*director" CLAUDE.md 2>/dev/null
+grep -i "worktree.*director" AGENTS.md 2>/dev/null
 ```
 
 **If preference specified:** Use it without asking.
 
 ### 3. Ask User
 
-If no directory exists and no CLAUDE.md preference:
+If no directory exists and no AGENTS.md or preference:
 
 ```
 No worktree directory found. Where should I create worktrees?
 
-1. .worktrees/ (project-local, hidden)
-2. ~/.pi/worktrees/<project-name>/ (global location)
+1. ~/projects/<project>/<project>-worktrees/ (sibling location)
+2. .worktrees/ (project-local, hidden)
+3. ~/.pi/worktrees/<project-name>/ (global location)
 
 Which would you prefer?
+```
+
+**If custom path chosen:** Ask for the full path. Validate it doesn't collide with tracked files (run `git check-ignore` if inside the repo), then create it. Record the choice in AGENTS.md so re-use is automatic next time (step 2).
+
+```
+Enter your worktree directory path:
+> ~/projects/teamroom/teamroom-worktrees/
+
+Path: ~/projects/teamroom/teamroom-worktrees/
+Shall I record this in AGENTS.md so we skip this question next time? (y/n)
+> y
+```
+
+**If yes:** Append a comment to AGENTS.md:
+
+```bash
+# Add to AGENTS.md so step 2 catches it on future runs
+echo "# Worktrees" >> AGENTS.md
+echo "Worktree directory: $CUSTOM_PATH" >> AGENTS.md
 ```
 
 ## Safety Verification
@@ -72,6 +92,12 @@ Per Jesse's rule "Fix broken things immediately":
 
 No .gitignore verification needed - outside project entirely.
 
+### For Custom Path (third option)
+
+**If inside repo:** Run `git check-ignore` before creating worktree — same as project-local.
+
+**If outside repo:** No .gitignore verification needed.
+
 ## Creation Steps
 
 ### 1. Detect Project Name
@@ -91,9 +117,14 @@ case $LOCATION in
   ~/.pi/worktrees/*)
     path="~/.pi/worktrees/$project/$BRANCH_NAME"
     ;;
+  *)
+    # Custom path — use as-is
+    path="$LOCATION/$BRANCH_NAME"
+    ;;
 esac
 
 # Create worktree with new branch
+mkdir -p "$(dirname "$path")"
 git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
 ```
@@ -145,10 +176,12 @@ Ready to implement <feature-name>
 
 | Situation | Action |
 |-----------|--------|
-| `.worktrees/` exists | Use it (verify ignored) |
+| `project-worktrees/` exists | Use it (verify ignored) |
 | `worktrees/` exists | Use it (verify ignored) |
-| Both exist | Use `.worktrees/` |
-| Neither exists | Check CLAUDE.md → Ask user |
+| `.worktrees/` exists | Use it (verify ignored) |
+| Both exist | Use `project-worktrees/` |
+| Neither exists | Check AGENTS.md → Ask user (3 options incl. sibling) |
+| Custom path (from AGENTS.md or user) | Use as-is, no ignore check needed (outside repo) |
 | Directory not ignored | Add to .gitignore + commit |
 | Tests fail during baseline | Report failures + ask |
 | No package.json/Cargo.toml | Skip dependency install |
@@ -163,7 +196,7 @@ Ready to implement <feature-name>
 ### Assuming directory location
 
 - **Problem:** Creates inconsistency, violates project conventions
-- **Fix:** Follow priority: existing > CLAUDE.md > ask
+- **Fix:** Follow priority: existing > AGENTS.md > ask (3 options incl. custom path)
 
 ### Proceeding with failing tests
 
@@ -198,10 +231,10 @@ Ready to implement auth feature
 - Skip baseline test verification
 - Proceed with failing tests without asking
 - Assume directory location when ambiguous
-- Skip CLAUDE.md check
+- Skip AGENETS.md check
 
 **Always:**
-- Follow directory priority: existing > CLAUDE.md > ask
+- Follow directory priority: existing > AGENETS.md > ask
 - Verify directory is ignored for project-local
 - Auto-detect and run project setup
 - Verify clean test baseline
