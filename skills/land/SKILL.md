@@ -72,7 +72,25 @@ Review personal repo memory (`node "${SKILL_DIR}/../_shared/repo-store.mjs" stat
 
 #### 8. Status Review + Tabled Items Resolution
 
-Walk through the configured status file (`node "${SKILL_DIR}/../_shared/repo-store.mjs" path status`) with the cycle's tabled items in hand (`node "${SKILL_DIR}/../_shared/repo-store.mjs" state tabled`). Update Recently Completed and What's Next. **Resolve every tabled item** — either decide-now (document the decision and remove the entry) or move-to-status (substance moves to What's Next). The tabled file should end the cycle empty or near-empty. Identify the next piece of work — usually the highest-priority moved-to-status item.
+The tabled file is **ephemeral to this branch.** Entries are captured during the work, and at land they all get reconciled — none carry forward to the next branch. Resolve the paths:
+
+```bash
+node "${SKILL_DIR}/../_shared/repo-store.mjs" path status
+node "${SKILL_DIR}/../_shared/repo-store.mjs" state tabled
+```
+
+Walk the status file first — update Recently Completed with what shipped, then read the tabled file. **Resolve every tabled entry** into exactly one destination:
+
+| Destination | When |
+|---|---|
+| **Decide now** | The item is small enough to fix or decide in this session. Do it, then remove the entry. |
+| **Promote to What's Next** | The item is real work but too large for this session. Move its substance into the status file's What's Next section, then remove the tabled entry. |
+| **Promote to artifact** | The item is a pattern worth capturing — promote to a skill, runbook, or memory entry via `capturing-learnings`, then remove the tabled entry. |
+| **Conscious drop** | The item looked important in the moment but doesn't hold up now. Delete the entry without promotion. |
+
+After this step, the tabled file **must be empty.** It can retain a structural header (e.g. `# Tabled`) but must contain zero entries. A non-empty tabled file at the end of land is a bug — entries don't carry from branch to branch.
+
+Identify the next piece of work — usually the highest-priority item moved to What's Next.
 
 #### 9. Integrate
 
@@ -92,7 +110,7 @@ If on **`main`**, stage all close-out changes in appropriately grouped commits a
 
 - **Merge before close-out.** Don't partial-merge an in-flight branch and then try to retroactively close out a subset. Close the branch as a complete piece of work.
 - **Treating a step as a checkbox.** Each is a conversation. Rushing produces work that needs walking back.
-- **Carrying tabled items across cycles.** Step 8 resolves every one.
+- **Leaving the tabled file non-empty after land.** Step 8 must clear every entry. The tabled file is ephemeral to the branch — entries don't carry forward. If an entry survives land, it leaks into the next cycle without context and rots.
 - **Re-reviewing code during closeout.** Code review and architectural review happen in stages 2 and 4. If new issues surface during closeout, table them — don't re-open review.
 - **Skipping the retro.** The retro is the mechanism that improves the process. Without it, the same friction repeats cycle after cycle.
 
