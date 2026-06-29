@@ -9,6 +9,17 @@
   - Updated built-in workflows so implementation paths route through `design → plan → implement`
   - Captured durable rationale in `docs/changes/2026-06-29-stage-2-design-planning-restructure.md`
 
+- **Stage 1 completion — escalation wiring & cohesion audit** (2026-06-26, `24a70b9`)
+  - Wired explicit escalation paths in `start` — risk triggers now map to `brainstorming`, `discover`, `explore`, or `research` with rationale
+  - Added `escalate_to_*` values to `Suggested Next Step` enum
+  - Cohesion audit across 6 skills: 1 blocker (brainstorming artifact path), 6 divergences, 8 concerns
+  - Fixed brainstorming artifact path: `.myflow/specs/` → `.myflow/artifacts/brainstorming/`
+  - Standardized MyFlow-Note template across `brainstorming`, `discover`, `explore`
+  - Added YAML frontmatter to `start/SKILL.md`
+  - Added metadata sourcing to `brainstorming/SKILL.md`
+  - Dropped git-commit requirement from brainstorming (artifacts stay worktree-local)
+  - Verified telemetry checkpoint wired end-to-end (template → start → myflow → artifact)
+
 - **Stage 1 `start` — Adaptive Alignment entry point** (2026-06-26, `73cc9f0`)
   - Added `skills/start/SKILL.md` with conversational progressive flow
   - Added `skills/start/templates/alignment.md` — alignment artifact template
@@ -24,7 +35,7 @@
 - **Stage 5 closeout refresh** — keep landing, documentation, changelog, retros, and learning capture useful without becoming a heavy ritual.
 - **Canonical `resume` skill** — artifact-led continuation. Single `/skill:resume` command that reads `.myflow/artifacts/`, infers stage, and proposes next action. Replaces ad-hoc handoff-first recovery.
 - **Telemetry checkpoint adoption across stages 3-5** — Stage 1 has the checkpoint pattern; Stage 2 has durable rationale; extend checkpoint discipline without implementing full package events.
-- **Artifact taxonomy consolidation** — move `.myflow/specs/` output under `.myflow/artifacts/<kind>/` so skills can find and classify state consistently.
+- **Artifact taxonomy consolidation** — brainstorming moved to `.myflow/artifacts/brainstorming/`; remaining `.myflow/specs/` references and cross-skill artifact path standardization still needed.
 - **Opportunistic MyFlow onboarding** — auto-detect when MyFlow is preferred but `.myflow/` is missing, offer to set up.
 - **Per-repo MyFlow parameters** — first-class repo-specific config for artifact destinations, validation commands, stage contracts.
 - **Repo-local processes plug into MyFlow stages** — discover and honor repo-specific skills, guidance, procedures at each stage.

@@ -325,8 +325,7 @@ Please review and let me know if you have follow-up questions.
 
 💬 Follow-up: describe the change in chat to append a timestamped Follow-up section to this artifact. Re-run `/skill:research` for a fresh artifact.
 
-**Next step (choose one):**
-- `/skill:design .myflow/artifacts/research/{filename}.md` — iterative design with vertical-slice decomposition (produces design artifact for plan)
+**Next step:** `/skill:design .myflow/artifacts/research/{filename}.md` — iterative design with vertical-slice decomposition (produces design artifact for plan)
 
 > 🆕 Tip: start a fresh session with `/new` first — chained skills work best with a clean context window.
 ```

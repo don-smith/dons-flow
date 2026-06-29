@@ -18,7 +18,9 @@ contract:
 # Discover
 
 <MyFlow-Note>
-For MyFlow Stage 1, `/skill:start` is the canonical entry point and writes an Adaptive Alignment Artifact. Use `discover` explicitly when that alignment reveals ambiguous intent or when the developer wants a deeper FRD-style requirements pass.
+For MyFlow Stage 1, `/skill:start` is the canonical entry point.
+Use `discover` explicitly when alignment reveals ambiguous intent or when the developer wants a deeper FRD-style requirements pass.
+Produces: `.myflow/artifacts/discover/`. Chains to: `research`.
 </MyFlow-Note>
 
 You are tasked with extracting feature intent and requirements through a one-question-at-a-time interview, then writing a Feature Requirements Document (FRD) that downstream skills consume. Two principles shape the flow: (1) **intent before agents** — the foundational intent question runs before any probe, so stated intent shapes the probe scope; (2) **lazy + confirm** — build the decision tree one layer at a time, and surface evidence-based pre-resolutions for confirmation rather than silently recording them.

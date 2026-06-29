@@ -16,7 +16,7 @@ contract:
         risk_level:
           enum: [low, medium, high]
         suggested_next_step:
-          enum: [continue_to_research, continue_to_design, implement_directly, stop]
+          enum: [escalate_to_brainstorming, escalate_to_discover, escalate_to_explore, continue_to_research, continue_to_design, implement_directly, stop]
 ---
 
 # Start
@@ -139,6 +139,46 @@ Escalate depth only when one or more triggers are `yes`:
 
 Low-risk work can complete Stage 1 with a compact artifact and acceptance criteria.
 
+#### Escalation Path Mapping
+
+When risk triggers fire, `start` must explicitly recommend the right supporting skill — not just say "escalate." Map triggers to skills as follows:
+
+| Risk Trigger | Recommend | When |
+|---|---|---|
+| `ambiguous_intent` | `brainstorming` | The concept is fuzzy — the developer can't articulate clear goals yet. Open-ended ideation is needed to discover what the work even is. |
+| `ambiguous_intent` | `discover` | Intent exists but requirements are unextracted — scope, constraints, and acceptance criteria need systematic interview-driven extraction. Use when the work is complex enough to benefit from a traceable FRD with documented decisions. |
+| `architecture_impact` | `research` | The change touches existing boundaries, APIs, or abstractions. Codebase reality must be understood before designing — what seams exist, what patterns are in play, what the blast radius looks like. |
+| `architecture_impact` | `explore` | Multiple viable architectural approaches exist and need structured comparison. `research` grounds the options in codebase reality; `explore` scores them across dimensions. |
+| `external_dependency` | `research` | The change touches integrations, paid services, auth, deployment, or third-party APIs. Existing integration surfaces must be understood before changes are designed. |
+| `external_dependency` | `explore` | Multiple integration strategies or third-party options exist and need comparison (e.g., "Stripe vs Paddle", "polling vs webhooks"). |
+
+**Combined triggers:**
+
+| Triggers | Path |
+|---|---|
+| `ambiguous_intent` + `architecture_impact` | `brainstorming` → `research` — ideate the shape first, then ground in codebase |
+| `ambiguous_intent` + `external_dependency` | `discover` → `research` — extract requirements systematically, then understand integration surfaces |
+| `architecture_impact` + `external_dependency` | `research` → `explore` — understand both codebase and external surfaces, then compare options |
+| All three | `brainstorming` → `discover` → `research` — full alignment chain; the work is high-risk and needs each layer |
+
+**Presenting the recommendation:**
+
+When risk triggers fire, include an explicit recommendation in the artifact's body and in the final summary:
+
+```markdown
+## Escalation Recommended
+
+Risk triggers: ambiguous_intent=yes, architecture_impact=no, external_dependency=no
+
+Recommended supporting skill: `brainstorming`
+
+Rationale: The concept is still fuzzy — we need open-ended ideation to clarify what we're building before we can ground it in codebase reality.
+
+Invoke: `/skill:brainstorming [topic]`
+```
+
+Do not bury this recommendation in prose. Make it a visible section the user can act on immediately.
+
 ### Step 6: Decision Provenance
 
 Record meaningful decisions with provenance:
@@ -192,7 +232,10 @@ Set `Suggested Next Step` based on risk and readiness:
 
 | Value | Use when |
 |---|---|
-| `continue_to_research` | Codebase reality must be understood before design. |
+| `escalate_to_brainstorming` | ambiguous_intent fired and the concept is fuzzy — open-ended ideation needed before Stage 2. |
+| `escalate_to_discover` | ambiguous_intent fired but scope is known — structured requirements extraction needed. |
+| `escalate_to_explore` | Multiple viable solution paths need comparison before designing. |
+| `continue_to_research` | Codebase reality must be understood before design. Risk triggers are clear enough to proceed. |
 | `continue_to_design` | Work is complex enough to need separate design before planning. |
 | `implement_directly` | Very small, low-risk work has enough acceptance criteria and does not need Stage 2. |
 | `stop` | The user only wanted alignment or the work is not ready. |
@@ -288,4 +331,4 @@ Optional sections may be added when risk requires them.
 - To deepen alignment, re-run `/skill:start <alignment-artifact-path>` and update the same artifact.
 - To research, run `/skill:research <alignment-artifact-path>`.
 - To create a design, run `/skill:design <alignment-artifact-path>`.
-- To design separately, run `/skill:design <alignment-artifact-path>`.
+- Then run `/skill:plan <design-artifact-path>` to produce an implementation plan.

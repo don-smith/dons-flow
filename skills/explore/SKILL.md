@@ -27,7 +27,9 @@ contract:
 # Explore
 
 <MyFlow-Note>
-For MyFlow Stage 1, `/skill:start` is the canonical entry point and may identify whether option analysis is needed. Use `explore` explicitly when the developer wants solution candidates compared or when alignment surfaces multiple viable paths.
+For MyFlow Stage 1, `/skill:start` is the canonical entry point.
+Use `explore` explicitly when alignment surfaces multiple viable solution paths that need structured comparison.
+Produces: `.myflow/artifacts/solutions/`. Chains to: `design`.
 </MyFlow-Note>
 
 You are tasked with analyzing solution options for new features or changes by invoking parallel skills and synthesizing their findings into actionable recommendations optimized for design consumption.

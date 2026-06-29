@@ -3,12 +3,24 @@ name: brainstorming
 description: "Use explicitly for deep free-form ideation when the concept is fuzzy. In MyFlow Stage 1, prefer the `start` skill as the canonical entry point; `brainstorming` is supporting source material when heavier ideation is warranted."
 ---
 
+## Metadata
+
+```!
+node "${SKILL_DIR}/../_shared/now.mjs"
+echo
+node "${SKILL_DIR}/../_shared/git-context.mjs"
+```
+
+Copy values verbatim — do not reformat the timezone offset.
+
 # Brainstorming Ideas Into Designs
 
 Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
 
 <MyFlow-Note>
-For MyFlow Stage 1, `/skill:start` is the canonical entry point. Use this skill explicitly when the developer wants deeper open-ended ideation than the Adaptive Alignment flow provides.
+For MyFlow Stage 1, `/skill:start` is the canonical entry point.
+Use `brainstorming` explicitly when the concept is fuzzy and the developer wants deeper open-ended ideation than the Adaptive Alignment flow provides.
+Produces: `.myflow/artifacts/brainstorming/`. Chains to: `design`.
 </MyFlow-Note>
 
 Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
@@ -30,10 +42,10 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `.myflow/specs/YYYY-MM-DD-<topic>-design.md` and commit
+6. **Write design doc** — save to `.myflow/artifacts/brainstorming/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke design skill to create implementation plan
+9. **Transition to implementation** — invoke design skill to create a design artifact for planning
 
 ## Process Flow
 
@@ -112,10 +124,8 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design (spec) to `.myflow/specs/YYYY-MM-DD-<topic>-design.md`
+- Write the validated design (spec) to `.myflow/artifacts/brainstorming/YYYY-MM-DD-<topic>-design.md`
   - (User preferences for spec location override this default)
-- Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
 
 **Spec Self-Review:**
 After writing the spec document, look at it with fresh eyes:
@@ -130,13 +140,13 @@ Fix any issues inline. No need to re-review — just fix and move on.
 **User Review Gate:**
 After the spec review loop passes, ask the user to review the written spec before proceeding:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
+> "Spec written to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
 **Implementation:**
 
-- Invoke the design skill to create a detailed implementation plan
+- Invoke the design skill to create a design artifact for planning
 - Do NOT invoke any other skill. design is the next step.
 
 ## Key Principles
